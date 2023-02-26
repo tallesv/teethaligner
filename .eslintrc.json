@@ -26,6 +26,8 @@
     "rules": {
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      "react/require-default-props": "off",
+      "react/jsx-props-no-spreading": "off",
       "react/jsx-filename-extension": [
         1,
         {
