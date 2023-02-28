@@ -41,7 +41,7 @@ export default function Layout({ children }: LayoutProps) {
     },
     {
       name: 'Cadastro',
-      header: 'Gerenciamento de usuários',
+      header: 'Cadastro de usuários',
       href: '/add-user',
       current: pathname === '/add-user',
     },
