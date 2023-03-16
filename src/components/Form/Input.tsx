@@ -4,11 +4,12 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   styleProps?: string;
   error?: boolean;
+  errorMessage?: string;
 }
 
 const Input = forwardRef(
   (
-    { label, styleProps, error, ...rest }: InputProps,
+    { label, styleProps, error, errorMessage, ...rest }: InputProps,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     const inputBorderStyle = error
@@ -20,7 +21,7 @@ const Input = forwardRef(
         {!!label && (
           <label
             htmlFor={rest.id}
-            className="block mb-2 ml-1 text-sm font-medium text-gray-600"
+            className="block mb-2 ml-1 text-xs font-medium text-gray-600"
           >
             {label}
           </label>
@@ -34,6 +35,12 @@ const Input = forwardRef(
           `}
           {...rest}
         />
+
+        {errorMessage && (
+          <span className="ml-1 text-sm font-medium text-red-500">
+            {errorMessage}
+          </span>
+        )}
       </div>
     );
   },

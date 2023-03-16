@@ -1,7 +1,7 @@
-import { ForwardedRef, forwardRef } from 'react';
+import { ForwardedRef, forwardRef, InputHTMLAttributes } from 'react';
 
-interface CheckboxProps {
-  id: string;
+interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
+  id?: string;
   label: string;
 }
 
