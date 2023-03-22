@@ -11,7 +11,7 @@ const user = {
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 };
 const userNavigation = [
-  { name: 'Perfil', href: '/' },
+  { name: 'Perfil', header: 'Perfil', href: '/profile' },
   { name: 'Sair', href: '/' },
 ];
 
@@ -243,6 +243,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="mx-auto max-w-screen-2xl max-[1920px]:max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">
             {navigation.find(item => item.current)?.header}
+            {userNavigation.find(item => item.href === pathname)?.header}
           </h1>
         </div>
       </header>
