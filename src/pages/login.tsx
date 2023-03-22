@@ -6,8 +6,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 
 import { useRouter } from 'next/router';
-import Spinner from '../components/UI/Spinner';
-import Input from '../components/UI/Input';
+import Spinner from '../components/Spinner';
+import Input from '../components/Form/Input';
 
 type LoginFormData = {
   email: string;
