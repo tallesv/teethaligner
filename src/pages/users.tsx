@@ -5,15 +5,14 @@ import { useQuery } from 'react-query';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import api from '@/client/api';
 
 type UserProps = {
   id: number;
-  firstName: string;
-  lastName: string;
-  age: number;
+  name: string;
   email: string;
-  gender: string;
-  birthDate: string;
+  user_type: number;
+  created_at: string;
 };
 
 type orderProps = {
@@ -21,7 +20,7 @@ type orderProps = {
   order: 'ascending' | 'descending';
 };
 
-export default function Home() {
+export default function Users() {
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState<UserProps[]>([]);
   const [termSearched, setTermSearched] = useState<string>('');
@@ -32,10 +31,7 @@ export default function Home() {
 
   const { isLoading, error } = useQuery(
     'users',
-    () =>
-      fetch('https://dummyjson.com/users')
-        .then(res => res.json())
-        .then(json => setUsers(json.users)),
+    () => api.get('/users').then(response => setUsers(response.data)),
     {
       refetchOnWindowFocus: false,
     },
@@ -51,13 +47,13 @@ export default function Home() {
   const filteredUsers = users
     .filter(
       (user: UserProps) =>
-        user.firstName.toLowerCase().includes(termSearched.toLowerCase()) ||
-        user.lastName.toLowerCase().includes(termSearched.toLowerCase()),
+        user.name.toLowerCase().includes(termSearched.toLowerCase()) ||
+        user.email.toLowerCase().includes(termSearched.toLowerCase()),
     )
     .sort((a, b) =>
-      dataOrder?.field === 'birthDate' && dataOrder.order === `ascending`
-        ? new Date(b.birthDate).valueOf() - new Date(a.birthDate).valueOf()
-        : new Date(a.birthDate).valueOf() - new Date(b.birthDate).valueOf(),
+      dataOrder?.field === 'created_at' && dataOrder.order === `ascending`
+        ? new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()
+        : new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf(),
     );
 
   if (isLoading) return <Layout>Loading...</Layout>;
@@ -68,19 +64,7 @@ export default function Home() {
     <Layout>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <div className="flex justify-between my-4 mx-2">
-            <Link href="/products">
-              <button
-                type="button"
-                className="
-                text-white bg-blue-600 border border-transparent
-                  focus:outline-none hover:bg-blue-700 focus:ring-blue-500 font-medium
-                  focus:ring-2 focus:ring-offset-2
-                  rounded-lg text-sm px-3 py-1.5"
-              >
-                Adicionar solicitação
-              </button>
-            </Link>
+          <div className="flex flex-row-reverse my-4 mx-2">
             <div className="relative ">
               <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
                 <MagnifyingGlassCircleIcon className="w-6 text-gray-500" />
@@ -89,7 +73,7 @@ export default function Home() {
                 type="text"
                 id="table-search"
                 className="block p-2 pl-10 text-sm text-gray-700 border border-gray-300 rounded-lg w-80 bg-gray-200 focus:ring-blue-500 focus:outline-blue-500"
-                placeholder="Procure por solicitações"
+                placeholder="Procure por usuários"
                 onChange={e => {
                   setCurrentPage(1);
                   setTermSearched(e.target.value);
@@ -101,27 +85,24 @@ export default function Home() {
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
                 <th scope="col" className="px-6 py-3">
-                  Solicitante
+                  Nome
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Paciente
+                  Email
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Responsável
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Produto</div>
+                  Tipo
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Data
+                    Data de criação
                     <div className="mx-2">
                       <ChevronUpIcon
                         onClick={() =>
-                          handleChangeDataOrder('birthDate', `ascending`)
+                          handleChangeDataOrder('created_at', `ascending`)
                         }
                         className={`w-4 cursor-pointer ${
-                          dataOrder?.field === `birthDate` &&
+                          dataOrder?.field === `created_at` &&
                           dataOrder.order === `ascending`
                             ? `text-blue-500`
                             : `text-gray-600`
@@ -129,10 +110,10 @@ export default function Home() {
                       />
                       <ChevronDownIcon
                         onClick={() =>
-                          handleChangeDataOrder('birthDate', `descending`)
+                          handleChangeDataOrder('created_at', `descending`)
                         }
                         className={`w-4 cursor-pointer ${
-                          dataOrder?.field === `birthDate` &&
+                          dataOrder?.field === `created_at` &&
                           dataOrder.order === `descending`
                             ? `text-blue-500`
                             : `text-gray-600`
@@ -160,13 +141,14 @@ export default function Home() {
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap"
                     >
-                      {user.firstName}
+                      {user.name}
                     </th>
-                    <td className="px-6 py-4 text-gray-700">{user.lastName}</td>
-                    <td className="px-6 py-4 text-gray-700">{user.age}</td>
                     <td className="px-6 py-4 text-gray-700">{user.email}</td>
                     <td className="px-6 py-4 text-gray-700">
-                      {user.birthDate}
+                      {user.user_type}
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {new Date(user.created_at).toLocaleDateString('pt-BR')}
                     </td>
                     <td className="px-6 py-4">
                       <a
