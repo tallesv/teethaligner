@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import firebase from 'firebase/compat/app';
+import { getAuth } from 'firebase/auth';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
@@ -8,12 +9,12 @@ import 'firebase/compat/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyDtsgX1DM03AADWoA9FHFdX9XDlV19Myn8',
-  authDomain: 'teeth-aligners.firebaseapp.com',
-  projectId: 'teeth-aligners',
-  storageBucket: 'teeth-aligners.appspot.com',
-  messagingSenderId: '240287978668',
-  appId: '1:240287978668:web:a8f77a452019df7dfc3b09',
+  apiKey: process.env.NEXT_PUBLIC_WEB_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_PROJECT_NUMBER,
+  appId: process.env.NEXT_PUBLIC_APP_ID,
 };
 
 // Initialize Firebase
@@ -23,8 +24,9 @@ if (!firebase.apps.length) {
 }
 const app = firebase.app();
 const auth = firebase.auth();
+const firebaseAuth = getAuth(app);
 const db = firebase.firestore();
 const now = firebase.firestore.Timestamp.now();
 const storage = firebase.storage();
-export { auth, db, now, storage, app };
+export { auth, firebaseAuth, db, now, storage, app };
 console.log(app.name ? 'Firebase Mode Activated!' : 'Firebase not working :(');
