@@ -11,7 +11,7 @@ export default function withSSRGuest<P>(fn: GetServerSideProps<P>) {
   ): Promise<GetServerSidePropsResult<P>> => {
     const cookies = parseCookies(ctx);
 
-    if (cookies['wisealigners.token']) {
+    if (cookies['teethaligner.token']) {
       return {
         redirect: {
           destination: '/',
