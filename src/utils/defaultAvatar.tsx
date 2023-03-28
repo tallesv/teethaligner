@@ -1,13 +1,18 @@
 export default function DefaultAvatar() {
   return (
-    <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
+    <div className="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
       <svg
-        className="h-full w-full text-gray-300"
+        className="absolute w-9 h-9 text-gray-400 "
         fill="currentColor"
-        viewBox="0 0 24 24"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+        <path
+          fillRule="evenodd"
+          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+          clipRule="evenodd"
+        />
       </svg>
-    </span>
+    </div>
   );
 }
