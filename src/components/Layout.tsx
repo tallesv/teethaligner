@@ -3,6 +3,9 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, ReactNode } from 'react';
+import { firebaseAuth, signOut } from '@/config/firebase';
+import { destroyCookie } from 'nookies';
+import DefaultAvatar from '@/utils/defaultAvatar';
 
 const user = {
   name: 'Tom Cook',
@@ -12,7 +15,7 @@ const user = {
 };
 const userNavigation = [
   { name: 'Perfil', header: 'Perfil', href: '/profile' },
-  { name: 'Sair', href: '/' },
+  { name: 'Sair', href: '/login' },
 ];
 
 function classNames(...classes: string[]) {
@@ -63,6 +66,12 @@ export default function Layout({ children }: LayoutProps) {
       showInHeader: true,
     },
   ];
+
+  function handleSignOut() {
+    signOut(firebaseAuth).then(() =>
+      destroyCookie(undefined, 'teethaligner.token'),
+    );
+  }
 
   return (
     <div className="min-h-full">
@@ -118,11 +127,15 @@ export default function Layout({ children }: LayoutProps) {
                       <div>
                         <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="sr-only">Open user menu</span>
-                          <img
-                            className="h-8 w-8 rounded-full"
-                            src={user.imageUrl}
-                            alt=""
-                          />
+                          {user.imageUrl ? (
+                            <img
+                              className="h-8 w-8 rounded-full"
+                              src={user.imageUrl}
+                              alt=""
+                            />
+                          ) : (
+                            <DefaultAvatar />
+                          )}
                         </Menu.Button>
                       </div>
                       <Transition
@@ -149,6 +162,9 @@ export default function Layout({ children }: LayoutProps) {
                                       active ? 'bg-gray-100' : '',
                                       'block px-4 py-2 text-sm text-gray-700',
                                     )}
+                                    onClick={() =>
+                                      item.name === 'Sair' && handleSignOut()
+                                    }
                                   >
                                     {item.name}
                                   </a>
@@ -228,6 +244,7 @@ export default function Layout({ children }: LayoutProps) {
                       as="a"
                       href={item.href}
                       className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                      onClick={() => item.name === 'Sair' && handleSignOut()}
                     >
                       {item.name}
                     </Disclosure.Button>
