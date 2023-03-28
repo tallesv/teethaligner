@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import firebase from 'firebase/compat/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
@@ -28,5 +28,14 @@ const firebaseAuth = getAuth(app);
 const db = firebase.firestore();
 const now = firebase.firestore.Timestamp.now();
 const storage = firebase.storage();
-export { auth, firebaseAuth, db, now, storage, app };
+export {
+  auth,
+  firebaseAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  db,
+  now,
+  storage,
+  app,
+};
 console.log(app.name ? 'Firebase Mode Activated!' : 'Firebase not working :(');
