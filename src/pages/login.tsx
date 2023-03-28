@@ -6,6 +6,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 
 import { useRouter } from 'next/router';
+import withSSRGuest from '@/utils/withSSRGuest';
+import { firebaseAuth, signInWithEmailAndPassword } from '@/config/firebase';
+import { setCookie } from 'nookies';
 import Spinner from '../components/Spinner';
 import Input from '../components/Form/Input';
 
@@ -31,20 +34,29 @@ export default function Login() {
     resolver: yupResolver(loginFormSchema),
   });
 
-  const handleLogin: SubmitHandler<LoginFormData> = async values => {
+  const handleLogin: SubmitHandler<LoginFormData> = async ({
+    email,
+    password,
+  }) => {
     try {
       setLoginError(false);
       setIsSubmitting(true);
+      const response = await signInWithEmailAndPassword(
+        firebaseAuth,
+        email,
+        password,
+      );
+
+      const token = await response.user.getIdTokenResult();
+      setCookie(undefined, 'teethaligner.token', token.token, {
+        maxAge: 60 * 60 * 24 * 1,
+        path: '/',
+      });
       push('/');
     } catch (err) {
-      setTimeout(() => {
-        setLoginError(true);
-      }, 2000);
       setLoginError(true);
     } finally {
-      setTimeout(() => {
-        setIsSubmitting(false);
-      }, 2000);
+      setIsSubmitting(false);
     }
   };
 
@@ -133,3 +145,9 @@ export default function Login() {
     </div>
   );
 }
+
+export const getServerSideProps = withSSRGuest(async () => {
+  return {
+    props: {},
+  };
+});
