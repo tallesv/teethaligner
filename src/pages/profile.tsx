@@ -1,21 +1,71 @@
+import * as yup from 'yup';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import Input from '@/components/Form/Input';
+import Select from '@/components/Form/Select';
 import Layout from '@/components/Layout';
 import DefaultAvatar from '@/utils/defaultAvatar';
+import api from '@/client/api';
+
+type ProfileFormData = {
+  avatar: string;
+  name: string;
+  cep: string;
+  state: string;
+  city: string;
+  street: string;
+  number: string;
+};
+
+const profileFormSchema = yup.object().shape({
+  name: yup.string().required('Por favor insira um Nome'),
+  cep: yup.string(),
+  state: yup.string(),
+  city: yup.string(),
+  street: yup.string(),
+  number: yup.string(),
+});
 
 export default function Profile() {
+  const { register, handleSubmit, formState } = useForm<ProfileFormData>({
+    resolver: yupResolver(profileFormSchema),
+  });
+
+  async function handleEditProfileSubmit(data: ProfileFormData) {
+    console.log(data);
+
+    const { avatar, cep, city, name, state, street } = data;
+
+    const response = await api.put(`/users/${9}`, {
+      name,
+      addresses: [
+        {
+          user_id: 9,
+          postal_code: cep,
+          state,
+          city,
+          street,
+        },
+      ],
+    });
+
+    console.log(response);
+  }
+
   return (
     <Layout>
       <div>
         <div className="md:grid md:grid-cols-3 md:gap-6">
           <div className="mt-5 md:col-span-2 md:mt-0">
-            <form action="#" method="POST">
+            <form onSubmit={handleSubmit(handleEditProfileSubmit)}>
               <div className="shadow sm:overflow-hidden sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="flex flex-col sm:flex-row justify-between items-center space-y-7">
                     <div>
-                      <label className="block text-sm font-medium leading-6 text-gray-900">
+                      <span className="block text-sm font-medium leading-6 text-gray-900">
                         Foto do usuário
-                      </label>
+                      </span>
                       <div className="mt-2 flex items-center">
                         <DefaultAvatar />
                         <button
@@ -37,15 +87,51 @@ export default function Profile() {
                 </div>
 
                 <div className="px-4 py-5 sm:p-6">
-                  <Input label="Nome" />
+                  <div className="grid grid-cols-6 gap-6">
+                    <div className="col-span-6">
+                      <Input
+                        label="Nome"
+                        {...register('name')}
+                        error={!!formState.errors.name}
+                        errorMessage={formState.errors.name?.message}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+                      <Input label="Cep" {...register('cep')} />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+                      <Select
+                        id="test"
+                        label="Estado"
+                        options={[
+                          { label: 'Rio Grande do Norte', value: 'RN' },
+                        ]}
+                        {...register('state')}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-6 lg:col-span-2">
+                      <Input label="Cidade" {...register('city')} />
+                    </div>
+
+                    <div className="col-span-2 xs:col-span-6 lg:col-span-5">
+                      <Input label="Rua" {...register('street')} />
+                    </div>
+
+                    <div className="col-span-2 xs:col-span-6 lg:col-span-1">
+                      <Input label="Número" {...register('number')} />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                <div className="flex justify-center bg-gray-50 px-4 py-3 sm:px-6">
                   <button
                     type="submit"
-                    className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                    className="flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
                   >
-                    Save
+                    Salvar
                   </button>
                 </div>
               </div>
