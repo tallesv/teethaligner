@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import withSSRAuth from '@/utils/withSSRAuth';
 
 type UserProps = {
   id: number;
@@ -203,3 +204,9 @@ export default function Home() {
     </Layout>
   );
 }
+
+export const getServerSideProps = withSSRAuth(async () => {
+  return {
+    props: {},
+  };
+});
