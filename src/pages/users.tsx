@@ -6,6 +6,7 @@ import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import api from '@/client/api';
+import Modal from '@/components/Modal';
 
 type UserProps = {
   id: number;
@@ -62,6 +63,29 @@ export default function Users() {
 
   return (
     <Layout>
+      <Modal
+        title="Excluir usuário"
+        textContent="Você deseja exlcuir o usuário nome(email)?"
+        primaryButton={
+          <button
+            type="button"
+            className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            onClick={() => {}}
+          >
+            Got it, thanks!
+          </button>
+        }
+        secondaryButton={
+          <button
+            type="button"
+            className="inline-flex justify-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-300 focus:outline-none focus-visible:ring-2  focus-visible:ring-offset-2"
+            onClick={() => {}}
+          >
+            Cancelar
+          </button>
+        }
+      />
+
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <div className="flex flex-row-reverse my-4 mx-2">
@@ -151,18 +175,6 @@ export default function Users() {
                       {new Date(user.created_at).toLocaleDateString('pt-BR')}
                     </td>
                     <td className="px-6 py-4">
-                      <a
-                        href="/"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        Visualizar
-                      </a>
-                      <a
-                        href="/"
-                        className="font-medium mx-3 text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        Editar
-                      </a>
                       <a
                         href="/"
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
