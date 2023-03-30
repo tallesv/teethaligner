@@ -10,6 +10,7 @@ import Radio from '@/components/Form/Radio';
 import TextArea from '@/components/Form/Textarea';
 import classNames from '@/utils/bindClassNames';
 import FileInput from '@/components/Form/FileInput';
+import withSSRAuth from '@/utils/withSSRAuth';
 
 type SetupFormData = {
   name: string;
@@ -491,3 +492,9 @@ export default function Setup() {
     </Layout>
   );
 }
+
+export const getServerSideProps = withSSRAuth(async () => {
+  return {
+    props: {},
+  };
+});

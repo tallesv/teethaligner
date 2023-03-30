@@ -7,6 +7,7 @@ import Select from '@/components/Form/Select';
 import Layout from '@/components/Layout';
 import DefaultAvatar from '@/utils/defaultAvatar';
 import api from '@/client/api';
+import withSSRAuth from '@/utils/withSSRAuth';
 
 type ProfileFormData = {
   avatar: string;
@@ -311,3 +312,9 @@ export default function Profile() {
     </Layout>
   );
 }
+
+export const getServerSideProps = withSSRAuth(async () => {
+  return {
+    props: {},
+  };
+});

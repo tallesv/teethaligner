@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import Spinner from '@/components/Spinner';
 import api from '@/client/api';
 import { auth, firebaseAuth } from '@/config/firebase';
+import withSSRAuth from '@/utils/withSSRAuth';
 
 type AddUserFormData = {
   name: string;
@@ -122,3 +123,9 @@ export default function AddUser() {
     </Layout>
   );
 }
+
+export const getServerSideProps = withSSRAuth(async () => {
+  return {
+    props: {},
+  };
+});

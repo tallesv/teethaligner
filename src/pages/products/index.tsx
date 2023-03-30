@@ -1,4 +1,5 @@
 import Layout from '@/components/Layout';
+import withSSRAuth from '@/utils/withSSRAuth';
 import { RadioGroup } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
@@ -183,3 +184,9 @@ export default function SelectProduct() {
     </Layout>
   );
 }
+
+export const getServerSideProps = withSSRAuth(async () => {
+  return {
+    props: {},
+  };
+});

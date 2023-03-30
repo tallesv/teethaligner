@@ -7,6 +7,7 @@ import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import api from '@/client/api';
 import Modal from '@/components/Modal';
+import withSSRAuth from '@/utils/withSSRAuth';
 
 type UserProps = {
   id: number;
@@ -197,3 +198,9 @@ export default function Users() {
     </Layout>
   );
 }
+
+export const getServerSideProps = withSSRAuth(async () => {
+  return {
+    props: {},
+  };
+});
