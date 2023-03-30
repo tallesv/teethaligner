@@ -1,29 +1,25 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 interface ModalProps {
+  isOpen: boolean;
   title: string;
-  textContent: string;
-  primaryButton?: React.ReactNode;
-  secondaryButton?: React.ReactNode;
+  content: React.ReactNode;
 }
 
-export default function Modal({
-  title,
-  textContent,
-  primaryButton,
-  secondaryButton,
-}: ModalProps) {
-  const [isOpen, setIsOpen] = useState(true);
+export default function Modal({ isOpen, title, content }: ModalProps) {
+  const [isModalOpen, setIsModalOpen] = useState(isOpen);
 
-  const primaryButtonStyle = 'a';
+  useEffect(() => {
+    setIsModalOpen(isOpen);
+  }, [isOpen]);
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
+    <Transition appear show={isModalOpen} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10"
-        onClose={() => setIsOpen(false)}
+        onClose={() => setIsModalOpen(false)}
       >
         <Transition.Child
           as={Fragment}
@@ -55,15 +51,7 @@ export default function Modal({
                 >
                   {title}
                 </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">{textContent}</p>
-                </div>
-
-                <div className="mt-4 space-x-3 text-right">
-                  {secondaryButton}
-
-                  {primaryButton}
-                </div>
+                {content}
               </Dialog.Panel>
             </Transition.Child>
           </div>

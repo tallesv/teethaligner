@@ -4,16 +4,18 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
 import api from '@/client/api';
 import Modal from '@/components/Modal';
 import withSSRAuth from '@/utils/withSSRAuth';
+import { toast } from 'react-toastify';
+import Spinner from '@/components/Spinner';
+import Select from '@/components/Form/Select';
 
 type UserProps = {
   id: number;
   name: string;
   email: string;
-  user_type: number;
+  user_type: string;
   created_at: string;
 };
 
@@ -25,13 +27,16 @@ type orderProps = {
 export default function Users() {
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState<UserProps[]>([]);
+  const [openDeleteUserModal, setOpenDeleteUserModal] = useState(false);
+  const [openEditUserTypeModal, setEditUserTypeModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
     field: `birthDate`,
     order: `ascending`,
   });
 
-  const { isLoading, error } = useQuery(
+  const { isLoading, error, refetch } = useQuery(
     'users',
     () => api.get('/users').then(response => setUsers(response.data)),
     {
@@ -58,32 +63,128 @@ export default function Users() {
         : new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf(),
     );
 
+  const [selectedUserId, setSelectedUserId] = useState<number>();
+  const selectedUser = users.find(user => user.id === selectedUserId);
+
   if (isLoading) return <Layout>Loading...</Layout>;
 
   if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
 
+  function handleOpenModalToDeleteUser(userId: number) {
+    setSelectedUserId(userId);
+    setOpenDeleteUserModal(true);
+  }
+
+  async function handleDeleteUser() {
+    if (selectedUser?.user_type === 'Admin') {
+      toast.warning(`Não é possível deletar contas do tipo "Admin"`);
+      setOpenDeleteUserModal(false);
+    } else {
+      try {
+        setIsSubmitting(true);
+        await api.delete(`users/${selectedUser?.id}`);
+        refetch();
+      } catch (err) {
+        toast.error(
+          'Ocorreu um erro ao tentar exlucir usuário, por favor tente novamente.',
+        );
+      } finally {
+        setIsSubmitting(false);
+        setOpenDeleteUserModal(false);
+      }
+    }
+  }
+  function handleOpenModalToEditType(userId: number) {
+    setSelectedUserId(userId);
+    setEditUserTypeModal(true);
+  }
+
+  async function handleEditTypeUser() {
+    try {
+      setIsSubmitting(true);
+      await api.put(`users/${selectedUser?.id}`, {});
+      refetch();
+    } catch (err) {
+      toast.error(
+        'Ocorreu um erro ao tentar exlucir usuário, por favor tente novamente.',
+      );
+    } finally {
+      setIsSubmitting(false);
+      setOpenDeleteUserModal(false);
+    }
+  }
+
   return (
     <Layout>
       <Modal
+        isOpen={openDeleteUserModal}
         title="Excluir usuário"
-        textContent="Você deseja exlcuir o usuário nome(email)?"
-        primaryButton={
-          <button
-            type="button"
-            className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            onClick={() => {}}
-          >
-            Got it, thanks!
-          </button>
+        content={
+          <>
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">
+                {`Você deseja exlcuir o usuário ${selectedUser?.name}(${selectedUser?.email})?`}
+              </p>
+            </div>
+            <div className="mt-4 space-x-3 text-right">
+              <button
+                type="button"
+                className="inline-flex justify-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-300 focus:outline-none focus-visible:ring-2  focus-visible:ring-offset-2"
+                onClick={() => setOpenDeleteUserModal(false)}
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                onClick={handleDeleteUser}
+              >
+                <Spinner hidden={isSubmitting} />
+                Deletar
+              </button>
+            </div>
+          </>
         }
-        secondaryButton={
-          <button
-            type="button"
-            className="inline-flex justify-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-300 focus:outline-none focus-visible:ring-2  focus-visible:ring-offset-2"
-            onClick={() => {}}
-          >
-            Cancelar
-          </button>
+      />
+
+      <Modal
+        isOpen={openEditUserTypeModal}
+        title="Editar tipo do usuário"
+        content={
+          <>
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">
+                {`${selectedUser?.name}(${selectedUser?.email})`}
+                <Select
+                  id="user_type"
+                  label="Tipo"
+                  options={[
+                    { label: `Admin`, value: 'Admin' },
+                    { label: 'Cliente', value: 'Client' },
+                  ]}
+                />
+              </p>
+            </div>
+            <div className="mt-4 space-x-3 text-right">
+              <button
+                type="button"
+                className="inline-flex justify-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-300 focus:outline-none focus-visible:ring-2  focus-visible:ring-offset-2"
+                onClick={() => setEditUserTypeModal(false)}
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                onClick={handleEditTypeUser}
+              >
+                <Spinner hidden={isSubmitting} />
+                Editar
+              </button>
+            </div>
+          </>
         }
       />
 
@@ -175,13 +276,21 @@ export default function Users() {
                     <td className="px-6 py-4 text-gray-700">
                       {new Date(user.created_at).toLocaleDateString('pt-BR')}
                     </td>
-                    <td className="px-6 py-4">
-                      <a
-                        href="/"
+                    <td className="px-6 py-4 space-x-2">
+                      {/* <button
+                        type="button"
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        onClick={() => handleOpenModalToDeleteUser(user.id)}
                       >
                         Excluir
-                      </a>
+                      </button> */}
+                      {/* <button
+                        type="button"
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        onClick={() => handleOpenModalToEditType(user.id)}
+                      >
+                        Alterar tipo
+                      </button> */}
                     </td>
                   </tr>
                 ))}

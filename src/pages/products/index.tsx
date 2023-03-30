@@ -57,7 +57,6 @@ export default function SelectProduct() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const product = products.find(item => item.title === productSelected)!;
     push(`/products${product?.path}`);
-    console.log(`asdasd`);
   }
 
   return (

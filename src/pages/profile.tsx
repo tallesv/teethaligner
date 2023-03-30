@@ -34,24 +34,20 @@ export default function Profile() {
   });
 
   async function handleEditProfileSubmit(data: ProfileFormData) {
-    console.log(data);
-
     const { avatar, cep, city, name, state, street } = data;
 
-    const response = await api.put(`/users/${9}`, {
-      name,
-      addresses: [
-        {
-          user_id: 9,
-          postal_code: cep,
-          state,
-          city,
-          street,
-        },
-      ],
-    });
-
-    console.log(response);
+    // const response = await api.put(`/users/${9}`, {
+    //   name,
+    //   addresses: [
+    //     {
+    //       user_id: 9,
+    //       postal_code: cep,
+    //       state,
+    //       city,
+    //       street,
+    //     },
+    //   ],
+    // });
   }
 
   return (
@@ -141,13 +137,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="hidden sm:block" aria-hidden="true">
-        <div className="py-5">
-          <div className="border-t border-gray-200" />
-        </div>
-      </div>
-
-      <div className="mt-10 sm:mt-0">
+      {/* <div className="mt-10 sm:mt-0">
         <div className="md:grid md:grid-cols-3 md:gap-6">
           <div className="md:col-span-1">
             <div className="px-4 sm:px-0">
@@ -308,7 +298,7 @@ export default function Profile() {
             </form>
           </div>
         </div>
-      </div>
+      </div> */}
     </Layout>
   );
 }

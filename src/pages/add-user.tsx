@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -10,8 +11,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Spinner from '@/components/Spinner';
 import api from '@/client/api';
-import { auth, firebaseAuth } from '@/config/firebase';
+import { firebaseAuth } from '@/config/firebase';
 import withSSRAuth from '@/utils/withSSRAuth';
+import { toast } from 'react-toastify';
 
 type AddUserFormData = {
   name: string;
@@ -55,16 +57,22 @@ export default function AddUser() {
         values.email,
         values.password,
       );
-      const response = await api.post('/users', {
+      await api.post('/users', {
         name: values.name,
         email: values.email,
         firebase_id: firebaseResponse.user.uid,
         user_type: values.admin ? 'Admin' : 'Cliente',
       });
-      console.log(response);
+      toast.success('Usuário cadastrado com sucesso.');
       push('/add-user');
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      if (err.code === 'auth/email-already-in-use') {
+        toast.error('já existe uma conta cadastrada com esse email.');
+      } else {
+        toast.error(
+          'Ocorreu um erro ao tentar cadastrar o usuário, por favor tente novamente.',
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -116,7 +124,7 @@ export default function AddUser() {
             className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
           >
             <Spinner hidden={isSubmitting} />
-            {isSubmitting ? 'Cadastando' : 'Cadastrar'}
+            {isSubmitting ? 'Cadastrando' : 'Cadastrar'}
           </button>
         </form>
       </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -31,7 +32,6 @@ export default function ForgotPassword() {
       resolver: yupResolver(forgotPasswordFormSchema),
     },
   );
-
   const handleLogin: SubmitHandler<ForgotPasswordFormData> = async ({
     email,
   }) => {
@@ -40,10 +40,14 @@ export default function ForgotPassword() {
       await auth.sendPasswordResetEmail(email);
       toast.success('Email enviado.');
       push('/');
-    } catch (err) {
-      toast.error(
-        'Ocorreu um erro ao enviar o email, por favor tente novamente.',
-      );
+    } catch (err: any) {
+      if (err.code === `auth/user-not-found`) {
+        toast.error('Email não cadastrado.');
+      } else {
+        toast.error(
+          'Ocorreu um erro ao enviar o email, por favor tente novamente.',
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
