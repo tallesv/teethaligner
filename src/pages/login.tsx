@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import withSSRGuest from '@/utils/withSSRGuest';
 import { firebaseAuth, signInWithEmailAndPassword } from '@/config/firebase';
 import { setCookie } from 'nookies';
+import Head from 'next/head';
 import Spinner from '../components/Spinner';
 import Input from '../components/Form/Input';
 
@@ -62,6 +63,9 @@ export default function Login() {
 
   return (
     <div className="flex min-h-full items-center justify-center py-24 px-4 sm:px-6 lg:px-8">
+      <Head>
+        <title>Teeth Aligner | Login</title>
+      </Head>
       <div className="w-full max-w-md space-y-8 m-auto">
         <div>
           <img
