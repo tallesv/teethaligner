@@ -5,6 +5,8 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+        <link rel="icon" href="/images/logo-back-colored.png" />
       </Head>
       <body>
         <Main />

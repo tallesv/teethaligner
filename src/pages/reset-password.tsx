@@ -78,13 +78,10 @@ export default function ResetPassword({ code }: ResetPasswordProps) {
       <div className="w-full max-w-md space-y-8 m-auto">
         <div>
           <img
-            className="mx-auto h-12 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
+            className="mx-auto  w-auto"
+            src="images/logo.png"
             alt="Your Company"
           />
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Teeth Aligner
-          </h2>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(handleLogin)}>
