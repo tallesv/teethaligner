@@ -49,7 +49,12 @@ export default function Login() {
       );
 
       const token = await response.user.getIdTokenResult();
+      const userFirebaseId = response.user.uid;
       setCookie(undefined, 'teethaligner.token', token.token, {
+        maxAge: 60 * 60 * 24 * 1,
+        path: '/',
+      });
+      setCookie(undefined, 'teethaligner.use-firebase-id', userFirebaseId, {
         maxAge: 60 * 60 * 24 * 1,
         path: '/',
       });
