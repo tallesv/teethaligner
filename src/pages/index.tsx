@@ -6,15 +6,17 @@ import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import withSSRAuth from '@/utils/withSSRAuth';
+import api from '@/client/api';
 
-type UserProps = {
+type RequestsFromApi = {
   id: number;
-  firstName: string;
-  lastName: string;
-  age: number;
-  email: string;
-  gender: string;
-  birthDate: string;
+  patient_name: string;
+  patient_email: string;
+  user_id: number;
+  product_name: string;
+  created_at: string;
+  fields: string;
+  status: string;
 };
 
 type orderProps = {
@@ -24,19 +26,32 @@ type orderProps = {
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [users, setUsers] = useState<UserProps[]>([]);
+  const [requests, setRequests] = useState<Setup[]>([]);
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
     field: `birthDate`,
     order: `ascending`,
   });
 
+  function handleRequestsFromApi(data: RequestsFromApi[]) {
+    const treatedRequests = data.map(item => {
+      const fields = JSON.parse(item.fields);
+
+      const requestInMap = {
+        ...item,
+        ...fields,
+      };
+
+      delete requestInMap.fields;
+      return requestInMap;
+    });
+
+    setRequests(treatedRequests);
+  }
+
   const { isLoading, error } = useQuery(
     'users',
-    () =>
-      fetch('https://dummyjson.com/users')
-        .then(res => res.json())
-        .then(json => setUsers(json.users)),
+    () => api.get('/requests').then(res => handleRequestsFromApi(res.data)),
     {
       refetchOnWindowFocus: false,
     },
@@ -49,17 +64,17 @@ export default function Home() {
     setDataOrder({ field, order });
   }
 
-  const filteredUsers = users
-    .filter(
-      (user: UserProps) =>
-        user.firstName.toLowerCase().includes(termSearched.toLowerCase()) ||
-        user.lastName.toLowerCase().includes(termSearched.toLowerCase()),
-    )
-    .sort((a, b) =>
-      dataOrder?.field === 'birthDate' && dataOrder.order === `ascending`
-        ? new Date(b.birthDate).valueOf() - new Date(a.birthDate).valueOf()
-        : new Date(a.birthDate).valueOf() - new Date(b.birthDate).valueOf(),
-    );
+  // const filteredRequests = reque
+  //   .filter(
+  //     (user: UserProps) =>
+  //       user.firstName.toLowerCase().includes(termSearched.toLowerCase()) ||
+  //       user.lastName.toLowerCase().includes(termSearched.toLowerCase()),
+  //   )
+  //   .sort((a, b) =>
+  //     dataOrder?.field === 'birthDate' && dataOrder.order === `ascending`
+  //       ? new Date(b.birthDate).valueOf() - new Date(a.birthDate).valueOf()
+  //       : new Date(a.birthDate).valueOf() - new Date(b.birthDate).valueOf(),
+  //   );
 
   if (isLoading) return <Layout>Loading...</Layout>;
 
@@ -108,21 +123,21 @@ export default function Home() {
                   Paciente
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Responsável
+                  Produto
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Produto</div>
+                  Status
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Data
+                    Data de solicitação
                     <div className="mx-2">
                       <ChevronUpIcon
                         onClick={() =>
-                          handleChangeDataOrder('birthDate', `ascending`)
+                          handleChangeDataOrder('created_at', `ascending`)
                         }
                         className={`w-4 cursor-pointer ${
-                          dataOrder?.field === `birthDate` &&
+                          dataOrder?.field === `created_at` &&
                           dataOrder.order === `ascending`
                             ? `text-blue-500`
                             : `text-gray-600`
@@ -130,10 +145,10 @@ export default function Home() {
                       />
                       <ChevronDownIcon
                         onClick={() =>
-                          handleChangeDataOrder('birthDate', `descending`)
+                          handleChangeDataOrder('created_at', `descending`)
                         }
                         className={`w-4 cursor-pointer ${
-                          dataOrder?.field === `birthDate` &&
+                          dataOrder?.field === `created_at` &&
                           dataOrder.order === `descending`
                             ? `text-blue-500`
                             : `text-gray-600`
@@ -148,11 +163,11 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers
+              {requests
                 .slice((currentPage - 1) * 10, 10 * currentPage)
-                .map((user, index) => (
+                .map((request, index) => (
                   <tr
-                    key={user.id}
+                    key={request.id}
                     className={`border-b ${
                       index % 2 === 1 ? 'bg-gray-100' : 'bg-white'
                     }`}
@@ -161,21 +176,33 @@ export default function Home() {
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap"
                     >
-                      {user.firstName}
+                      {request.patient_email}
                     </th>
-                    <td className="px-6 py-4 text-gray-700">{user.lastName}</td>
-                    <td className="px-6 py-4 text-gray-700">{user.age}</td>
-                    <td className="px-6 py-4 text-gray-700">{user.email}</td>
                     <td className="px-6 py-4 text-gray-700">
-                      {user.birthDate}
+                      {request.patient_name}
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {request.product_name}
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {request.status}
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {new Date(request.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
-                      <a
-                        href="/"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      <Link
+                        key={request.id}
+                        href={`/products/setup/${request.id}`}
+                        legacyBehavior
                       >
-                        Visualizar
-                      </a>
+                        <a
+                          href={`/products/setup/${request.id}`}
+                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        >
+                          Visualizar
+                        </a>
+                      </Link>
                       <a
                         href="/"
                         className="font-medium mx-3 text-blue-600 dark:text-blue-500 hover:underline"
@@ -197,7 +224,7 @@ export default function Home() {
 
         <Pagination
           currentPage={currentPage}
-          totalQuantityOfData={filteredUsers.length}
+          totalQuantityOfData={requests.length}
           onPageChange={setCurrentPage}
         />
       </div>

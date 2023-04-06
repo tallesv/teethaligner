@@ -24,16 +24,29 @@ const products = [
 const services = [
   {
     title: 'Programação teethaligner',
+    service: 'Alinhadores personalizados',
     description:
       '<text>Valor do setup r$ 250,00 <br/> Valor unitário do alinhador r$ 68,00 <br/> Personalização embalagem gratuita <br/> Caixa regular gratuita <br/> Caixa Premium R$ 25,00 <br/> Acréscimo taxa de envio <text/>',
   },
   {
     title: 'Desejo apenas imprimir os alinhadores',
+    service: 'Alinhadores personalizados',
     description: '',
   },
   {
     title: 'Programação OrthoSetup',
+    service: 'Alinhadores personalizados',
     description: '',
+  },
+  {
+    title: 'Programação teethaligner',
+    service: 'Setup',
+    subTitle: 'Valor do setup R$ 250,00',
+  },
+  {
+    title: 'Programação OrthoSetup',
+    service: 'Setup',
+    subTitle: 'Valor do setup R$ 350,00',
   },
 ];
 
@@ -57,6 +70,120 @@ export default function SelectProduct() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const product = products.find(item => item.title === productSelected)!;
     push(`/products${product?.path}`);
+  }
+
+  function showProductSelectedOptions(option: string) {
+    switch (option) {
+      case 'Alinhadores personalizados':
+        return (
+          <>
+            <p>
+              Nos oferecemos a personalização da sua marca vinculada ao seu
+              alinhador, siga o passo a passo de forma intuitiva.
+              <br />
+              <br />
+              Oferecemos 2 serviços para a programação do seu tratamento, a
+              Programação teethAligner com o padrão de qualidade que você já
+              conhece e a programação do tratamento com a OrthoSetup, empresa
+              especializada na programação de tratamentos com alinhadores
+              Ortodonticos.
+            </p>
+
+            <RadioGroup
+              value={serviceSelected}
+              onChange={e => setServiceSelected(e)}
+              className="mt-4"
+            >
+              <RadioGroup.Label className="sr-only">
+                Escolha um serviço
+              </RadioGroup.Label>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {services
+                  .filter(item => item.service === 'Alinhadores personalizados')
+                  .map(service => (
+                    <RadioGroup.Option
+                      key={service.title}
+                      value={service.title}
+                      className={classNames(
+                        serviceSelected === service.title
+                          ? 'ring-2 ring-blue-500'
+                          : '',
+                        'group relative flex items-center justify-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibold uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
+                      )}
+                    >
+                      <RadioGroup.Label as="span">
+                        {service.title}
+                      </RadioGroup.Label>
+                    </RadioGroup.Option>
+                  ))}
+              </div>
+            </RadioGroup>
+            <div className="mt-6">
+              <span className="text-red-600">
+                {
+                  services.find(service => service.title === serviceSelected)
+                    ?.description
+                }
+              </span>
+            </div>
+          </>
+        );
+
+      case 'Setup':
+        return (
+          <>
+            <p>
+              Nos oferecemos a personalização da sua marca vinculada ao seu
+              alinhador, siga o passo a passo de forma intuitiva.
+              <br />
+              <br />
+              Oferecemos 2 serviços para a programação do seu tratamento, a
+              Programação teethAligner com o padrão de qualidade que você já
+              conhece e a programação do tratamento com a OrthoSetup, empresa
+              especializada na programação de tratamentos com alinhadores
+              Ortodonticos.
+            </p>
+
+            <RadioGroup
+              value={serviceSelected}
+              onChange={e => setServiceSelected(e)}
+              className="mt-4"
+            >
+              <RadioGroup.Label className="sr-only">
+                Escolha um serviço
+              </RadioGroup.Label>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {services
+                  .filter(item => item.service === 'Setup')
+                  .map(service => (
+                    <RadioGroup.Option
+                      key={service.title}
+                      value={service.title}
+                      className={classNames(
+                        serviceSelected === service.title
+                          ? 'ring-2 ring-blue-500'
+                          : '',
+                        'group relative flex items-center justify-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibold uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
+                      )}
+                    >
+                      <RadioGroup.Label as="span">
+                        {service.title}
+                        <br />
+                        {service.subTitle && (
+                          <span className="font-medium text-xs text-gray-500">
+                            {service.subTitle}
+                          </span>
+                        )}
+                      </RadioGroup.Label>
+                    </RadioGroup.Option>
+                  ))}
+              </div>
+            </RadioGroup>
+          </>
+        );
+      default:
+        return <div />;
+    }
   }
 
   return (
@@ -102,58 +229,9 @@ export default function SelectProduct() {
               </div>
             </RadioGroup>
 
-            {productSelected === 'Alinhadores personalizados' && (
-              <div className="my-8">
-                <p>
-                  Nos oferecemos a personalização da sua marca vinculada ao seu
-                  alinhador, siga o passo a passo de forma intuitiva.
-                  <br />
-                  <br />
-                  Oferecemos 2 serviços para a programação do seu tratamento, a
-                  Programação teethAligner com o padrão de qualidade que você já
-                  conhece e a programação do tratamento com a OrthoSetup,
-                  empresa especializada na programação de tratamentos com
-                  alinhadores Ortodonticos.
-                </p>
-
-                <RadioGroup
-                  value={serviceSelected}
-                  onChange={e => setServiceSelected(e)}
-                  className="mt-4"
-                >
-                  <RadioGroup.Label className="sr-only">
-                    Escolha um serviço
-                  </RadioGroup.Label>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {services.map(service => (
-                      <RadioGroup.Option
-                        key={service.title}
-                        value={service.title}
-                        className={classNames(
-                          serviceSelected === service.title
-                            ? 'ring-2 ring-blue-500'
-                            : '',
-                          'group relative flex items-center justify-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibold uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
-                        )}
-                      >
-                        <RadioGroup.Label as="span">
-                          {service.title}
-                        </RadioGroup.Label>
-                      </RadioGroup.Option>
-                    ))}
-                  </div>
-                </RadioGroup>
-                <div className="mt-6">
-                  <span className="text-red-600">
-                    {
-                      services.find(
-                        service => service.title === serviceSelected,
-                      )?.description
-                    }
-                  </span>
-                </div>
-              </div>
-            )}
+            <div className="my-8">
+              {showProductSelectedOptions(productSelected)}
+            </div>
 
             <button
               type="submit"

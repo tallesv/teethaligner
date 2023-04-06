@@ -45,7 +45,7 @@ export default function Layout({ children }: LayoutProps) {
       name: 'Setup',
       header: 'Setup',
       href: '/products/setup',
-      current: pathname === '/products/setup',
+      current: pathname.includes('/products/setup'),
       showInHeader: false,
     },
     {

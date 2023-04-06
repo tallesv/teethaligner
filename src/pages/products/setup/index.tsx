@@ -1,23 +1,28 @@
 import * as yup from 'yup';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import Layout from '@/components/Layout';
 import Input from '@/components/Form/Input';
-import Select from '@/components/Form/Select';
 import Checkbox from '@/components/Form/Checkbox';
 import Radio from '@/components/Form/Radio';
 import TextArea from '@/components/Form/Textarea';
 import classNames from '@/utils/bindClassNames';
 import FileInput from '@/components/Form/FileInput';
 import withSSRAuth from '@/utils/withSSRAuth';
+import api from '@/client/api';
+import useAuth from '@/hooks/useAuth';
+import { toast } from 'react-toastify';
+import { useState } from 'react';
+import Spinner from '@/components/Spinner';
+import uploadFile from '@/utils/uploadFile';
+import { RadioGroup } from '@headlessui/react';
+import { useRouter } from 'next/router';
 
 type SetupFormData = {
-  name: string;
-  cep: string;
-  state: string;
-  city: string;
-  street: string;
+  pacient_name: string;
+  pacient_email: string;
+  address: Address;
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];
   movimento_dentario: string;
@@ -26,19 +31,17 @@ type SetupFormData = {
   sobremordida: string;
   linha_media: string;
   informacoes_adicionais: string;
-  escaneamento_do_arco_superior: File;
-  escaneamento_do_arco_inferior: File;
-  escaneamento_do_registro_de_mordida: File;
+  escaneamento_do_arco_superior: FileList;
+  escaneamento_do_arco_inferior: FileList;
+  escaneamento_do_registro_de_mordida: FileList;
   escaneamento_link: string;
   encaminhei_email: boolean;
 };
 
 const setupFormSchema = yup.object().shape({
-  name: yup.string().required('Por favor insira o nome do paciente'),
-  cep: yup.string().required('Por favor insira o cep.'),
-  state: yup.string().required('Por favor selecione o estado.'),
-  city: yup.string().required('Por favor insira a cidade.'),
-  street: yup.string().required('Por favor insira a rua.'),
+  pacient_name: yup.string().required('Por favor insira o nome do paciente'),
+  pacient_email: yup.string(),
+  address: yup.object().required('Por favor escolha um endereço'),
   personalizando_o_planejamento: yup.string(),
   dentes_a_serem_movimentados: yup
     .array()
@@ -80,13 +83,32 @@ const setupFormSchema = yup.object().shape({
 });
 
 export default function Setup() {
-  const { register, handleSubmit, formState, getValues, setValue } =
-    useForm<SetupFormData>({
-      resolver: yupResolver(setupFormSchema),
-      defaultValues: {
-        dentes_a_serem_movimentados: [],
-      },
-    });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [addressSelected, setAddressSelected] = useState<Address>(
+    {} as Address,
+  );
+  const { userLogged } = useAuth();
+  const { push } = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState,
+    getValues,
+    setValue,
+    clearErrors,
+  } = useForm<SetupFormData>({
+    resolver: yupResolver(setupFormSchema),
+    defaultValues: {
+      dentes_a_serem_movimentados: [],
+    },
+  });
+
+  function handleSelectAddress(address: Address) {
+    setAddressSelected(address);
+    setValue('address', address);
+    clearErrors('address');
+  }
 
   function handleSelectCheckBox(value: string) {
     const subOptionsArray = Array.isArray(
@@ -108,12 +130,54 @@ export default function Setup() {
     }
   }
 
-  function handleSetupSubmit(data: SetupFormData) {
-    console.log(data);
+  async function handleSetupSubmit(data: SetupFormData) {
+    try {
+      setIsSubmitting(true);
+      const escaneamentoDoArcoSuperiorUrl = await uploadFile(
+        data.escaneamento_do_arco_superior[0],
+      );
+      const escaneamentoDoArcoInferiorUrl = await uploadFile(
+        data.escaneamento_do_arco_inferior[0],
+      );
+      const escaneamentoDoRegistroDeMordidaUrl = await uploadFile(
+        data.escaneamento_do_registro_de_mordida[0],
+      );
+      await api.post(
+        `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
+        {
+          patient_name: data.pacient_name,
+          patient_email: data.pacient_email,
+          product_name: 'Setup',
+          status: 'Nova',
+          accepted: false,
+          fields: JSON.stringify({
+            personalizando_o_planejamento: data.personalizando_o_planejamento,
+            dentes_a_serem_movimentados: data.dentes_a_serem_movimentados,
+            movimento_dentario: data.movimento_dentario,
+            relacao_de_caninos: data.relacao_de_caninos,
+            relacao_de_molares: data.relacao_de_molares,
+            sobremordida: data.sobremordida,
+            linha_media: data.linha_media,
+            informacoes_adicionais: data.informacoes_adicionais,
+            escaneamento_link: data.escaneamento_link,
+            encaminhei_email: data.encaminhei_email,
+            escaneamento_do_arco_superior: escaneamentoDoArcoSuperiorUrl,
+            escaneamento_do_arco_inferior: escaneamentoDoArcoInferiorUrl,
+            escaneamento_do_registro_de_mordida:
+              escaneamentoDoRegistroDeMordidaUrl,
+          }),
+        },
+      );
+      toast.success('Requisição concluída com sucesso.');
+      push('/');
+    } catch (err) {
+      toast.error(
+        'Não foi possível completar a requisição, porfavor tente novamente.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
-
-  console.log(getValues());
-  // console.log(formState.errors);
 
   return (
     <Layout>
@@ -121,20 +185,71 @@ export default function Setup() {
         <div className="grid grid-cols-6 gap-6">
           <div className="col-span-6 sm:col-span-6">
             <Input
-              label="Nome"
-              {...register('name')}
-              error={!!formState.errors.name}
-              errorMessage={formState.errors.name?.message}
+              label="Nome do paciente"
+              {...register('pacient_name')}
+              error={!!formState.errors.pacient_name}
+              errorMessage={formState.errors.pacient_name?.message}
+            />
+          </div>
+
+          <div className="col-span-6 sm:col-span-6">
+            <Input
+              label="Email do paciente"
+              {...register('pacient_email')}
+              error={!!formState.errors.pacient_email}
+              errorMessage={formState.errors.pacient_email?.message}
             />
           </div>
 
           <div className="col-span-6">
             <div className="my-2 border-t border-gray-200" />
 
-            <h3 className="font-medium">Endereco</h3>
+            <h3 className="font-medium">Endereço</h3>
           </div>
 
-          <div className="col-span-6 sm:col-span-1 md:col-span-1">
+          <RadioGroup
+            value={addressSelected}
+            onChange={address => handleSelectAddress(address)}
+            className="col-span-6"
+          >
+            <RadioGroup.Label className="sr-only">
+              Escolha um serviço
+            </RadioGroup.Label>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+              {userLogged?.addresses.map(address => (
+                <RadioGroup.Option
+                  key={address.id}
+                  value={address}
+                  className={classNames(
+                    addressSelected === address
+                      ? 'ring-2 ring-blue-500'
+                      : 'hover:cursor-pointer',
+                    'col-span-1 group relative flex items-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibol hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
+                  )}
+                >
+                  <RadioGroup.Label
+                    as="span"
+                    className="text-sm font-medium text-gray-800"
+                  >
+                    {`${address.street}, ${address.number}`}
+                    <span className="block my-1 text-xs font-medium text-gray-500">
+                      {`${address.district}, ${address.state}`}
+                      <br />
+                      {address.postal_code}
+                    </span>
+                  </RadioGroup.Label>
+                </RadioGroup.Option>
+              ))}
+            </div>
+
+            {formState.errors.address && (
+              <span className="ml-1 text-sm font-medium text-red-500">
+                {formState.errors.address.message}
+              </span>
+            )}
+          </RadioGroup>
+
+          {/* <div className="col-span-6 sm:col-span-1 md:col-span-1">
             <Input
               label="CEP"
               {...register('cep')}
@@ -157,13 +272,13 @@ export default function Setup() {
           <div className="col-span-6 sm:col-span-3 lg:col-span-3">
             <Input
               label="Cidade"
-              {...register('city')}
-              error={!!formState.errors.city}
-              errorMessage={formState.errors.city?.message}
+              {...register('district')}
+              error={!!formState.errors.district}
+              errorMessage={formState.errors.district?.message}
             />
           </div>
 
-          <div className="col-span-6 sm:col-span-5">
+          <div className="col-span-4 sm:col-span-5">
             <Input
               label="Rua"
               {...register('street')}
@@ -171,6 +286,15 @@ export default function Setup() {
               errorMessage={formState.errors.street?.message}
             />
           </div>
+
+          <div className="col-span-2 sm:col-span-1">
+            <Input
+              label="Número"
+              {...register('number')}
+              error={!!formState.errors.number}
+              errorMessage={formState.errors.number?.message}
+            />
+          </div> */}
 
           <div className="col-span-6">
             <div className="my-2 border-t border-gray-200" />
@@ -477,14 +601,14 @@ export default function Setup() {
           <div className="col-span-6">
             <button
               type="submit"
+              disabled={isSubmitting}
               className={classNames(
-                false
-                  ? 'bg-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500',
+                'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500',
                 'mt-10 flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2',
               )}
             >
-              Prosseguir
+              <Spinner hidden={isSubmitting} />
+              Realizar pedido
             </button>
           </div>
         </div>
