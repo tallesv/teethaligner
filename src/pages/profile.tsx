@@ -1,5 +1,7 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable camelcase */
 import * as yup from 'yup';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import Input from '@/components/Form/Input';
@@ -8,47 +10,102 @@ import Layout from '@/components/Layout';
 import DefaultAvatar from '@/utils/defaultAvatar';
 import api from '@/client/api';
 import withSSRAuth from '@/utils/withSSRAuth';
+import useAuth from '@/hooks/useAuth';
+import Spinner from '@/components/Spinner';
+import { ChangeEvent, useEffect, useState } from 'react';
+import uploadFile from '@/utils/uploadFile';
+import { toast } from 'react-toastify';
+import deleteFile from '@/utils/deleteFile';
 
 type ProfileFormData = {
-  avatar: string;
+  avatar: string | File | null;
   name: string;
-  cep: string;
+  postal_code: string;
   state: string;
-  city: string;
+  district: string;
   street: string;
   number: string;
 };
 
 const profileFormSchema = yup.object().shape({
+  avatar: yup.mixed<File>(),
   name: yup.string().required('Por favor insira um Nome'),
-  cep: yup.string(),
+  postal_code: yup.string(),
   state: yup.string(),
-  city: yup.string(),
+  district: yup.string(),
   street: yup.string(),
   number: yup.string(),
 });
 
 export default function Profile() {
-  const { register, handleSubmit, formState } = useForm<ProfileFormData>({
-    resolver: yupResolver(profileFormSchema),
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string>();
+  const { userLogged, fetchUser } = useAuth();
 
-  async function handleEditProfileSubmit(data: ProfileFormData) {
-    const { avatar, cep, city, name, state, street } = data;
+  const { register, handleSubmit, formState, setValue, reset } =
+    useForm<ProfileFormData>({
+      resolver: yupResolver(profileFormSchema),
+    });
 
-    // const response = await api.put(`/users/${9}`, {
-    //   name,
-    //   addresses: [
-    //     {
-    //       user_id: 9,
-    //       postal_code: cep,
-    //       state,
-    //       city,
-    //       street,
-    //     },
-    //   ],
-    // });
+  function handleUploadAvatar(e: ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return;
+
+    if (e.target.files[0]) {
+      const urlPreview = URL.createObjectURL(e.target.files[0]);
+      setAvatarPreview(urlPreview);
+      setValue('avatar', e.target.files[0]);
+    }
   }
+  console.log(userLogged);
+  async function handleEditProfileSubmit(data: ProfileFormData) {
+    try {
+      setIsSubmitting(true);
+      const { avatar, postal_code, name, state, street, number, district } =
+        data;
+
+      if (avatarPreview && userLogged?.avatar) {
+        await deleteFile(userLogged.avatar);
+      }
+
+      const avatarUrl = !avatarPreview
+        ? avatar
+        : await uploadFile(avatar as File);
+
+      await api.put(`/users/${userLogged?.firebase_id}`, {
+        name,
+        avatar: avatarUrl,
+      });
+
+      if (userLogged && userLogged?.addresses.length > 0) {
+        await api.put(`/addresses/${userLogged?.addresses[0].id}`, {
+          postal_code,
+          state,
+          district,
+          street,
+          number,
+        });
+      } else {
+        await api.post(`/addresses?user_id=${userLogged?.firebase_id}`, {
+          postal_code,
+          state,
+          district,
+          street,
+          number,
+        });
+      }
+
+      toast.success('Dados do perfil alterados com sucesso!');
+      fetchUser();
+    } catch (err) {
+      toast.error('Não foi possível salvar os dados, porfavor tente novamente');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  useEffect(() => {
+    reset({ ...userLogged, ...userLogged?.addresses[0] });
+  }, [reset, userLogged]);
 
   return (
     <Layout>
@@ -64,13 +121,26 @@ export default function Profile() {
                         Foto do usuário
                       </span>
                       <div className="mt-2 flex items-center">
-                        <DefaultAvatar />
-                        <button
-                          type="button"
-                          className="ml-5 rounded-md border border-gray-300 bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50"
-                        >
-                          Alterar
-                        </button>
+                        {userLogged?.avatar ? (
+                          <img
+                            className="h-8 w-8 rounded-full"
+                            src={avatarPreview ?? userLogged.avatar}
+                            alt=""
+                          />
+                        ) : (
+                          <DefaultAvatar />
+                        )}
+
+                        <div className="flex items-center justify-center bg-grey-lighter">
+                          <label className="ml-5 cursor-pointer rounded-md border border-gray-300 bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50">
+                            <span className="">Alterar</span>
+                            <input
+                              type="file"
+                              className="hidden"
+                              onChange={handleUploadAvatar}
+                            />
+                          </label>
+                        </div>
                       </div>
                     </div>
 
@@ -95,10 +165,10 @@ export default function Profile() {
                     </div>
 
                     <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <Input label="Cep" {...register('cep')} />
+                      <Input label="Cep" {...register('postal_code')} />
                     </div>
 
-                    <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+                    <div className="col-span-6 sm:col-span-3 lg:col-span-4">
                       <Select
                         id="test"
                         label="Estado"
@@ -109,15 +179,15 @@ export default function Profile() {
                       />
                     </div>
 
-                    <div className="col-span-6 sm:col-span-6 lg:col-span-2">
-                      <Input label="Cidade" {...register('city')} />
+                    <div className="col-span-6 sm:col-span-6 lg:col-span-3">
+                      <Input label="Cidade" {...register('district')} />
                     </div>
 
-                    <div className="col-span-2 xs:col-span-6 lg:col-span-5">
+                    <div className="col-span-6 sm:col-span-4 lg:col-span-5">
                       <Input label="Rua" {...register('street')} />
                     </div>
 
-                    <div className="col-span-2 xs:col-span-6 lg:col-span-1">
+                    <div className="col-span-6 sm:col-span-2 lg:col-span-1">
                       <Input label="Número" {...register('number')} />
                     </div>
                   </div>
@@ -128,7 +198,8 @@ export default function Profile() {
                     type="submit"
                     className="flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
                   >
-                    Salvar
+                    <Spinner hidden={isSubmitting} />
+                    {isSubmitting ? 'Salvando' : 'Salvar'}
                   </button>
                 </div>
               </div>

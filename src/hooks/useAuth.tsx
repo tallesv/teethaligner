@@ -2,12 +2,23 @@ import api from '@/client/api';
 import { parseCookies } from 'nookies';
 import { create } from 'zustand';
 
+type Address = {
+  id: number;
+  street: string;
+  postal_code: string;
+  number: string;
+  complement: string;
+  state: string;
+  district: string;
+};
+
 type User = {
   name: string;
   email: string;
   user_type: 'Admin' | 'Client';
   firebase_id: string;
   avatar: string | null;
+  addresses: Address[];
 };
 
 interface useAuthProps {
