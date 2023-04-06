@@ -56,7 +56,7 @@ export default function Profile() {
       setValue('avatar', e.target.files[0]);
     }
   }
-  console.log(userLogged);
+
   async function handleEditProfileSubmit(data: ProfileFormData) {
     try {
       setIsSubmitting(true);
