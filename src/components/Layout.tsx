@@ -66,9 +66,9 @@ export default function Layout({ children }: LayoutProps) {
 
   function handleSignOut() {
     signOut(firebaseAuth).then(() => {
-      setUserLogged(null);
       destroyCookie(undefined, 'teethaligner.token');
       destroyCookie(undefined, 'teethaligner.user-firebase-id');
+      setUserLogged(null);
     });
   }
 

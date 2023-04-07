@@ -30,7 +30,7 @@ interface useAuthProps {
 const useAuth = create<useAuthProps>(set => ({
   userLogged: null,
   fetchUser: async () => {
-    const { 'teethaligner.use-firebase-id': userFirebaseId } =
+    const { 'teethaligner.user-firebase-id': userFirebaseId } =
       parseCookies(null);
     if (userFirebaseId) {
       const { data } = await api.get(`/users/${userFirebaseId}`);

@@ -54,7 +54,7 @@ export default function Login() {
         maxAge: 60 * 60 * 24 * 1,
         path: '/',
       });
-      setCookie(undefined, 'teethaligner.use-firebase-id', userFirebaseId, {
+      setCookie(undefined, 'teethaligner.user-firebase-id', userFirebaseId, {
         maxAge: 60 * 60 * 24 * 1,
         path: '/',
       });
