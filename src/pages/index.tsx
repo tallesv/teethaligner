@@ -26,7 +26,7 @@ type orderProps = {
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [requests, setRequests] = useState<Setup[]>([]);
+  const [requests, setRequests] = useState<RequestsFromApi[]>([]);
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
     field: `birthDate`,
@@ -64,17 +64,21 @@ export default function Home() {
     setDataOrder({ field, order });
   }
 
-  // const filteredRequests = reque
-  //   .filter(
-  //     (user: UserProps) =>
-  //       user.firstName.toLowerCase().includes(termSearched.toLowerCase()) ||
-  //       user.lastName.toLowerCase().includes(termSearched.toLowerCase()),
-  //   )
-  //   .sort((a, b) =>
-  //     dataOrder?.field === 'birthDate' && dataOrder.order === `ascending`
-  //       ? new Date(b.birthDate).valueOf() - new Date(a.birthDate).valueOf()
-  //       : new Date(a.birthDate).valueOf() - new Date(b.birthDate).valueOf(),
-  //   );
+  const filteredRequests = requests
+    .filter(
+      (request: RequestsFromApi) =>
+        request.patient_name
+          .toLowerCase()
+          .includes(termSearched.toLowerCase()) ||
+        request.patient_email
+          .toLowerCase()
+          .includes(termSearched.toLowerCase()),
+    )
+    .sort((a, b) =>
+      dataOrder?.field === 'birthDate' && dataOrder.order === `ascending`
+        ? new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()
+        : new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf(),
+    );
 
   if (isLoading) return <Layout>Loading...</Layout>;
 
@@ -163,7 +167,7 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {requests
+              {filteredRequests
                 .slice((currentPage - 1) * 10, 10 * currentPage)
                 .map((request, index) => (
                   <tr
@@ -188,7 +192,7 @@ export default function Home() {
                       {request.status}
                     </td>
                     <td className="px-6 py-4 text-gray-700">
-                      {new Date(request.created_at).toLocaleDateString()}
+                      {new Date(request.created_at).toLocaleDateString('pt-BR')}
                     </td>
                     <td className="px-6 py-4">
                       <Link
@@ -224,7 +228,7 @@ export default function Home() {
 
         <Pagination
           currentPage={currentPage}
-          totalQuantityOfData={requests.length}
+          totalQuantityOfData={filteredRequests.length}
           onPageChange={setCurrentPage}
         />
       </div>
