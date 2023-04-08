@@ -18,6 +18,7 @@ import Spinner from '@/components/Spinner';
 import uploadFile from '@/utils/uploadFile';
 import { RadioGroup } from '@headlessui/react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 type SetupFormData = {
   pacient_name: string;
@@ -178,7 +179,6 @@ export default function Setup() {
       setIsSubmitting(false);
     }
   }
-
   return (
     <Layout>
       <form className="max-w-3xl" onSubmit={handleSubmit(handleSetupSubmit)}>
@@ -207,94 +207,56 @@ export default function Setup() {
             <h3 className="font-medium">Endereço</h3>
           </div>
 
-          <RadioGroup
-            value={addressSelected}
-            onChange={address => handleSelectAddress(address)}
-            className="col-span-6"
-          >
-            <RadioGroup.Label className="sr-only">
-              Escolha um serviço
-            </RadioGroup.Label>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-              {userLogged?.addresses.map(address => (
-                <RadioGroup.Option
-                  key={address.id}
-                  value={address}
-                  className={classNames(
-                    addressSelected === address
-                      ? 'ring-2 ring-blue-500'
-                      : 'hover:cursor-pointer',
-                    'col-span-1 group relative flex items-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibol hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
-                  )}
-                >
-                  <RadioGroup.Label
-                    as="span"
-                    className="text-sm font-medium text-gray-800"
+          {userLogged && userLogged.addresses.length > 0 ? (
+            <RadioGroup
+              value={addressSelected}
+              onChange={address => handleSelectAddress(address)}
+              className="col-span-6"
+            >
+              <RadioGroup.Label className="sr-only">
+                Escolha um endereço
+              </RadioGroup.Label>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                {userLogged?.addresses.map(address => (
+                  <RadioGroup.Option
+                    key={address.id}
+                    value={address}
+                    className={classNames(
+                      addressSelected === address
+                        ? 'ring-2 ring-blue-500'
+                        : 'hover:cursor-pointer',
+                      'col-span-1 group relative flex items-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibol hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
+                    )}
                   >
-                    {`${address.street}, ${address.number}`}
-                    <span className="block my-1 text-xs font-medium text-gray-500">
-                      {`${address.district}, ${address.state}`}
-                      <br />
-                      {address.postal_code}
-                    </span>
-                  </RadioGroup.Label>
-                </RadioGroup.Option>
-              ))}
-            </div>
+                    <RadioGroup.Label
+                      as="span"
+                      className="text-sm font-medium text-gray-800"
+                    >
+                      {`${address.street}, ${address.number}`}
+                      <span className="block my-1 text-xs font-medium text-gray-500">
+                        {`${address.district}, ${address.state}`}
+                        <br />
+                        {address.postal_code}
+                      </span>
+                    </RadioGroup.Label>
+                  </RadioGroup.Option>
+                ))}
+              </div>
 
-            {formState.errors.address && (
-              <span className="ml-1 text-sm font-medium text-red-500">
-                {formState.errors.address.message}
-              </span>
-            )}
-          </RadioGroup>
-
-          {/* <div className="col-span-6 sm:col-span-1 md:col-span-1">
-            <Input
-              label="CEP"
-              {...register('cep')}
-              error={!!formState.errors.cep}
-              errorMessage={formState.errors.cep?.message}
-            />
-          </div>
-
-          <div className="col-span-6 sm:col-span-2">
-            <Select
-              id="test"
-              label="Estado"
-              options={[{ label: 'Rio Grande do Norte', value: 'RN' }]}
-              {...register('state')}
-              error={!!formState.errors.state}
-              errorMessage={formState.errors.state?.message}
-            />
-          </div>
-
-          <div className="col-span-6 sm:col-span-3 lg:col-span-3">
-            <Input
-              label="Cidade"
-              {...register('district')}
-              error={!!formState.errors.district}
-              errorMessage={formState.errors.district?.message}
-            />
-          </div>
-
-          <div className="col-span-4 sm:col-span-5">
-            <Input
-              label="Rua"
-              {...register('street')}
-              error={!!formState.errors.street}
-              errorMessage={formState.errors.street?.message}
-            />
-          </div>
-
-          <div className="col-span-2 sm:col-span-1">
-            <Input
-              label="Número"
-              {...register('number')}
-              error={!!formState.errors.number}
-              errorMessage={formState.errors.number?.message}
-            />
-          </div> */}
+              {formState.errors.address && (
+                <span className="ml-1 text-sm font-medium text-red-500">
+                  {formState.errors.address.message}
+                </span>
+              )}
+            </RadioGroup>
+          ) : (
+            <span className="col-span-6 ml-1 text-sm font-medium text-red-500">
+              Cadastre um endereço no seu{' '}
+              <Link href="/profile" className="underline text-blue-600">
+                perfil.
+              </Link>
+            </span>
+          )}
 
           <div className="col-span-6">
             <div className="my-2 border-t border-gray-200" />
