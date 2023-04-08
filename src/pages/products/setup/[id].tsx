@@ -60,7 +60,9 @@ export default function ShowSetup() {
 
   function handleRequestCorrectionsSubmit({
     corrections,
-  }: RequestCorrectionsFormData) {}
+  }: RequestCorrectionsFormData) {
+    console.log(corrections);
+  }
 
   if (isLoading) return <Layout>Loading...</Layout>;
 

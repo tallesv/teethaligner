@@ -1,5 +1,4 @@
 import classNames from '@/utils/bindClassNames';
-import uploadFile from '@/utils/uploadFile';
 import { ForwardedRef, forwardRef, InputHTMLAttributes } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
