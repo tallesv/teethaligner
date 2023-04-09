@@ -3,6 +3,8 @@
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { EllipsisVerticalIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { Menu, Transition } from '@headlessui/react';
 
 import Input from '@/components/Form/Input';
 import Select from '@/components/Form/Select';
@@ -12,7 +14,7 @@ import api from '@/client/api';
 import withSSRAuth from '@/utils/withSSRAuth';
 import useAuth from '@/hooks/useAuth';
 import Spinner from '@/components/Spinner';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import uploadFile from '@/utils/uploadFile';
 import { toast } from 'react-toastify';
 import deleteFile from '@/utils/deleteFile';
@@ -20,16 +22,11 @@ import deleteFile from '@/utils/deleteFile';
 type ProfileFormData = {
   avatar: string | File | null;
   name: string;
-  postal_code: string;
-  state: string;
-  district: string;
-  street: string;
-  number: string;
 };
 
 const profileFormSchema = yup.object().shape({
   avatar: yup.mixed<File>(),
-  name: yup.string().required('Por favor insira um Nome'),
+  name: yup.string().required('Por favor insira um Nome.'),
   postal_code: yup.string(),
   state: yup.string(),
   district: yup.string(),
@@ -37,15 +34,45 @@ const profileFormSchema = yup.object().shape({
   number: yup.string(),
 });
 
+type AddressFormData = {
+  postal_code: string;
+  state: string;
+  district: string;
+  street: string;
+  number: string;
+};
+
+const addressFormSchema = yup.object().shape({
+  postal_code: yup.string().required('Por favor insira o cep.'),
+  state: yup.string().required('Por favor selecione um estado.'),
+  district: yup.string().required('Por favor insira a cidade.'),
+  street: yup.string().required('Por favor insira a rua.'),
+  number: yup.string().required('Por favor insira o número da rua.'),
+});
+
 export default function Profile() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string>();
   const { userLogged, fetchUser } = useAuth();
 
-  const { register, handleSubmit, formState, setValue, reset } =
-    useForm<ProfileFormData>({
-      resolver: yupResolver(profileFormSchema),
-    });
+  const {
+    register: profileRegister,
+    handleSubmit: profileHandleSubmit,
+    formState: profileFormState,
+    setValue: profileSetValue,
+    reset: profileReset,
+  } = useForm<ProfileFormData>({
+    resolver: yupResolver(profileFormSchema),
+  });
+
+  const {
+    register: addressRegister,
+    handleSubmit: addressHandleSubmit,
+    formState: addressFormState,
+    reset: addressReset,
+  } = useForm<AddressFormData>({
+    resolver: yupResolver(addressFormSchema),
+  });
 
   function handleUploadAvatar(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return;
@@ -53,15 +80,14 @@ export default function Profile() {
     if (e.target.files[0]) {
       const urlPreview = URL.createObjectURL(e.target.files[0]);
       setAvatarPreview(urlPreview);
-      setValue('avatar', e.target.files[0]);
+      profileSetValue('avatar', e.target.files[0]);
     }
   }
 
   async function handleEditProfileSubmit(data: ProfileFormData) {
     try {
       setIsSubmitting(true);
-      const { avatar, postal_code, name, state, street, number, district } =
-        data;
+      const { avatar, name } = data;
 
       if (avatarPreview && userLogged?.avatar) {
         await deleteFile(userLogged.avatar);
@@ -76,43 +102,60 @@ export default function Profile() {
         avatar: avatarUrl,
       });
 
-      if (userLogged && userLogged?.addresses.length > 0) {
-        await api.put(`/addresses/${userLogged?.addresses[0].id}`, {
-          postal_code,
-          state,
-          district,
-          street,
-          number,
-        });
-      } else {
-        await api.post(`/addresses?user_id=${userLogged?.firebase_id}`, {
-          postal_code,
-          state,
-          district,
-          street,
-          number,
-        });
-      }
-
       toast.success('Dados do perfil alterados com sucesso!');
       fetchUser();
     } catch (err) {
-      toast.error('Não foi possível salvar os dados, porfavor tente novamente');
+      toast.error(
+        'Não foi possível salvar os dados, porfavor tente novamente.',
+      );
     } finally {
       setIsSubmitting(false);
     }
   }
 
+  async function handleAddAddressSubmit(data: AddressFormData) {
+    try {
+      setIsSubmitting(true);
+
+      await api.post(`/addresses?user_id=${userLogged?.firebase_id}`, {
+        ...data,
+      });
+
+      toast.success('Endereço adicionado com sucesso!');
+      fetchUser();
+      addressReset();
+    } catch (err) {
+      toast.error(
+        'Não foi possível adicionar o endereço, por favor tente novamente.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleDeleteAddress(id: number) {
+    try {
+      await api.delete(`/addresses/${id}`);
+
+      toast.success('Endereço removido!');
+      fetchUser();
+    } catch (err) {
+      toast.error(
+        'Não foi possível remover o endereço, por favor tente novamente.',
+      );
+    }
+  }
+
   useEffect(() => {
-    reset({ ...userLogged, ...userLogged?.addresses[0] });
-  }, [reset, userLogged]);
+    profileReset({ ...userLogged });
+  }, [profileReset, userLogged]);
 
   return (
     <Layout>
-      <div>
-        <div className="md:grid md:grid-cols-3 md:gap-6">
+      <div className="grid sm:grid-cols-7 sm:space-x-10">
+        <div className="col-span-3">
           <div className="mt-5 md:col-span-2 md:mt-0">
-            <form onSubmit={handleSubmit(handleEditProfileSubmit)}>
+            <form onSubmit={profileHandleSubmit(handleEditProfileSubmit)}>
               <div className="shadow sm:overflow-hidden sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="flex flex-col sm:flex-row justify-between items-center space-y-7">
@@ -158,37 +201,10 @@ export default function Profile() {
                     <div className="col-span-6">
                       <Input
                         label="Nome"
-                        {...register('name')}
-                        error={!!formState.errors.name}
-                        errorMessage={formState.errors.name?.message}
+                        {...profileRegister('name')}
+                        error={!!profileFormState.errors.name}
+                        errorMessage={profileFormState.errors.name?.message}
                       />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <Input label="Cep" {...register('postal_code')} />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-3 lg:col-span-4">
-                      <Select
-                        id="test"
-                        label="Estado"
-                        options={[
-                          { label: 'Rio Grande do Norte', value: 'RN' },
-                        ]}
-                        {...register('state')}
-                      />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-6 lg:col-span-3">
-                      <Input label="Cidade" {...register('district')} />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4 lg:col-span-5">
-                      <Input label="Rua" {...register('street')} />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-2 lg:col-span-1">
-                      <Input label="Número" {...register('number')} />
                     </div>
                   </div>
                 </div>
@@ -206,170 +222,148 @@ export default function Profile() {
             </form>
           </div>
         </div>
-      </div>
 
-      {/* <div className="mt-10 sm:mt-0">
-        <div className="md:grid md:grid-cols-3 md:gap-6">
-          <div className="md:col-span-1">
-            <div className="px-4 sm:px-0">
-              <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Personal Information
-              </h3>
-              <p className="mt-1 text-sm text-gray-600">
-                Use a permanent address where you can receive mail.
-              </p>
-            </div>
-          </div>
+        <div className="col-span-4">
           <div className="mt-5 md:col-span-2 md:mt-0">
-            <form action="#" method="POST">
-              <div className="overflow-hidden shadow sm:rounded-md">
-                <div className="bg-white px-4 py-5 sm:p-6">
+            <form onSubmit={addressHandleSubmit(handleAddAddressSubmit)}>
+              <div className="shadow sm:overflow-hidden sm:rounded-md">
+                <div className="px-4 py-5 sm:p-6">
+                  <h3 className="mb-4 font-medium">Endereços</h3>
+
+                  <div className="flex flex-col mb-10 space-y-4">
+                    {userLogged?.addresses.map(address => (
+                      <div
+                        key={address.id}
+                        className="group relative flex items-center rounded-md border py-2 px-4 text-gray-800 sm:text-sm text-xs font-semibol hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-4"
+                      >
+                        <div className="flex justify-between w-full">
+                          <span className="text-sm font-medium text-gray-800">
+                            {`${address.street}, ${address.number}`}
+                            <span className="block my-1 text-xs font-medium text-gray-500">
+                              {`${address.district}, ${address.state}`}
+                              <br />
+                              {address.postal_code}
+                            </span>
+                          </span>
+                          <Menu
+                            as="div"
+                            className="relative inline-block text-left"
+                          >
+                            <Menu.Button>
+                              <EllipsisVerticalIcon className="h-5" />
+                            </Menu.Button>
+
+                            <Transition
+                              as={Fragment}
+                              enter="transition ease-out duration-100"
+                              enterFrom="transform opacity-0 scale-95"
+                              enterTo="transform opacity-100 scale-100"
+                              leave="transition ease-in duration-75"
+                              leaveFrom="transform opacity-100 scale-100"
+                              leaveTo="transform opacity-0 scale-95"
+                            >
+                              <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <div className="px-1 py-1 ">
+                                  <Menu.Item>
+                                    {({ active }) => (
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleDeleteAddress(address.id)
+                                        }
+                                        className={`${
+                                          active
+                                            ? 'bg-gray-100'
+                                            : 'text-gray-900'
+                                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                      >
+                                        <TrashIcon
+                                          className="mr-2 h-5 w-5 text-red-500"
+                                          aria-hidden="true"
+                                        />
+                                        Deletar
+                                      </button>
+                                    )}
+                                  </Menu.Item>
+                                </div>
+                              </Menu.Items>
+                            </Transition>
+                          </Menu>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
                   <div className="grid grid-cols-6 gap-6">
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="first-name"
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        First name
-                      </label>
-                      <input
-                        type="text"
-                        name="first-name"
-                        id="first-name"
-                        autoComplete="given-name"
-                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="last-name"
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Last name
-                      </label>
-                      <input
-                        type="text"
-                        name="last-name"
-                        id="last-name"
-                        autoComplete="family-name"
-                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="email-address"
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Email address
-                      </label>
-                      <input
-                        type="text"
-                        name="email-address"
-                        id="email-address"
-                        autoComplete="email"
-                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="country"
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Country
-                      </label>
-                      <select
-                        id="country"
-                        name="country"
-                        autoComplete="country-name"
-                        className="mt-2 block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      >
-                        <option>United States</option>
-                        <option>Canada</option>
-                        <option>Mexico</option>
-                      </select>
-                    </div>
-
-                    <div className="col-span-6">
-                      <label
-                        htmlFor="street-address"
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Street address
-                      </label>
-                      <input
-                        type="text"
-                        name="street-address"
-                        id="street-address"
-                        autoComplete="street-address"
-                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-6 lg:col-span-2">
-                      <label
-                        htmlFor="city"
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        City
-                      </label>
-                      <input
-                        type="text"
-                        name="city"
-                        id="city"
-                        autoComplete="address-level2"
-                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-
                     <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <label
-                        htmlFor="region"
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        State / Province
-                      </label>
-                      <input
-                        type="text"
-                        name="region"
-                        id="region"
-                        autoComplete="address-level1"
-                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      <Input
+                        label="Cep"
+                        {...addressRegister('postal_code')}
+                        error={!!addressFormState.errors.postal_code}
+                        errorMessage={
+                          addressFormState.errors.postal_code?.message
+                        }
                       />
                     </div>
 
-                    <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <label
-                        htmlFor="postal-code"
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        ZIP / Postal code
-                      </label>
-                      <input
-                        type="text"
-                        name="postal-code"
-                        id="postal-code"
-                        autoComplete="postal-code"
-                        className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    <div className="col-span-6 sm:col-span-3 lg:col-span-4">
+                      <Select
+                        id="test"
+                        label="Estado"
+                        options={[
+                          { label: 'Rio Grande do Norte', value: 'RN' },
+                        ]}
+                        {...addressRegister('state')}
+                        error={!!addressFormState.errors.state}
+                        errorMessage={addressFormState.errors.state?.message}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-6 lg:col-span-6">
+                      <Input
+                        label="Cidade"
+                        {...addressRegister('district')}
+                        error={!!addressFormState.errors.district}
+                        errorMessage={addressFormState.errors.district?.message}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-4 lg:col-span-4">
+                      <Input
+                        label="Rua"
+                        {...addressRegister('street')}
+                        error={!!addressFormState.errors.street}
+                        errorMessage={addressFormState.errors.street?.message}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-2 lg:col-span-2">
+                      <Input
+                        label="Número"
+                        {...addressRegister('number')}
+                        error={!!addressFormState.errors.number}
+                        errorMessage={addressFormState.errors.number?.message}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+
+                <div className="flex justify-center bg-gray-50 px-4 py-3 sm:px-6">
                   <button
                     type="submit"
-                    className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                    className="flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
                   >
-                    Save
+                    <Spinner hidden={isSubmitting} />
+                    {isSubmitting
+                      ? 'Adicionando endereço'
+                      : 'Adicionar endereço'}
                   </button>
                 </div>
               </div>
             </form>
           </div>
         </div>
-      </div> */}
+      </div>
     </Layout>
   );
 }
