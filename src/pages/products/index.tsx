@@ -10,14 +10,14 @@ const products = [
     subTitle: 'O Alinhador com sua marca',
     services: [
       {
-        title: 'Programação teethaligner',
+        title: 'Programação TeethAligner',
         path: '/programacao-teethaligner',
         info: [
-          'Valor do setup R$ 250,00',
-          'Valor unitário do alinhador R$ 68,00',
-          'Personalização embalagem gratuita',
-          'Caixa regular gratuita',
-          'Caixa Premium R$ 25,00',
+          'Valor do setup: R$ 250,00',
+          'Valor unitário do alinhador: R$ 68,00',
+          'Personalização da embalagem: Gratuita',
+          'Caixa Regular: Gratuita',
+          'Caixa Premium: R$ 25,00',
           'Acréscimo taxa de envio',
         ],
       },
@@ -25,10 +25,10 @@ const products = [
         title: 'Desejo apenas imprimir os alinhadores',
         path: '/imprimir-alinhadores',
         info: [
-          'Valor unitário do alinhador R$ 68,00',
-          'Personalização embalagem gratuita ',
-          'Caixa regular gratuita ',
-          'Caixa Premium R$ 25,00',
+          'Valor unitário do alinhador: R$ 68,00',
+          'Personalização da embalagem: Gratuita ',
+          'Caixa Regular: Gratuita ',
+          'Caixa Premium: R$ 25,00',
           'Acréscimo taxa de envio',
         ],
       },
@@ -36,11 +36,11 @@ const products = [
         title: 'Programação OrthoSetup',
         path: '',
         info: [
-          'Valor do setup R$ 350,00',
-          'Valor unitário do alinhador R$ 68,00',
-          'Personalização embalagem gratuita ',
-          'Caixa regular gratuita',
-          'Caixa Premium R$ 25,00',
+          'Valor do setup: R$ 350,00',
+          'Valor unitário do alinhador: R$ 68,00',
+          'Personalização da embalagem: Gratuita ',
+          'Caixa Regular: Gratuita',
+          'Caixa Premium: R$ 25,00',
           'Acréscimo taxa de envio',
         ],
       },
@@ -51,14 +51,14 @@ const products = [
     title: 'Setup',
     services: [
       {
-        title: 'Programação teethaligner',
-        subTitle: 'Valor do setup R$ 250,00',
+        title: 'Programação TeethAligner',
+        subTitle: 'Valor do setup: R$ 250,00',
         path: '',
         info: [],
       },
       {
-        title: 'Programação OrthoSetup',
-        subTitle: 'Valor do setup R$ 350,00',
+        title: 'Programação OrtoSetup',
+        subTitle: 'Valor do setup: R$ 350,00',
         path: '',
         info: [],
       },
@@ -66,11 +66,11 @@ const products = [
     path: '/setup',
   },
   {
-    title: 'Moldagem de transferencia virtual',
+    title: 'Moldagem de transferência virtual',
     services: [],
     info: [
-      'Impressão moldagem de transferencia virtual R$ 45,00',
-      'Impressão moledo R$ 40,00 ( em casos de impressão de ambos os arcos)',
+      'Impressão da moldagem de transferência virtual: R$ 45,00',
+      'Impressão modelo: R$ 40,00 (em casos de impressão de ambos os arcos)',
       'Acréscimo taxa de envio',
     ],
     path: '',
@@ -78,7 +78,7 @@ const products = [
   {
     title: 'Modelos/guias cirúrgicos',
     services: [],
-    info: ['Impressão moledo/guia R$ 40,00', 'Acréscimo taxa de envio'],
+    info: ['Impressão modelo/guia: R$ 40,00', 'Acréscimo taxa de envio'],
     path: '',
   },
 ];
@@ -178,15 +178,15 @@ export default function SelectProduct() {
           <>
             <div className="mx-2">
               <p>
-                Nos oferecemos a personalização da sua marca vinculada ao seu
+                Nós oferecemos a personalização da sua marca vinculada ao seu
                 alinhador, siga o passo a passo de forma intuitiva.
                 <br />
                 <br />
-                Oferecemos 2 serviços para a programação do seu tratamento, a
-                Programação teethAligner com o padrão de qualidade que você já
-                conhece e a programação do tratamento com a OrthoSetup, empresa
-                especializada na programação de tratamentos com alinhadores
-                Ortodonticos.
+                Oferecemos 2 serviços para a programação do seu tratamento:
+                <br />A programação TeethAligner com o padrão de qualidade que
+                você já conhece e a programação do tratamento com a OrtoSetup,
+                empresa especializada na programação de tratamentos com
+                alinhadores Ortodônticos.
               </p>
             </div>
             <RadioGroup
@@ -225,15 +225,15 @@ export default function SelectProduct() {
         return (
           <>
             <p>
-              Nos oferecemos a personalização da sua marca vinculada ao seu
+              Nós oferecemos a personalização da sua marca vinculada ao seu
               alinhador, siga o passo a passo de forma intuitiva.
               <br />
               <br />
-              Oferecemos 2 serviços para a programação do seu tratamento, a
-              Programação teethAligner com o padrão de qualidade que você já
-              conhece e a programação do tratamento com a OrthoSetup, empresa
-              especializada na programação de tratamentos com alinhadores
-              Ortodonticos.
+              Oferecemos 2 serviços para a programação do seu tratamento:
+              <br />A programação TeethAligner com o padrão de qualidade que
+              você já conhece e a programação do tratamento com a OrtoSetup,
+              empresa especializada na programação de tratamentos com
+              alinhadores Ortodônticos.
             </p>
 
             <RadioGroup

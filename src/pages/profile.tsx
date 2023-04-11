@@ -32,6 +32,7 @@ const profileFormSchema = yup.object().shape({
   district: yup.string(),
   street: yup.string(),
   number: yup.string(),
+  complement: yup.string(),
 });
 
 type AddressFormData = {
@@ -40,6 +41,7 @@ type AddressFormData = {
   district: string;
   street: string;
   number: string;
+  complement: string;
 };
 
 const addressFormSchema = yup.object().shape({
@@ -48,6 +50,7 @@ const addressFormSchema = yup.object().shape({
   district: yup.string().required('Por favor insira a cidade.'),
   street: yup.string().required('Por favor insira a rua.'),
   number: yup.string().required('Por favor insira o número da rua.'),
+  complement: yup.string().required('Por favor insira o complemento.'),
 });
 
 export default function Profile() {
@@ -328,7 +331,7 @@ export default function Profile() {
                       />
                     </div>
 
-                    <div className="col-span-6 sm:col-span-4 lg:col-span-4">
+                    <div className="col-span-6 sm:col-span-4 lg:col-span-5">
                       <Input
                         label="Rua"
                         {...addressRegister('street')}
@@ -337,12 +340,23 @@ export default function Profile() {
                       />
                     </div>
 
-                    <div className="col-span-6 sm:col-span-2 lg:col-span-2">
+                    <div className="col-span-6 sm:col-span-2 lg:col-span-1">
                       <Input
                         label="Número"
                         {...addressRegister('number')}
                         error={!!addressFormState.errors.number}
                         errorMessage={addressFormState.errors.number?.message}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-6 lg:col-span-6">
+                      <Input
+                        label="Complemento"
+                        {...addressRegister('complement')}
+                        error={!!addressFormState.errors.complement}
+                        errorMessage={
+                          addressFormState.errors.complement?.message
+                        }
                       />
                     </div>
                   </div>
