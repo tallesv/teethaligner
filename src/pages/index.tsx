@@ -88,6 +88,8 @@ export default function Home() {
         return `/products/alinhadores/programacao-teethaligner/${request.id}`;
       case 'Alinhadores - Apenas imprimir':
         return `/products/alinhadores/apenas-imprimir/${request.id}`;
+      case 'Moldagem de Transferência Virtual':
+        return `/products/transferencia-virtual/${request.id}`;
       default:
         return '';
     }

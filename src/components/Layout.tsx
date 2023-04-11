@@ -49,8 +49,8 @@ export default function Layout({ children }: LayoutProps) {
       showInHeader: false,
     },
     {
-      name: 'Programação teethaligner',
-      header: 'Alinhadores - Programação teethaligner',
+      name: 'Programação TeethAligner',
+      header: 'Alinhadores - Programação TeethAligner',
       href: '/products/alinhadores/programacao-teethaligner',
       current: pathname.includes(
         '/products/alinhadores/programacao-teethaligner',
@@ -58,10 +58,17 @@ export default function Layout({ children }: LayoutProps) {
       showInHeader: false,
     },
     {
-      name: 'Programação teethaligner',
-      header: 'Alinhadores - Apenas imprimir',
+      name: 'Desejo apenas imprimir os alinhadores',
+      header: 'Alinhadores - Apenas Imprimir',
       href: '/products/alinhadores/apenas-imprimir',
       current: pathname.includes('/products/alinhadores/apenas-imprimir'),
+      showInHeader: false,
+    },
+    {
+      name: 'Moldagem de Transferência Virtual',
+      header: 'Moldagem de Transferência Virtual',
+      href: '/products/transferencia-virtual',
+      current: pathname.includes('/products/transferencia-virtual'),
       showInHeader: false,
     },
     {

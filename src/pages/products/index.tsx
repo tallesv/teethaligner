@@ -73,7 +73,7 @@ const products = [
       'Impressão modelo: R$ 40,00 (em casos de impressão de ambos os arcos)',
       'Acréscimo taxa de envio',
     ],
-    path: '',
+    path: '/transferencia-virtual',
   },
   {
     title: 'Modelos/guias cirúrgicos',
@@ -150,9 +150,9 @@ export default function SelectProduct() {
     event.preventDefault();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const product = products.find(item => item.title === productSelected)!;
-    const servicePath = product.services.find(
-      service => service.title === serviceSelected,
-    )?.path;
+    const servicePath =
+      product.services.find(service => service.title === serviceSelected)
+        ?.path ?? '';
     push(`/products${product?.path}${servicePath}`);
   }
 
