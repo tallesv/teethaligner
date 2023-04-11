@@ -20,7 +20,7 @@ import { RadioGroup } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-type ProgramacaoTeethalignerFormData = {
+type ProgramacaoTeethalignerApenasImprimirFormData = {
   pacient_name: string;
   pacient_email: string;
   address: Address;
@@ -35,7 +35,7 @@ type ProgramacaoTeethalignerFormData = {
   caixa: 'Padrão' | 'Premium';
 };
 
-const programacaoTeethalignerFormSchema = yup.object().shape({
+const programacaoTeethalignerApenasImprimirFormSchema = yup.object().shape({
   pacient_name: yup.string().required('Por favor insira o nome do paciente'),
   pacient_email: yup.string(),
   address: yup.object().required('Por favor escolha um endereço'),
@@ -93,8 +93,8 @@ export default function AlinhadoresApenasImprimir() {
   const { push } = useRouter();
 
   const { register, handleSubmit, formState, setValue, clearErrors } =
-    useForm<ProgramacaoTeethalignerFormData>({
-      resolver: yupResolver(programacaoTeethalignerFormSchema),
+    useForm<ProgramacaoTeethalignerApenasImprimirFormData>({
+      resolver: yupResolver(programacaoTeethalignerApenasImprimirFormSchema),
     });
 
   function handleSelectAddress(address: Address) {
@@ -104,7 +104,7 @@ export default function AlinhadoresApenasImprimir() {
   }
 
   async function handleProgramacaoTeethalignerSubmit(
-    data: ProgramacaoTeethalignerFormData,
+    data: ProgramacaoTeethalignerApenasImprimirFormData,
   ) {
     try {
       setIsSubmitting(true);
