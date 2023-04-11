@@ -86,6 +86,8 @@ export default function Home() {
         return `/products/setup/${request.id}`;
       case 'Alinhadores - Programação teethaligner':
         return `/products/alinhadores/programacao-teethaligner/${request.id}`;
+      case 'Alinhadores - Apenas imprimir':
+        return `/products/alinhadores/apenas-imprimir/${request.id}`;
       default:
         return '';
     }

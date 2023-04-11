@@ -23,7 +23,7 @@ const products = [
       },
       {
         title: 'Desejo apenas imprimir os alinhadores',
-        path: '/imprimir-alinhadores',
+        path: '/apenas-imprimir',
         info: [
           'Valor unitário do alinhador: R$ 68,00',
           'Personalização da embalagem: Gratuita ',

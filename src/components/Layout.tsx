@@ -58,6 +58,13 @@ export default function Layout({ children }: LayoutProps) {
       showInHeader: false,
     },
     {
+      name: 'Programação teethaligner',
+      header: 'Alinhadores - Apenas imprimir',
+      href: '/products/alinhadores/apenas-imprimir',
+      current: pathname.includes('/products/alinhadores/apenas-imprimir'),
+      showInHeader: false,
+    },
+    {
       name: 'Usuários',
       header: 'Gerenciamento de usuários',
       href: '/users',
