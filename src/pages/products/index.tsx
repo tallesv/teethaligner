@@ -85,7 +85,7 @@ const products = [
 
 const services = [
   {
-    title: 'Programação teethaligner',
+    title: 'Programação TeethAligner',
     product: 'Alinhadores personalizados',
     info: [
       'Valor do setup R$ 250,00',
@@ -120,7 +120,7 @@ const services = [
     ],
   },
   {
-    title: 'Programação teethaligner',
+    title: 'Programação TeethAligner',
     product: 'Setup',
     subTitle: 'Valor do setup R$ 250,00',
   },
