@@ -90,6 +90,8 @@ export default function Home() {
         return `/products/alinhadores/apenas-imprimir/${request.id}`;
       case 'Moldagem de Transferência Virtual':
         return `/products/transferencia-virtual/${request.id}`;
+      case 'Modelos/Guias Cirúrgicos':
+        return `/products/guias-cirurgicos/${request.id}`;
       default:
         return '';
     }

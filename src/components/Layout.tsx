@@ -72,6 +72,13 @@ export default function Layout({ children }: LayoutProps) {
       showInHeader: false,
     },
     {
+      name: 'Modelos/Guias Cirúrgicos',
+      header: 'Modelos/Guias Cirúrgicos',
+      href: '/products/guias-cirurgicos',
+      current: pathname.includes('/products/guias-cirurgicos'),
+      showInHeader: false,
+    },
+    {
       name: 'Usuários',
       header: 'Gerenciamento de usuários',
       href: '/users',

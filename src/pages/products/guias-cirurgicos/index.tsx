@@ -18,11 +18,10 @@ import { RadioGroup } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-type TransferenciaVirtualFormData = {
+type GuiasCirurgicoFormData = {
   pacient_name: string;
   pacient_email: string;
   address: Address;
-  dentes_a_serem_preparados: string[];
   escaneamento_do_arco_superior: FileList;
   escaneamento_do_arco_inferior: FileList;
   escaneamento_do_registro_de_mordida: FileList;
@@ -30,14 +29,10 @@ type TransferenciaVirtualFormData = {
   encaminhei_email: boolean;
 };
 
-const transferenciaVirtualFormSchema = yup.object().shape({
+const guiasCirurgicoFormSchema = yup.object().shape({
   pacient_name: yup.string().required('Por favor insira o nome do paciente'),
   pacient_email: yup.string(),
   address: yup.object().required('Por favor escolha um endereço'),
-  dentes_a_serem_preparados: yup
-    .array()
-    .of(yup.string())
-    .min(1, 'Por favor selecione os dentes a serem movimentados.'),
   escaneamento_do_arco_superior: yup
     .mixed<FileList>()
     .test(
@@ -67,7 +62,7 @@ const transferenciaVirtualFormSchema = yup.object().shape({
   encaminhei_email: yup.boolean(),
 });
 
-export default function TransferenciaVirtual() {
+export default function GuiaCirurgico() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressSelected, setAddressSelected] = useState<Address>(
     {} as Address,
@@ -76,8 +71,8 @@ export default function TransferenciaVirtual() {
   const { push } = useRouter();
 
   const { register, handleSubmit, formState, setValue, clearErrors } =
-    useForm<TransferenciaVirtualFormData>({
-      resolver: yupResolver(transferenciaVirtualFormSchema),
+    useForm<GuiasCirurgicoFormData>({
+      resolver: yupResolver(guiasCirurgicoFormSchema),
     });
 
   function handleSelectAddress(address: Address) {
@@ -87,7 +82,7 @@ export default function TransferenciaVirtual() {
   }
 
   async function handleTransferenciaVirtualSubmit(
-    data: TransferenciaVirtualFormData,
+    data: GuiasCirurgicoFormData,
   ) {
     try {
       setIsSubmitting(true);
@@ -105,11 +100,10 @@ export default function TransferenciaVirtual() {
         {
           patient_name: data.pacient_name,
           patient_email: data.pacient_email,
-          product_name: 'Moldagem de Transferência Virtual',
+          product_name: 'Modelos/Guias Cirúrgicos',
           status: 'Nova',
           accepted: false,
           fields: JSON.stringify({
-            dentes_a_serem_preparados: data.dentes_a_serem_preparados,
             escaneamento_link: data.escaneamento_link,
             encaminhei_email: data.encaminhei_email,
             escaneamento_do_arco_superior: escaneamentoDoArcoSuperiorUrl,
@@ -213,65 +207,6 @@ export default function TransferenciaVirtual() {
 
           <div className="col-span-6">
             <div className="my-2 border-t border-gray-200" />
-          </div>
-
-          <div className="col-span-6">
-            <span className="block mb-2 text-sm font-medium text-gray-600">
-              Informe quais dentes devem ser preparados para a moldagem de
-              transferência virtual:
-            </span>
-
-            <img src="/images/teeths.png" alt="teeths" />
-            <div className="flex flex-col sm:flex-row sm:space-x-2">
-              <div className="flex flex-row items-center space-x-3.5 sm:space-x-4">
-                {['18', '17', '16', '15', '14', '13', '12', '11'].map(item => (
-                  <Checkbox
-                    key={item}
-                    id={item}
-                    label={item}
-                    {...register('dentes_a_serem_preparados')}
-                  />
-                ))}
-              </div>
-              <div className="flex flex-row items-center space-x-3 sm:space-x-3.5">
-                {['21', '22', '23', '24', '25', '26', '27', '28'].map(item => (
-                  <Checkbox
-                    key={item}
-                    id={item}
-                    label={item}
-                    {...register('dentes_a_serem_preparados')}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row sm:space-x-1">
-              <div className="flex flex-row items-center space-x-3 sm:space-x-3.5">
-                {['48', '47', '46', '45', '44', '43', '42', '41'].map(item => (
-                  <Checkbox
-                    key={item}
-                    id={item}
-                    label={item}
-                    {...register('dentes_a_serem_preparados')}
-                  />
-                ))}
-              </div>
-              <div className="flex flex-row items-center space-x-3 sm:space-x-3.5">
-                {['31', '32', '33', '34', '35', '36', '37', '38'].map(item => (
-                  <Checkbox
-                    key={item}
-                    id={item}
-                    label={item}
-                    {...register('dentes_a_serem_preparados')}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {formState.errors.dentes_a_serem_preparados && (
-              <span className="ml-1 text-sm font-medium text-red-500">
-                {formState.errors.dentes_a_serem_preparados.message}
-              </span>
-            )}
           </div>
 
           <div className="col-span-6">
