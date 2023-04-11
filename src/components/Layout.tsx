@@ -49,6 +49,15 @@ export default function Layout({ children }: LayoutProps) {
       showInHeader: false,
     },
     {
+      name: 'Programação teethaligner',
+      header: 'Alinhadores - Programação teethaligner',
+      href: '/products/alinhadores/programacao-teethaligner',
+      current: pathname.includes(
+        '/products/alinhadores/programacao-teethaligner',
+      ),
+      showInHeader: false,
+    },
+    {
       name: 'Usuários',
       header: 'Gerenciamento de usuários',
       href: '/users',

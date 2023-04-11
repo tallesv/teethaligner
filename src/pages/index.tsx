@@ -80,6 +80,17 @@ export default function Home() {
         : new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf(),
     );
 
+  function getProductUrl(request: RequestsFromApi) {
+    switch (request.product_name) {
+      case 'Setup':
+        return `/products/setup/${request.id}`;
+      case 'Alinhadores - Programação teethaligner':
+        return `/products/alinhadores/programacao-teethaligner/${request.id}`;
+      default:
+        return '';
+    }
+  }
+
   if (isLoading) return <Layout>Loading...</Layout>;
 
   if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
@@ -197,11 +208,11 @@ export default function Home() {
                     <td className="px-6 py-4">
                       <Link
                         key={request.id}
-                        href={`/products/setup/${request.id}`}
+                        href={getProductUrl(request)}
                         legacyBehavior
                       >
                         <a
-                          href={`/products/setup/${request.id}`}
+                          href={getProductUrl(request)}
                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                         >
                           Visualizar

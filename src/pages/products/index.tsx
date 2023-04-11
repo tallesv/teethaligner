@@ -11,6 +11,7 @@ const products = [
     services: [
       {
         title: 'Programação teethaligner',
+        path: '/programacao-teethaligner',
         info: [
           'Valor do setup R$ 250,00',
           'Valor unitário do alinhador R$ 68,00',
@@ -22,6 +23,7 @@ const products = [
       },
       {
         title: 'Desejo apenas imprimir os alinhadores',
+        path: '/imprimir-alinhadores',
         info: [
           'Valor unitário do alinhador R$ 68,00',
           'Personalização embalagem gratuita ',
@@ -32,6 +34,7 @@ const products = [
       },
       {
         title: 'Programação OrthoSetup',
+        path: '',
         info: [
           'Valor do setup R$ 350,00',
           'Valor unitário do alinhador R$ 68,00',
@@ -42,6 +45,7 @@ const products = [
         ],
       },
     ],
+    path: '/alinhadores',
   },
   {
     title: 'Setup',
@@ -49,11 +53,13 @@ const products = [
       {
         title: 'Programação teethaligner',
         subTitle: 'Valor do setup R$ 250,00',
+        path: '',
         info: [],
       },
       {
         title: 'Programação OrthoSetup',
         subTitle: 'Valor do setup R$ 350,00',
+        path: '',
         info: [],
       },
     ],
@@ -67,11 +73,13 @@ const products = [
       'Impressão moledo R$ 40,00 ( em casos de impressão de ambos os arcos)',
       'Acréscimo taxa de envio',
     ],
+    path: '',
   },
   {
     title: 'Modelos/guias cirúrgicos',
     services: [],
     info: ['Impressão moledo/guia R$ 40,00', 'Acréscimo taxa de envio'],
+    path: '',
   },
 ];
 
@@ -142,7 +150,10 @@ export default function SelectProduct() {
     event.preventDefault();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const product = products.find(item => item.title === productSelected)!;
-    push(`/products${product?.path}`);
+    const servicePath = product.services.find(
+      service => service.title === serviceSelected,
+    )?.path;
+    push(`/products${product?.path}${servicePath}`);
   }
 
   let serviceInfos;
