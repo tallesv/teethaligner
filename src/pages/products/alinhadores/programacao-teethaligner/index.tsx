@@ -661,7 +661,7 @@ export default function Alinhadores() {
                   />
                   <Radio
                     id="corrigir"
-                    label="Premium"
+                    label="Premium (R$ 25,00)"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}
                   />
