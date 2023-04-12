@@ -93,19 +93,13 @@ export default function Setup() {
   const { userLogged } = useAuth();
   const { push } = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState,
-    getValues,
-    setValue,
-    clearErrors,
-  } = useForm<SetupFormData>({
-    resolver: yupResolver(setupFormSchema),
-    defaultValues: {
-      dentes_a_serem_movimentados: [],
-    },
-  });
+  const { register, handleSubmit, formState, setValue, clearErrors } =
+    useForm<SetupFormData>({
+      resolver: yupResolver(setupFormSchema),
+      defaultValues: {
+        dentes_a_serem_movimentados: [],
+      },
+    });
 
   function handleSelectAddress(address: Address) {
     setAddressSelected(address);
