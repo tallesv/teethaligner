@@ -93,7 +93,7 @@ export default function Pagination({
             <button
               type="button"
               aria-current="page"
-              className="relative z-10 inline-flex items-center border border-indigo-500 text-indigo-600 bg-indigo-50 px-4 py-2 text-sm font-medium focus:z-20"
+              className="relative z-10 inline-flex items-center border border-blue-500 text-blue-600 bg-blue-50 px-4 py-2 text-sm font-medium focus:z-20"
             >
               {currentPage}
             </button>
