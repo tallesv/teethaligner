@@ -26,6 +26,7 @@ type SetupFormData = {
   address: Address;
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];
+  select_all_teeths: boolean;
   movimento_dentario: string;
   relacao_de_caninos: string;
   relacao_de_molares: string;
@@ -48,6 +49,7 @@ const setupFormSchema = yup.object().shape({
     .array()
     .of(yup.string())
     .min(1, 'Por favor selecione os dentes a serem movimentados.'),
+  select_all_teeths: yup.boolean(),
   movimento_dentario: yup.string().required('Por favor selecione uma opção.'),
   relacao_de_caninos: yup.string().required('Por favor selecione uma opção.'),
   relacao_de_molares: yup.string().required('Por favor selecione uma opção.'),
@@ -111,23 +113,44 @@ export default function Setup() {
     clearErrors('address');
   }
 
-  function handleSelectCheckBox(value: string) {
-    const subOptionsArray = Array.isArray(
-      getValues().dentes_a_serem_movimentados,
-    )
-      ? getValues().dentes_a_serem_movimentados
-      : [];
-
-    const findValue = subOptionsArray?.find(item => item === value);
-
-    if (findValue) {
-      const subOptionsArrayUpdated = subOptionsArray?.filter(
-        item => item !== value,
-      );
-      setValue('dentes_a_serem_movimentados', subOptionsArrayUpdated);
+  function handleSelectAllCheckbox(selectedAll: boolean) {
+    if (selectedAll) {
+      setValue('dentes_a_serem_movimentados', [
+        '18',
+        '17',
+        '16',
+        '15',
+        '14',
+        '13',
+        '12',
+        '11',
+        '21',
+        '22',
+        '23',
+        '24',
+        '25',
+        '26',
+        '27',
+        '28',
+        '48',
+        '47',
+        '46',
+        '45',
+        '44',
+        '43',
+        '42',
+        '41',
+        '31',
+        '32',
+        '33',
+        '34',
+        '35',
+        '36',
+        '37',
+        '38',
+      ]);
     } else {
-      subOptionsArray?.push(value);
-      setValue('dentes_a_serem_movimentados', subOptionsArray);
+      setValue('dentes_a_serem_movimentados', []);
     }
   }
 
@@ -276,6 +299,14 @@ export default function Setup() {
             <span className="block mb-2 text-sm font-medium text-gray-600">
               Assinale os dentes a serem movimentados :
             </span>
+
+            <Checkbox
+              label="Todos os dentes"
+              {...register('select_all_teeths')}
+              onChange={e => handleSelectAllCheckbox(e.target.checked)}
+            />
+
+            <img src="/images/teeths.png" alt="teeths" />
             <div className="flex flex-col sm:flex-row sm:space-x-2">
               <div className="flex flex-row items-center space-x-3.5 sm:space-x-4">
                 {['18', '17', '16', '15', '14', '13', '12', '11'].map(item => (
@@ -283,7 +314,7 @@ export default function Setup() {
                     key={item}
                     id={item}
                     label={item}
-                    onChange={e => handleSelectCheckBox(e.target.value)}
+                    {...register('dentes_a_serem_movimentados')}
                   />
                 ))}
               </div>
@@ -293,7 +324,7 @@ export default function Setup() {
                     key={item}
                     id={item}
                     label={item}
-                    onChange={e => handleSelectCheckBox(e.target.value)}
+                    {...register('dentes_a_serem_movimentados')}
                   />
                 ))}
               </div>
@@ -305,7 +336,7 @@ export default function Setup() {
                     key={item}
                     id={item}
                     label={item}
-                    onChange={e => handleSelectCheckBox(e.target.value)}
+                    {...register('dentes_a_serem_movimentados')}
                   />
                 ))}
               </div>
@@ -315,7 +346,7 @@ export default function Setup() {
                     key={item}
                     id={item}
                     label={item}
-                    onChange={e => handleSelectCheckBox(e.target.value)}
+                    {...register('dentes_a_serem_movimentados')}
                   />
                 ))}
               </div>
