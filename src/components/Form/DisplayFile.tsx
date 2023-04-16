@@ -1,11 +1,11 @@
 import classNames from '@/utils/bindClassNames';
 import { PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { MouseEventHandler } from 'react';
+import { MouseEvent } from 'react';
 
 interface DisplayFileProps {
   fileURL?: string;
   fileName: string;
-  onRemoveFile?: (e: MouseEventHandler<HTMLButtonElement>) => void;
+  onRemoveFile?: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function DisplayFile({
