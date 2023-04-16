@@ -8,7 +8,6 @@ import Checkbox from '@/components/Form/Checkbox';
 import Radio from '@/components/Form/Radio';
 import TextArea from '@/components/Form/Textarea';
 import classNames from '@/utils/bindClassNames';
-import FileInput from '@/components/Form/FileInput';
 import withSSRAuth from '@/utils/withSSRAuth';
 import api from '@/client/api';
 import useAuth from '@/hooks/useAuth';
