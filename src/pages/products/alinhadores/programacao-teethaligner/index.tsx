@@ -85,6 +85,7 @@ const programacaoTeethalignerFormSchema = yup.object().shape({
       'Por favor faça o upload da logomarca em JPG',
       value =>
         value &&
+        !!value.type &&
         (value?.type.includes('/jpeg') || value?.type.includes('/jpg')),
     ),
   mensagem_personalizada_embalagem: yup

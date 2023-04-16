@@ -8,7 +8,6 @@ import Checkbox from '@/components/Form/Checkbox';
 import Radio from '@/components/Form/Radio';
 import TextArea from '@/components/Form/Textarea';
 import classNames from '@/utils/bindClassNames';
-import FileInput from '@/components/Form/FileInput';
 import withSSRAuth from '@/utils/withSSRAuth';
 import api from '@/client/api';
 import useAuth from '@/hooks/useAuth';
@@ -19,18 +18,20 @@ import uploadFile from '@/utils/uploadFile';
 import { RadioGroup } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import UploadFileButton from '@/components/Form/UploadFileButton';
+import DisplayFile from '@/components/Form/DisplayFile';
 
 type ProgramacaoTeethalignerApenasImprimirFormData = {
   pacient_name: string;
   pacient_email: string;
   address: Address;
   personalizando_o_planejamento: string;
-  escaneamento_do_arco_superior: FileList;
-  escaneamento_do_arco_inferior: FileList;
-  escaneamento_do_registro_de_mordida: FileList;
+  escaneamento_do_arco_superior: File[];
+  escaneamento_do_arco_inferior: File[];
+  escaneamento_do_registro_de_mordida: File[];
   escaneamento_link: string;
   encaminhei_email: boolean;
-  logomarca: FileList;
+  logomarca: File;
   mensagem_personalizada_embalagem: string;
   caixa: 'Padrão' | 'Premium';
 };
@@ -41,26 +42,17 @@ const programacaoTeethalignerApenasImprimirFormSchema = yup.object().shape({
   address: yup.object().required('Por favor escolha um endereço'),
   personalizando_o_planejamento: yup.string(),
   escaneamento_do_arco_superior: yup
-    .mixed<FileList>()
-    .test(
-      'fileSize',
-      'Por favor faça o upload do escaneamento do arco superior',
-      value => value && value?.length > 0,
-    ),
+    .array()
+    .min(1, 'Por favor faça o upload do escaneamento do arco superior')
+    .of(yup.mixed<File>()),
   escaneamento_do_arco_inferior: yup
-    .mixed<FileList>()
-    .test(
-      'fileSize',
-      'Por favor faça o upload do escaneamento do arco inferior',
-      value => value && value?.length > 0,
-    ),
+    .array()
+    .min(1, 'Por favor faça o upload do escaneamento do arco inferior')
+    .of(yup.mixed<File>()),
   escaneamento_do_registro_de_mordida: yup
-    .mixed<FileList>()
-    .test(
-      'fileSize',
-      'Por favor faça o upload do escaneamento do registro de mordida',
-      value => value && value?.length > 0,
-    ),
+    .array()
+    .min(1, 'Por favor faça o upload do escaneamento registro de mordida')
+    .of(yup.mixed<File>()),
   escaneamento_link: yup
     .string()
     .required(
@@ -68,11 +60,14 @@ const programacaoTeethalignerApenasImprimirFormSchema = yup.object().shape({
     ),
   encaminhei_email: yup.boolean(),
   logomarca: yup
-    .mixed<FileList>()
+    .mixed<File>()
     .test(
       'fileSize',
-      'Por favor faça o upload da logomarca',
-      value => value && value?.length > 0,
+      'Por favor faça o upload da logomarca em JPG',
+      value =>
+        value &&
+        !!value.type &&
+        (value?.type.includes('/jpeg') || value?.type.includes('/jpg')),
     ),
   mensagem_personalizada_embalagem: yup
     .string()
@@ -86,16 +81,38 @@ const programacaoTeethalignerApenasImprimirFormSchema = yup.object().shape({
 
 export default function AlinhadoresApenasImprimir() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [addressSelected, setAddressSelected] = useState<Address>(
     {} as Address,
   );
+  const [escaneamentoDoArcoSuperior, setEscaneamentoDoArcoSuperior] = useState<
+    string[]
+  >([]);
+  const [escaneamentoDoArcoInferior, setEscaneamentoDoArcoInferior] = useState<
+    string[]
+  >([]);
+  const [escaneamentoDoRegistroDeMordida, setEscaneamentoDoRegistroDeMordida] =
+    useState<string[]>([]);
+  const [logomarca, setLogomarca] = useState<string>();
+
   const { userLogged } = useAuth();
   const { push } = useRouter();
 
-  const { register, handleSubmit, formState, setValue, clearErrors } =
-    useForm<ProgramacaoTeethalignerApenasImprimirFormData>({
-      resolver: yupResolver(programacaoTeethalignerApenasImprimirFormSchema),
-    });
+  const {
+    register,
+    handleSubmit,
+    formState,
+    getValues,
+    setValue,
+    clearErrors,
+  } = useForm<ProgramacaoTeethalignerApenasImprimirFormData>({
+    resolver: yupResolver(programacaoTeethalignerApenasImprimirFormSchema),
+    defaultValues: {
+      escaneamento_do_arco_superior: [],
+      escaneamento_do_arco_inferior: [],
+      escaneamento_do_registro_de_mordida: [],
+    },
+  });
 
   function handleSelectAddress(address: Address) {
     setAddressSelected(address);
@@ -108,24 +125,24 @@ export default function AlinhadoresApenasImprimir() {
   ) {
     try {
       setIsSubmitting(true);
-      const escaneamentoDoArcoSuperiorUrl = await uploadFile(
-        data.escaneamento_do_arco_superior[0],
+      const escaneamentoDoArcoSuperiorUrl = await Promise.all(
+        data.escaneamento_do_arco_superior.map(item => uploadFile(item)),
       );
-      const escaneamentoDoArcoInferiorUrl = await uploadFile(
-        data.escaneamento_do_arco_inferior[0],
+      const escaneamentoDoArcoInferiorUrl = await Promise.all(
+        data.escaneamento_do_arco_inferior.map(item => uploadFile(item)),
       );
-      const escaneamentoDoRegistroDeMordidaUrl = await uploadFile(
-        data.escaneamento_do_registro_de_mordida[0],
+      const escaneamentoDoRegistroDeMordidaUrl = await Promise.all(
+        data.escaneamento_do_registro_de_mordida.map(item => uploadFile(item)),
       );
 
-      const logomarcarUrl = await uploadFile(data.logomarca[0]);
+      const logomarcarUrl = await uploadFile(data.logomarca);
 
       await api.post(
         `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
         {
           patient_name: data.pacient_name,
           patient_email: data.pacient_email,
-          product_name: 'Alinhadores - Apenas imprimir',
+          product_name: 'Alinhadores - Apenas Imprimir',
           status: 'Nova',
           accepted: false,
           fields: JSON.stringify({
@@ -254,51 +271,171 @@ export default function AlinhadoresApenasImprimir() {
             <span className="block text-sm font-medium text-gray-600">
               Envio do escaneamento do seu paciente:
             </span>
-            <div className="grid grid-row-2 sm:grid-cols-2">
-              <div className="my-2">
-                <div className="flex flex-row items-center space-x-3 ml-1">
-                  <FileInput
-                    label="Envio do escaneamento do arco superior:"
+            <div className="my-2">
+              <div className="flex flex-col ml-1 space-y-4">
+                <div className="flex items-center">
+                  <span className="text-xs font-medium text-gray-500">
+                    Envio do escaneamento do arco superior:
+                  </span>
+                  <UploadFileButton
                     {...register('escaneamento_do_arco_superior')}
+                    multiple
+                    onChange={async e => {
+                      if (e.target.files) {
+                        const files = await Promise.all(e.target.files);
+                        setValue('escaneamento_do_arco_superior', [
+                          ...getValues().escaneamento_do_arco_superior,
+                          ...files,
+                        ]);
+                        setEscaneamentoDoArcoSuperior(prevState => [
+                          ...prevState,
+                          ...files.map(file => file.name),
+                        ]);
+                        clearErrors('escaneamento_do_arco_superior');
+                      }
+                    }}
                     error={!!formState.errors.escaneamento_do_arco_superior}
-                    errorMessage={
-                      formState.errors.escaneamento_do_arco_superior?.message
+                  />
+                </div>
+                {formState.errors.escaneamento_do_arco_superior && (
+                  <span className="ml-1 text-sm font-medium text-red-500">
+                    {formState.errors.escaneamento_do_arco_superior.message}
+                  </span>
+                )}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {escaneamentoDoArcoSuperior.map(item => (
+                    <DisplayFile
+                      key={item}
+                      fileName={item}
+                      onRemoveFile={() => {
+                        setValue(
+                          'escaneamento_do_arco_superior',
+                          getValues().escaneamento_do_arco_superior.filter(
+                            fileItem => fileItem.name !== item,
+                          ),
+                        );
+                        setEscaneamentoDoArcoSuperior(prevState =>
+                          prevState.filter(fileItem => fileItem !== item),
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="my-2">
+              <div className="flex flex-col ml-1 space-y-4">
+                <div className="flex items-center">
+                  <span className="text-xs font-medium text-gray-500">
+                    Envio do escaneamento do arco inferior:
+                  </span>
+                  <UploadFileButton
+                    {...register('escaneamento_do_arco_inferior')}
+                    multiple
+                    onChange={async e => {
+                      if (e.target.files) {
+                        const files = await Promise.all(e.target.files);
+                        setValue('escaneamento_do_arco_inferior', [
+                          ...getValues().escaneamento_do_arco_inferior,
+                          ...files,
+                        ]);
+                        setEscaneamentoDoArcoInferior(prevState => [
+                          ...prevState,
+                          ...files.map(file => file.name),
+                        ]);
+                        clearErrors('escaneamento_do_arco_inferior');
+                      }
+                    }}
+                    error={!!formState.errors.escaneamento_do_arco_inferior}
+                  />
+                </div>
+                {formState.errors.escaneamento_do_arco_inferior && (
+                  <span className="ml-1 text-sm font-medium text-red-500">
+                    {formState.errors.escaneamento_do_arco_inferior.message}
+                  </span>
+                )}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {escaneamentoDoArcoInferior.map(item => (
+                    <DisplayFile
+                      key={item}
+                      fileName={item}
+                      onRemoveFile={() => {
+                        setValue(
+                          'escaneamento_do_arco_inferior',
+                          getValues().escaneamento_do_arco_inferior.filter(
+                            fileItem => fileItem.name !== item,
+                          ),
+                        );
+                        setEscaneamentoDoArcoInferior(prevState =>
+                          prevState.filter(fileItem => fileItem !== item),
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="my-2">
+              <div className="flex flex-col ml-1 space-y-4">
+                <div className="flex items-center">
+                  <span className="text-xs font-medium text-gray-500">
+                    Envio do escaneamento do registro de mordida:
+                  </span>
+                  <UploadFileButton
+                    {...register('escaneamento_do_registro_de_mordida')}
+                    multiple
+                    onChange={async e => {
+                      if (e.target.files) {
+                        const files = await Promise.all(e.target.files);
+                        setValue('escaneamento_do_registro_de_mordida', [
+                          ...getValues().escaneamento_do_registro_de_mordida,
+                          ...files,
+                        ]);
+                        setEscaneamentoDoRegistroDeMordida(prevState => [
+                          ...prevState,
+                          ...files.map(file => file.name),
+                        ]);
+                        clearErrors('escaneamento_do_registro_de_mordida');
+                      }
+                    }}
+                    error={
+                      !!formState.errors.escaneamento_do_registro_de_mordida
                     }
                   />
                 </div>
-              </div>
-
-              <div className="my-2">
-                <div className="flex flex-row items-center space-x-3 ml-1">
-                  <FileInput
-                    label="Envio do escaneamento do arco inferior:"
-                    {...register('escaneamento_do_arco_inferior')}
-                    error={!!formState.errors.escaneamento_do_arco_inferior}
-                    errorMessage={
-                      formState.errors.escaneamento_do_arco_inferior?.message
+                {formState.errors.escaneamento_do_registro_de_mordida && (
+                  <span className="ml-1 text-sm font-medium text-red-500">
+                    {
+                      formState.errors.escaneamento_do_registro_de_mordida
+                        .message
                     }
-                  />
+                  </span>
+                )}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {escaneamentoDoRegistroDeMordida.map(item => (
+                    <DisplayFile
+                      key={item}
+                      fileName={item}
+                      onRemoveFile={() => {
+                        setValue(
+                          'escaneamento_do_registro_de_mordida',
+                          getValues().escaneamento_do_registro_de_mordida.filter(
+                            fileItem => fileItem.name !== item,
+                          ),
+                        );
+                        setEscaneamentoDoRegistroDeMordida(prevState =>
+                          prevState.filter(fileItem => fileItem !== item),
+                        );
+                      }}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
 
             <div className="grid grid-col">
-              <div className="my-2">
-                <div className="flex flex-row items-center space-x-3 ml-1">
-                  <FileInput
-                    label="Envio do escaneamento do registro de mordida :"
-                    {...register('escaneamento_do_registro_de_mordida')}
-                    error={
-                      !!formState.errors.escaneamento_do_registro_de_mordida
-                    }
-                    errorMessage={
-                      formState.errors.escaneamento_do_registro_de_mordida
-                        ?.message
-                    }
-                  />
-                </div>
-              </div>
-
               <div className="my-2 grid grid-col space-y-3 ml-1">
                 <div className="flex flex-row items-center space-x-3">
                   <Input
@@ -321,29 +458,55 @@ export default function AlinhadoresApenasImprimir() {
             <span className="block text-sm font-medium text-gray-600">
               Vamos personalizar sua embalagem:
             </span>
-            <div className="grid grid-row-2 sm:grid-cols-2">
-              <div className="my-2">
-                <div className="flex flex-row items-center space-x-3 ml-1">
-                  <FileInput
-                    label="Envio da sua logomarca em formato JPG:"
+            <div className="my-2">
+              <div className="flex flex-col ml-1 space-y-4">
+                <div className="flex items-center">
+                  <span className="text-xs font-medium text-gray-500">
+                    Envio da sua logomarca em formato JPG:
+                  </span>
+                  <UploadFileButton
                     {...register('logomarca')}
+                    multiple
+                    onChange={async e => {
+                      if (e.target.files) {
+                        const files = await Promise.all(e.target.files);
+                        setValue('logomarca', files[0]);
+                        setLogomarca(files[0].name);
+                        clearErrors('logomarca');
+                      }
+                    }}
                     error={!!formState.errors.logomarca}
-                    errorMessage={formState.errors.logomarca?.message}
                   />
+                </div>
+                {formState.errors.logomarca && (
+                  <span className="ml-1 text-sm font-medium text-red-500">
+                    {formState.errors.logomarca.message}
+                  </span>
+                )}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {logomarca && (
+                    <DisplayFile
+                      fileName={logomarca}
+                      onRemoveFile={() => {
+                        setValue('logomarca', {} as File);
+                        setLogomarca(undefined);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
+            </div>
 
-              <div className="my-2">
-                <div className="flex flex-row items-center space-x-3 mt-2 ml-1">
-                  <Input
-                    label="Inserir uma mensagem personalizada a embalagem"
-                    {...register('mensagem_personalizada_embalagem')}
-                    error={!!formState.errors.mensagem_personalizada_embalagem}
-                    errorMessage={
-                      formState.errors.mensagem_personalizada_embalagem?.message
-                    }
-                  />
-                </div>
+            <div className="my-2">
+              <div className="flex flex-row items-center space-x-3 mt-2 ml-1">
+                <Input
+                  label="Inserir uma mensagem personalizada a embalagem"
+                  {...register('mensagem_personalizada_embalagem')}
+                  error={!!formState.errors.mensagem_personalizada_embalagem}
+                  errorMessage={
+                    formState.errors.mensagem_personalizada_embalagem?.message
+                  }
+                />
               </div>
             </div>
           </div>

@@ -133,109 +133,126 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                       <ul className="divide-y divide-gray-200 rounded-md border border-gray-200">
-                        <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
-                          <div className="flex w-0 flex-1 items-center">
-                            <svg
-                              className="h-5 w-5 flex-shrink-0 text-gray-400"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              aria-hidden="true"
+                        {request?.escaneamento_do_arco_superior.map(
+                          arcoSuperior => (
+                            <li
+                              key={arcoSuperior}
+                              className="flex items-center justify-between py-3 pl-3 pr-4 text-sm"
                             >
-                              <path
-                                fillRule="evenodd"
-                                d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span className="ml-2 w-0 flex-1 truncate">
-                              {request?.escaneamento_do_arco_superior.slice(73)}
-                              <br />
-                              <span className="text-xs text-gray-500">
-                                Arco superior
-                              </span>
-                            </span>
-                          </div>
-                          <div className="ml-4 flex-shrink-0">
-                            <a
-                              href={request?.escaneamento_do_arco_superior}
-                              target="_blank"
-                              className="font-medium text-blue-600 hover:text-blue-500"
-                              rel="noreferrer"
+                              <div className="flex w-0 flex-1 items-center">
+                                <svg
+                                  className="h-5 w-5 flex-shrink-0 text-gray-400"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                <span className="ml-2 w-0 flex-1 truncate">
+                                  {arcoSuperior.slice(73)}
+                                  <br />
+                                  <span className="text-xs text-gray-500">
+                                    Arco superior
+                                  </span>
+                                </span>
+                              </div>
+                              <div className="ml-4 flex-shrink-0">
+                                <a
+                                  href={arcoSuperior}
+                                  target="_blank"
+                                  className="font-medium text-blue-600 hover:text-blue-500"
+                                  rel="noreferrer"
+                                >
+                                  Download
+                                </a>
+                              </div>
+                            </li>
+                          ),
+                        )}
+                        {request?.escaneamento_do_arco_inferior.map(
+                          arcoInferior => (
+                            <li
+                              key={arcoInferior}
+                              className="flex items-center justify-between py-3 pl-3 pr-4 text-sm"
                             >
-                              Download
-                            </a>
-                          </div>
-                        </li>
-                        <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
-                          <div className="flex w-0 flex-1 items-center">
-                            <svg
-                              className="h-5 w-5 flex-shrink-0 text-gray-400"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              aria-hidden="true"
+                              <div className="flex w-0 flex-1 items-center">
+                                <svg
+                                  className="h-5 w-5 flex-shrink-0 text-gray-400"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                <span className="ml-2 w-0 flex-1 truncate">
+                                  {arcoInferior.slice(73)}
+                                  <br />
+                                  <span className="text-xs text-gray-500">
+                                    Arco inferior
+                                  </span>
+                                </span>
+                              </div>
+                              <div className="ml-4 flex-shrink-0">
+                                <a
+                                  href={arcoInferior}
+                                  target="_blank"
+                                  className="font-medium text-blue-600 hover:text-blue-500"
+                                  rel="noreferrer"
+                                >
+                                  Download
+                                </a>
+                              </div>
+                            </li>
+                          ),
+                        )}
+                        {request?.escaneamento_do_registro_de_mordida.map(
+                          registroDeMordida => (
+                            <li
+                              key={registroDeMordida}
+                              className="flex items-center justify-between py-3 pl-3 pr-4 text-sm"
                             >
-                              <path
-                                fillRule="evenodd"
-                                d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span className="ml-2 w-0 flex-1 truncate">
-                              {request?.escaneamento_do_arco_inferior.slice(73)}
-                              <br />
-                              <span className="text-xs text-gray-500">
-                                Arco inferior
-                              </span>
-                            </span>
-                          </div>
-                          <div className="ml-4 flex-shrink-0">
-                            <a
-                              href={request?.escaneamento_do_arco_inferior}
-                              target="_blank"
-                              className="font-medium text-blue-600 hover:text-blue-500"
-                              rel="noreferrer"
-                            >
-                              Download
-                            </a>
-                          </div>
-                        </li>
-                        <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
-                          <div className="flex w-0 flex-1 items-center">
-                            <svg
-                              className="h-5 w-5 flex-shrink-0 text-gray-400"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span className="ml-2 w-0 flex-1 truncate">
-                              {request?.escaneamento_do_registro_de_mordida.slice(
-                                73,
-                              )}
-                              <br />
-                              <span className="text-xs text-gray-500">
-                                Registro de mordida
-                              </span>
-                            </span>
-                          </div>
-                          <div className="ml-4 flex-shrink-0">
-                            <a
-                              href={
-                                request?.escaneamento_do_registro_de_mordida
-                              }
-                              target="_blank"
-                              className="font-medium text-blue-600 hover:text-blue-500"
-                              rel="noreferrer"
-                            >
-                              Download
-                            </a>
-                          </div>
-                        </li>
+                              <div className="flex w-0 flex-1 items-center">
+                                <svg
+                                  className="h-5 w-5 flex-shrink-0 text-gray-400"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                <span className="ml-2 w-0 flex-1 truncate">
+                                  {registroDeMordida.slice(73)}
+                                  <br />
+                                  <span className="text-xs text-gray-500">
+                                    Registro de mordida
+                                  </span>
+                                </span>
+                              </div>
+                              <div className="ml-4 flex-shrink-0">
+                                <a
+                                  href={registroDeMordida}
+                                  target="_blank"
+                                  className="font-medium text-blue-600 hover:text-blue-500"
+                                  rel="noreferrer"
+                                >
+                                  Download
+                                </a>
+                              </div>
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </dd>
                   </div>
@@ -289,7 +306,7 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
                           </div>
                           <div className="ml-4 flex-shrink-0">
                             <a
-                              href={request?.escaneamento_do_arco_superior}
+                              href={request?.logomarca}
                               target="_blank"
                               className="font-medium text-blue-600 hover:text-blue-500"
                               rel="noreferrer"
@@ -347,7 +364,7 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
                           </div>
                           <div className="ml-4 space-x-2 flex-shrink-0">
                             <a
-                              href={request?.escaneamento_do_arco_superior}
+                              href="/"
                               target="_blank"
                               className="font-medium text-blue-600 hover:text-blue-500"
                               rel="noreferrer"

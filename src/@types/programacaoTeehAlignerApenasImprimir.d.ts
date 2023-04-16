@@ -8,9 +8,9 @@ type ProgramacaoTeethalignerApenasImprimir = {
   patient_email: string;
   addresses: Address[];
   personalizando_o_planejamento: string;
-  escaneamento_do_arco_superior: string;
-  escaneamento_do_arco_inferior: string;
-  escaneamento_do_registro_de_mordida: string;
+  escaneamento_do_arco_superior: string[];
+  escaneamento_do_arco_inferior: string[];
+  escaneamento_do_registro_de_mordida: string[];
   escaneamento_link: string;
   encaminhei_email: boolean;
   logomarca: string;
