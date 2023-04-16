@@ -6,7 +6,6 @@ import Layout from '@/components/Layout';
 import Input from '@/components/Form/Input';
 import Checkbox from '@/components/Form/Checkbox';
 import classNames from '@/utils/bindClassNames';
-import FileInput from '@/components/Form/FileInput';
 import withSSRAuth from '@/utils/withSSRAuth';
 import api from '@/client/api';
 import useAuth from '@/hooks/useAuth';
