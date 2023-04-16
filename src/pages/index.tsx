@@ -80,18 +80,35 @@ export default function Home() {
         : new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf(),
     );
 
-  function getProductUrl(request: RequestsFromApi) {
+  function getRequestUrl(request: RequestsFromApi) {
     switch (request.product_name) {
       case 'Setup':
         return `/products/setup/${request.id}`;
-      case 'Alinhadores - Programação teethaligner':
+      case 'Alinhadores - Programação TeethAligner':
         return `/products/alinhadores/programacao-teethaligner/${request.id}`;
-      case 'Alinhadores - Apenas imprimir':
+      case 'Alinhadores - Apenas Imprimir':
         return `/products/alinhadores/apenas-imprimir/${request.id}`;
       case 'Moldagem de Transferência Virtual':
         return `/products/transferencia-virtual/${request.id}`;
       case 'Modelos/Guias Cirúrgicos':
         return `/products/guias-cirurgicos/${request.id}`;
+      default:
+        return '';
+    }
+  }
+
+  function getEditRequestUrl(request: RequestsFromApi) {
+    switch (request.product_name) {
+      case 'Setup':
+        return `/products/setup/edit/${request.id}`;
+      case 'Alinhadores - Programação TeethAligner':
+        return `/products/alinhadores/programacao-teethaligner/edit/${request.id}`;
+      case 'Alinhadores - Apenas Imprimir':
+        return `/products/alinhadores/apenas-imprimir/edit/${request.id}`;
+      case 'Moldagem de Transferência Virtual':
+        return `/products/transferencia-virtual/edit/${request.id}`;
+      case 'Modelos/Guias Cirúrgicos':
+        return `/products/guias-cirurgicos/edit/${request.id}`;
       default:
         return '';
     }
@@ -212,24 +229,22 @@ export default function Home() {
                       {new Date(request.created_at).toLocaleDateString('pt-BR')}
                     </td>
                     <td className="px-6 py-4">
-                      <Link
-                        key={request.id}
-                        href={getProductUrl(request)}
-                        legacyBehavior
-                      >
+                      <Link href={getRequestUrl(request)} legacyBehavior>
                         <a
-                          href={getProductUrl(request)}
+                          href={getRequestUrl(request)}
                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                         >
                           Visualizar
                         </a>
                       </Link>
-                      <a
-                        href="/"
-                        className="font-medium mx-3 text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        Editar
-                      </a>
+                      <Link href={getEditRequestUrl(request)} legacyBehavior>
+                        <a
+                          href={getEditRequestUrl(request)}
+                          className="font-medium mx-3 text-blue-600 dark:text-blue-500 hover:underline"
+                        >
+                          Editar
+                        </a>
+                      </Link>
                       <a
                         href="/"
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"

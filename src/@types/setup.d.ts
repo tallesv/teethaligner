@@ -15,9 +15,9 @@ type Setup = {
   sobremordida: string;
   linha_media: string;
   informacoes_adicionais: string;
-  escaneamento_do_arco_superior: string;
-  escaneamento_do_arco_inferior: string;
-  escaneamento_do_registro_de_mordida: string;
+  escaneamento_do_arco_superior: string[];
+  escaneamento_do_arco_inferior: string[];
+  escaneamento_do_registro_de_mordida: string[];
   escaneamento_link: string;
   encaminhei_email: boolean;
 };
