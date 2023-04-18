@@ -178,9 +178,7 @@ export default function EditGuiaCirurgico() {
     clearErrors('address');
   }
 
-  async function handleTransferenciaVirtualSubmit(
-    data: GuiasCirurgicoFormData,
-  ) {
+  async function handleGuiaCirurgicoSubmit(data: GuiasCirurgicoFormData) {
     try {
       setIsSubmitting(true);
 
@@ -235,14 +233,11 @@ export default function EditGuiaCirurgico() {
             escaneamentoDoRegistroDeMordidaUrl,
         }),
       });
-      toast.success('Requisição concluída com sucesso.');
-      setEscaneamentoDoArcoInferior([]);
-      setEscaneamentoDoArcoSuperior([]);
-      setEscaneamentoDoRegistroDeMordida([]);
+      toast.success('Requisição editada com sucesso.');
       push('/');
     } catch (err) {
       toast.error(
-        'Não foi possível completar a requisição, porfavor tente novamente.',
+        'Não foi possível reditar a requisição, porfavor tente novamente.',
       );
     } finally {
       setIsSubmitting(false);
@@ -252,7 +247,7 @@ export default function EditGuiaCirurgico() {
     <Layout>
       <form
         className="max-w-3xl"
-        onSubmit={handleSubmit(handleTransferenciaVirtualSubmit)}
+        onSubmit={handleSubmit(handleGuiaCirurgicoSubmit)}
       >
         <div className="grid grid-cols-6 gap-6">
           <div className="col-span-6 sm:col-span-6">
