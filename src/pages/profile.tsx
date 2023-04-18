@@ -18,6 +18,7 @@ import { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import uploadFile from '@/utils/uploadFile';
 import { toast } from 'react-toastify';
 import deleteFile from '@/utils/deleteFile';
+import states from '@/utils/states';
 
 type ProfileFormData = {
   avatar: string | File | null;
@@ -313,9 +314,7 @@ export default function Profile() {
                       <Select
                         id="test"
                         label="Estado"
-                        options={[
-                          { label: 'Rio Grande do Norte', value: 'RN' },
-                        ]}
+                        options={states}
                         {...addressRegister('state')}
                         error={!!addressFormState.errors.state}
                         errorMessage={addressFormState.errors.state?.message}
