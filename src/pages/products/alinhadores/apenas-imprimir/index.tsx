@@ -500,7 +500,7 @@ export default function AlinhadoresApenasImprimir() {
             <div className="my-2">
               <div className="flex flex-row items-center space-x-3 mt-2 ml-1">
                 <Input
-                  label="Inserir uma mensagem personalizada a embalagem"
+                  label="Inserir uma mensagem personalizada a embalagem(até 20 carácteres):"
                   {...register('mensagem_personalizada_embalagem')}
                   error={!!formState.errors.mensagem_personalizada_embalagem}
                   errorMessage={
