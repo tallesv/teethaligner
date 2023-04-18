@@ -222,8 +222,6 @@ export default function EditGuiaCirurgico() {
         patient_name: data.patient_name,
         patient_email: data.patient_email,
         product_name: 'Modelos/Guias Cirúrgicos',
-        status: 'Nova',
-        accepted: false,
         fields: JSON.stringify({
           escaneamento_link: data.escaneamento_link,
           encaminhei_email: data.encaminhei_email,
