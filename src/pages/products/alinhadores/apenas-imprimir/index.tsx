@@ -247,7 +247,7 @@ export default function AlinhadoresApenasImprimir() {
 
           <div className="col-span-6">
             <span className="block text-sm font-medium text-gray-600">
-              Personalizando o planejamento:
+              Informações adicionais:
             </span>
             <TextArea
               label="Preencha aqui tudo que deseja no seu tratamento"
