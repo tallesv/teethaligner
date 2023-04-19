@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import api from '@/client/api';
-import Modal from '@/components/Modal';
+import Modal from '@/components/Modals';
 import withSSRAuth from '@/utils/withSSRAuth';
 import { toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
