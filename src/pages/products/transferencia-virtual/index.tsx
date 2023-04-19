@@ -21,7 +21,6 @@ import UploadFileButton from '@/components/Form/UploadFileButton';
 
 type TransferenciaVirtualFormData = {
   pacient_name: string;
-  pacient_email: string;
   address: Address;
   dentes_a_serem_preparados: string[];
   escaneamento_do_arco_superior: File[];
@@ -33,7 +32,6 @@ type TransferenciaVirtualFormData = {
 
 const transferenciaVirtualFormSchema = yup.object().shape({
   pacient_name: yup.string().required('Por favor insira o nome do paciente'),
-  pacient_email: yup.string(),
   address: yup.object().required('Por favor escolha um endereço'),
   dentes_a_serem_preparados: yup
     .array()
@@ -117,7 +115,6 @@ export default function TransferenciaVirtual() {
         `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
         {
           patient_name: data.pacient_name,
-          patient_email: data.pacient_email,
           product_name: 'Moldagem de Transferência Virtual',
           status: 'Nova',
           accepted: false,
@@ -155,15 +152,6 @@ export default function TransferenciaVirtual() {
               {...register('pacient_name')}
               error={!!formState.errors.pacient_name}
               errorMessage={formState.errors.pacient_name?.message}
-            />
-          </div>
-
-          <div className="col-span-6 sm:col-span-6">
-            <Input
-              label="Email do paciente"
-              {...register('pacient_email')}
-              error={!!formState.errors.pacient_email}
-              errorMessage={formState.errors.pacient_email?.message}
             />
           </div>
 

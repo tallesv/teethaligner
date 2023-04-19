@@ -5,7 +5,6 @@ type TransferenciaVirtual = {
   created_at: string;
   status: string;
   patient_name: string;
-  patient_email: string;
   addresses: Address[];
   dentes_a_serem_preparados: string[];
   escaneamento_do_arco_superior: string[];

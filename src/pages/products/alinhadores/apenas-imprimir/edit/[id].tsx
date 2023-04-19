@@ -26,7 +26,6 @@ import isFromFirebaseStorage from '@/utils/isFromFirebaseStorage';
 
 type ProgramacaoTeethalignerApenasImprimirFormData = {
   patient_name: string;
-  patient_email: string;
   address: Address;
   personalizando_o_planejamento: string;
   escaneamento_do_arco_superior: File[];
@@ -79,7 +78,6 @@ export default function EditAlinhadoresApenasImprimir() {
 
   const programacaoTeethalignerApenasImprimirFormSchema = yup.object().shape({
     patient_name: yup.string().required('Por favor insira o nome do paciente'),
-    patient_email: yup.string(),
     address: yup.object().required('Por favor escolha um endereço'),
     personalizando_o_planejamento: yup.string(),
     escaneamento_do_arco_superior: yup
@@ -270,7 +268,6 @@ export default function EditAlinhadoresApenasImprimir() {
 
       await api.put(`requests/${caseId}?user_id=${userLogged?.firebase_id}`, {
         patient_name: data.patient_name,
-        patient_email: data.patient_email,
         product_name: 'Alinhadores - Apenas Imprimir',
         fields: JSON.stringify({
           personalizando_o_planejamento: data.personalizando_o_planejamento,
@@ -310,15 +307,6 @@ export default function EditAlinhadoresApenasImprimir() {
               {...register('patient_name')}
               error={!!formState.errors.patient_name}
               errorMessage={formState.errors.patient_name?.message}
-            />
-          </div>
-
-          <div className="col-span-6 sm:col-span-6">
-            <Input
-              label="Email do paciente"
-              {...register('patient_email')}
-              error={!!formState.errors.patient_email}
-              errorMessage={formState.errors.patient_email?.message}
             />
           </div>
 

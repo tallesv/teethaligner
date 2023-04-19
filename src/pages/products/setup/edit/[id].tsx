@@ -25,7 +25,6 @@ import UploadFileButton from '@/components/Form/UploadFileButton';
 
 type SetupFormData = {
   patient_name: string;
-  patient_email: string;
   address: Address;
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];
@@ -80,7 +79,6 @@ export default function Setup() {
 
   const setupFormSchema = yup.object().shape({
     patient_name: yup.string().required('Por favor insira o nome do paciente'),
-    patient_email: yup.string(),
     address: yup.object().required('Por favor escolha um endereço'),
     personalizando_o_planejamento: yup.string(),
     dentes_a_serem_movimentados: yup
@@ -283,7 +281,6 @@ export default function Setup() {
 
       await api.put(`requests/${caseId}?user_id=${userLogged?.firebase_id}`, {
         patient_name: data.patient_name,
-        patient_email: data.patient_email,
         product_name: 'Setup',
         fields: JSON.stringify({
           personalizando_o_planejamento: data.personalizando_o_planejamento,
@@ -323,15 +320,6 @@ export default function Setup() {
               {...register('patient_name')}
               error={!!formState.errors.patient_name}
               errorMessage={formState.errors.patient_name?.message}
-            />
-          </div>
-
-          <div className="col-span-6 sm:col-span-6">
-            <Input
-              label="Email do patiente"
-              {...register('patient_email')}
-              error={!!formState.errors.patient_email}
-              errorMessage={formState.errors.patient_email?.message}
             />
           </div>
 

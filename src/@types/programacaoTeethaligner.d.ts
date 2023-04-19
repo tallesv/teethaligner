@@ -5,7 +5,6 @@ type ProgramacaoTeethalignerFormData = {
   created_at: string;
   status: string;
   patient_name: string;
-  patient_email: string;
   addresses: Address[];
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];

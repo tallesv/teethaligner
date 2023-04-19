@@ -12,7 +12,6 @@ import DeleteRequestModal from '@/components/Modals/DeleteRequestModal';
 type RequestsFromApi = {
   id: number;
   patient_name: string;
-  patient_email: string;
   user_id: number;
   product_name: string;
   created_at: string;
@@ -70,14 +69,8 @@ export default function Home() {
   }
 
   const filteredRequests = requests
-    .filter(
-      (request: RequestsFromApi) =>
-        request.patient_name
-          .toLowerCase()
-          .includes(termSearched.toLowerCase()) ||
-        request.patient_email
-          .toLowerCase()
-          .includes(termSearched.toLowerCase()),
+    .filter((request: RequestsFromApi) =>
+      request.patient_name.toLowerCase().includes(termSearched.toLowerCase()),
     )
     .sort((a, b) =>
       dataOrder?.field === 'birthDate' && dataOrder.order === `ascending`
@@ -225,12 +218,6 @@ export default function Home() {
                       index % 2 === 1 ? 'bg-gray-100' : 'bg-white'
                     }`}
                   >
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap"
-                    >
-                      {request.patient_email}
-                    </th>
                     <td className="px-6 py-4 text-gray-700">
                       {request.patient_name}
                     </td>

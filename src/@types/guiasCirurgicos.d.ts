@@ -5,7 +5,6 @@ type GuiasCirurgicos = {
   created_at: string;
   status: string;
   patient_name: string;
-  patient_email: string;
   addresses: Address[];
   escaneamento_do_arco_superior: string[];
   escaneamento_do_arco_inferior: string[];

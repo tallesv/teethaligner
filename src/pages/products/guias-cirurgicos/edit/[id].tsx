@@ -23,7 +23,6 @@ import deleteFile from '@/utils/deleteFile';
 
 type GuiasCirurgicoFormData = {
   patient_name: string;
-  patient_email: string;
   address: Address;
   escaneamento_do_arco_superior: File[];
   escaneamento_do_arco_inferior: File[];
@@ -69,7 +68,6 @@ export default function EditGuiaCirurgico() {
 
   const guiasCirurgicoFormSchema = yup.object().shape({
     patient_name: yup.string().required('Por favor insira o nome do paciente'),
-    patient_email: yup.string(),
     address: yup.object().required('Por favor escolha um endereço'),
     escaneamento_do_arco_superior: yup
       .array()
@@ -220,7 +218,6 @@ export default function EditGuiaCirurgico() {
 
       await api.put(`requests/${caseId}?user_id=${userLogged?.firebase_id}`, {
         patient_name: data.patient_name,
-        patient_email: data.patient_email,
         product_name: 'Modelos/Guias Cirúrgicos',
         fields: JSON.stringify({
           escaneamento_link: data.escaneamento_link,
@@ -254,15 +251,6 @@ export default function EditGuiaCirurgico() {
               {...register('patient_name')}
               error={!!formState.errors.patient_name}
               errorMessage={formState.errors.patient_name?.message}
-            />
-          </div>
-
-          <div className="col-span-6 sm:col-span-6">
-            <Input
-              label="Email do paciente"
-              {...register('patient_email')}
-              error={!!formState.errors.patient_email}
-              errorMessage={formState.errors.patient_email?.message}
             />
           </div>
 

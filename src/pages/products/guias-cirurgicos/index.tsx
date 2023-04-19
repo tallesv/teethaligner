@@ -21,7 +21,6 @@ import UploadFileButton from '@/components/Form/UploadFileButton';
 
 type GuiasCirurgicoFormData = {
   pacient_name: string;
-  pacient_email: string;
   address: Address;
   escaneamento_do_arco_superior: File[];
   escaneamento_do_arco_inferior: File[];
@@ -32,7 +31,6 @@ type GuiasCirurgicoFormData = {
 
 const guiasCirurgicoFormSchema = yup.object().shape({
   pacient_name: yup.string().required('Por favor insira o nome do paciente'),
-  pacient_email: yup.string(),
   address: yup.object().required('Por favor escolha um endereço'),
   escaneamento_do_arco_superior: yup
     .array()
@@ -133,7 +131,6 @@ export default function GuiaCirurgico() {
         `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
         {
           patient_name: data.pacient_name,
-          patient_email: data.pacient_email,
           product_name: 'Modelos/Guias Cirúrgicos',
           status: 'Nova',
           accepted: false,
@@ -171,15 +168,6 @@ export default function GuiaCirurgico() {
               {...register('pacient_name')}
               error={!!formState.errors.pacient_name}
               errorMessage={formState.errors.pacient_name?.message}
-            />
-          </div>
-
-          <div className="col-span-6 sm:col-span-6">
-            <Input
-              label="Email do paciente"
-              {...register('pacient_email')}
-              error={!!formState.errors.pacient_email}
-              errorMessage={formState.errors.pacient_email?.message}
             />
           </div>
 
