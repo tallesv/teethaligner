@@ -9,12 +9,12 @@ import 'firebase/compat/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyDtsgX1DM03AADWoA9FHFdX9XDlV19Myn8',
-  authDomain: 'teeth-aligners.firebaseapp.com',
-  projectId: 'teeth-aligners',
-  storageBucket: 'teeth-aligners.appspot.com',
-  messagingSenderId: '240287978668',
-  appId: '1:240287978668:web:a8f77a452019df7dfc3b09',
+  apiKey: process.env.NEXT_PUBLIC_WEB_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_PROJECT_NUMBER,
+  appId: process.env.NEXT_PUBLIC_APP_ID,
 };
 
 // Initialize Firebase
