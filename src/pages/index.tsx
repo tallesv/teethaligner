@@ -7,6 +7,7 @@ import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import withSSRAuth from '@/utils/withSSRAuth';
 import api from '@/client/api';
+import DeleteRequestModal from '@/components/Modals/DeleteRequestModal';
 
 type RequestsFromApi = {
   id: number;
@@ -33,6 +34,10 @@ export default function Home() {
     order: `ascending`,
   });
 
+  const [isDeleteRequestModalOpen, setIsDeleteRequestModalOpen] =
+    useState(false);
+  const [requestToDelete, setRequestToDelete] = useState({} as RequestsFromApi);
+
   function handleRequestsFromApi(data: RequestsFromApi[]) {
     const treatedRequests = data.map(item => {
       const fields = JSON.parse(item.fields);
@@ -49,7 +54,7 @@ export default function Home() {
     setRequests(treatedRequests);
   }
 
-  const { isLoading, error } = useQuery(
+  const { isLoading, error, refetch } = useQuery(
     'users',
     () => api.get('/requests').then(res => handleRequestsFromApi(res.data)),
     {
@@ -120,6 +125,16 @@ export default function Home() {
 
   return (
     <Layout>
+      <DeleteRequestModal
+        isOpen={isDeleteRequestModalOpen}
+        request={requestToDelete}
+        onCloseModal={() => {
+          setIsDeleteRequestModalOpen(false);
+          setRequestToDelete({} as RequestsFromApi);
+        }}
+        onDelete={() => refetch()}
+      />
+
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <div className="flex justify-between my-4 mx-2">
@@ -245,12 +260,16 @@ export default function Home() {
                           Editar
                         </a>
                       </Link>
-                      <a
-                        href="/"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      <button
+                        type="button"
+                        className="contents font-medium text-blue-600 dark:text-blue-500 hover:underline hover:cursor-pointer"
+                        onClick={() => {
+                          setIsDeleteRequestModalOpen(true);
+                          setRequestToDelete(request);
+                        }}
                       >
                         Excluir
-                      </a>
+                      </button>
                     </td>
                   </tr>
                 ))}
