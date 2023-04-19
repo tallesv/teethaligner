@@ -228,6 +228,7 @@ export default function EditTransferenciaVirtual() {
         patient_email: data.patient_email,
         product_name: 'Moldagem de Transferência Virtual',
         fields: JSON.stringify({
+          dentes_a_serem_preparados: data.dentes_a_serem_preparados,
           escaneamento_link: data.escaneamento_link,
           encaminhei_email: data.encaminhei_email,
           escaneamento_do_arco_superior: escaneamentoDoArcoSuperiorUrl,
