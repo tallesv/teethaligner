@@ -306,7 +306,7 @@ export default function Setup() {
       push('/');
     } catch (err) {
       toast.error(
-        'Não foi possível reditar a requisição, porfavor tente novamente.',
+        'Não foi possível reditar a requisição, por favor tente novamente.',
       );
     } finally {
       setIsSubmitting(false);

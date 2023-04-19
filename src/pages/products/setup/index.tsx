@@ -201,7 +201,7 @@ export default function Setup() {
       push('/');
     } catch (err) {
       toast.error(
-        'Não foi possível completar a requisição, porfavor tente novamente.',
+        'Não foi possível completar a requisição, por favor tente novamente.',
       );
     } finally {
       setIsSubmitting(false);

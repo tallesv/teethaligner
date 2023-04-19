@@ -110,7 +110,7 @@ export default function Profile() {
       fetchUser();
     } catch (err) {
       toast.error(
-        'Não foi possível salvar os dados, porfavor tente novamente.',
+        'Não foi possível salvar os dados, por favor tente novamente.',
       );
     } finally {
       setIsSubmitting(false);

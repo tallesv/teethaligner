@@ -358,7 +358,7 @@ export default function EditProgramacaoTeethAligner() {
       push('/');
     } catch (err) {
       toast.error(
-        'Não foi possível editar a requisição, porfavor tente novamente.',
+        'Não foi possível editar a requisição, por favor tente novamente.',
       );
     } finally {
       setIsSubmitting(false);
