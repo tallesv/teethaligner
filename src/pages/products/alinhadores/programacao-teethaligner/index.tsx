@@ -98,7 +98,7 @@ const programacaoTeethalignerFormSchema = yup.object().shape({
   caixa: yup.string().required('Por favor escolha o tipo da caixa'),
 });
 
-export default function Alinhadores() {
+export default function ProgramacaoTeethAligner() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [addressSelected, setAddressSelected] = useState<Address>(
