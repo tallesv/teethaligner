@@ -444,7 +444,8 @@ export default function AlinhadoresApenasImprimir() {
 
           <div className="col-span-6">
             <span className="block text-sm font-medium text-gray-600">
-              Vamos personalizar sua embalagem:
+              Caso queira, nos envie sua logomarca e personalizamos sua
+              embalagem:
             </span>
             <div className="my-2">
               <div className="flex flex-col ml-1 space-y-4">
