@@ -118,9 +118,9 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <img
-                      className="h-16"
-                      src="/images/logo.png"
-                      alt="Your Company"
+                      className="h-20"
+                      src="/images/logo-back-white.png"
+                      alt="TeethAligner Logo"
                     />
                   </div>
                   <div className="hidden md:block">
