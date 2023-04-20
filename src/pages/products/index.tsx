@@ -38,6 +38,7 @@ const products = [
         info: [
           'Valor do setup: R$ 350,00',
           'Valor unitário do alinhador: R$ 68,00',
+          'Valor por refinamento: R$ 300,00',
           'Personalização da embalagem: Gratuita ',
           'Caixa Regular: Gratuita',
           'Caixa Premium: R$ 25,00',
