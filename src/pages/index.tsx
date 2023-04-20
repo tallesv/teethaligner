@@ -73,7 +73,7 @@ export default function Home() {
       request.patient_name.toLowerCase().includes(termSearched.toLowerCase()),
     )
     .sort((a, b) =>
-      dataOrder?.field === 'birthDate' && dataOrder.order === `ascending`
+      dataOrder?.field === 'created_at' && dataOrder.order === `ascending`
         ? new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()
         : new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf(),
     );
@@ -218,6 +218,7 @@ export default function Home() {
                       index % 2 === 1 ? 'bg-gray-100' : 'bg-white'
                     }`}
                   >
+                    <td className="px-6 py-4 text-gray-700">''</td>
                     <td className="px-6 py-4 text-gray-700">
                       {request.patient_name}
                     </td>
