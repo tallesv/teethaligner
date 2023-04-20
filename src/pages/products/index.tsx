@@ -69,7 +69,7 @@ const products = [
     title: 'Moldagem de transferência virtual',
     services: [],
     info: [
-      'Impressão da moldagem de transferência virtual: R$ 45,00',
+      'Impressão da moldagem de transferência virtual: R$ 45,00 (valor unitário)',
       'Impressão modelo: R$ 40,00 (em casos de impressão de ambos os arcos)',
       'Acréscimo taxa de envio',
     ],
