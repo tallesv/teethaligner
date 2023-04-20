@@ -33,7 +33,7 @@ const products = [
         ],
       },
       {
-        title: 'Programação OrthoSetup',
+        title: 'Programação TeethAligner Premium',
         path: '',
         info: [
           'Valor do setup: R$ 350,00',
@@ -108,7 +108,7 @@ const services = [
     ],
   },
   {
-    title: 'Programação OrthoSetup',
+    title: 'Programação TeethAligner Premium',
     product: 'Alinhadores personalizados',
     info: [
       'Valor do setup r$ 350,00',
@@ -125,7 +125,7 @@ const services = [
     subTitle: 'Valor do setup R$ 250,00',
   },
   {
-    title: 'Programação OrthoSetup',
+    title: 'Programação TeethAligner Premium',
     product: 'Setup',
     subTitle: 'Valor do setup R$ 350,00',
   },
