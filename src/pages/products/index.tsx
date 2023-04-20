@@ -184,9 +184,9 @@ export default function SelectProduct() {
                 <br />
                 Oferecemos 2 serviços para a programação do seu tratamento:
                 <br />A programação TeethAligner com o padrão de qualidade que
-                você já conhece e a programação do tratamento com a OrtoSetup,
-                empresa especializada na programação de tratamentos com
-                alinhadores Ortodônticos.
+                você já conhece e a programação TeethAligner premium para casos
+                de alta complexidade (correções da classe II ou classe III com
+                mesializações ou distalizações com programações distintas).
               </p>
             </div>
             <RadioGroup
@@ -231,9 +231,9 @@ export default function SelectProduct() {
               <br />
               Oferecemos 2 serviços para a programação do seu tratamento:
               <br />A programação TeethAligner com o padrão de qualidade que
-              você já conhece e a programação do tratamento com a OrtoSetup,
-              empresa especializada na programação de tratamentos com
-              alinhadores Ortodônticos.
+              você já conhece e a programação TeethAligner premium para casos de
+              alta complexidade (correções da classe II ou classe III com
+              mesializações ou distalizações com programações distintas).
             </p>
 
             <RadioGroup
