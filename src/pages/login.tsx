@@ -81,6 +81,15 @@ export default function Login() {
           {/* <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             Teeth Aligner
           </h2> */}
+          <p className="mt-5 text-center text-sm text-gray-500">
+            Não tem cadastro?
+            <Link href="/sign-up">
+              <span className="font-semibold leading-6 text-blue-600 hover:text-blue-500">
+                {' '}
+                Faça o seu cadastro agora
+              </span>
+            </Link>
+          </p>
         </div>
 
         {loginError && (
