@@ -144,8 +144,8 @@ export default function EditAlinhadoresApenasImprimir() {
       .string()
       .test(
         'len',
-        'A mensagem tem que ter no máximo 20 caracteres',
-        value => value?.length === 0 || (!!value && value?.length < 21),
+        'A mensagem tem que ter no máximo 15 caracteres',
+        value => value?.length === 0 || (!!value && value?.length < 16),
       ),
     caixa: yup.string().required('Por favor escolha o tipo da caixa'),
   });
@@ -655,7 +655,7 @@ export default function EditAlinhadoresApenasImprimir() {
             <div className="my-2">
               <div className="flex flex-row items-center space-x-3 mt-2 ml-1">
                 <Input
-                  label="Inserir uma mensagem personalizada a embalagem(até 20 carácteres):"
+                  label="Deixe uma mensagem personalizada ao seu cliente com até 15 carácteres"
                   {...register('mensagem_personalizada_embalagem')}
                   error={!!formState.errors.mensagem_personalizada_embalagem}
                   errorMessage={
