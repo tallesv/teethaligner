@@ -6,7 +6,7 @@ export default function Document() {
       <Head>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 
-        <link rel="icon" href="/images/logo-back-colored.png" />
+        <link rel="icon" href="/images/logo-favicon.png" />
       </Head>
       <body>
         <Main />
