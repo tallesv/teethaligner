@@ -603,18 +603,23 @@ export default function EditTransferenciaVirtual() {
             </div>
           </div>
 
-          <div className="col-span-6">
+          <div className="col-span-6 space-y-2">
             <button
               type="submit"
               disabled={isSubmitting}
               className={classNames(
                 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500',
-                'mt-10 flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2',
+                'mt-2 flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2',
               )}
             >
               <Spinner hidden={isSubmitting} />
               Realizar pedido
             </button>
+
+            <span className="text-sm mx-4 block font-medium text-gray-500">
+              O pedido será enviado após o pagamento via pix ou boleto a ser
+              acordado em contato pelo WhatsApp feito pela empresa.
+            </span>
           </div>
         </div>
       </form>
