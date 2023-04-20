@@ -23,17 +23,13 @@ import states from '@/utils/states';
 type ProfileFormData = {
   avatar: string | File | null;
   name: string;
+  phone: string;
 };
 
 const profileFormSchema = yup.object().shape({
   avatar: yup.mixed<File>(),
   name: yup.string().required('Por favor insira um Nome.'),
-  postal_code: yup.string(),
-  state: yup.string(),
-  district: yup.string(),
-  street: yup.string(),
-  number: yup.string(),
-  complement: yup.string(),
+  phone: yup.string(),
 });
 
 type AddressFormData = {
@@ -91,7 +87,7 @@ export default function Profile() {
   async function handleEditProfileSubmit(data: ProfileFormData) {
     try {
       setIsSubmitting(true);
-      const { avatar, name } = data;
+      const { avatar, name, phone } = data;
 
       if (avatarPreview && userLogged?.avatar) {
         await deleteFile(userLogged.avatar);
@@ -103,6 +99,7 @@ export default function Profile() {
 
       await api.put(`/users/${userLogged?.firebase_id}`, {
         name,
+        phone,
         avatar: avatarUrl,
       });
 
@@ -208,6 +205,14 @@ export default function Profile() {
                         {...profileRegister('name')}
                         error={!!profileFormState.errors.name}
                         errorMessage={profileFormState.errors.name?.message}
+                      />
+                    </div>
+                    <div className="col-span-6">
+                      <Input
+                        label="Telefone"
+                        {...profileRegister('phone')}
+                        error={!!profileFormState.errors.phone}
+                        errorMessage={profileFormState.errors.phone?.message}
                       />
                     </div>
                   </div>
