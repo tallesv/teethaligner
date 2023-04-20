@@ -19,6 +19,7 @@ import uploadFile from '@/utils/uploadFile';
 import { toast } from 'react-toastify';
 import deleteFile from '@/utils/deleteFile';
 import states from '@/utils/states';
+import cepPromise from 'cep-promise';
 
 type ProfileFormData = {
   avatar: string | File | null;
@@ -47,7 +48,7 @@ const addressFormSchema = yup.object().shape({
   district: yup.string().required('Por favor insira a cidade.'),
   street: yup.string().required('Por favor insira a rua.'),
   number: yup.string().required('Por favor insira o número da rua.'),
-  complement: yup.string().required('Por favor insira o complemento.'),
+  complement: yup.string(),
 });
 
 export default function Profile() {
@@ -70,6 +71,8 @@ export default function Profile() {
     handleSubmit: addressHandleSubmit,
     formState: addressFormState,
     reset: addressReset,
+    setValue: addressSetValue,
+    clearErrors: addressClearErrors,
   } = useForm<AddressFormData>({
     resolver: yupResolver(addressFormSchema),
   });
@@ -81,6 +84,21 @@ export default function Profile() {
       const urlPreview = URL.createObjectURL(e.target.files[0]);
       setAvatarPreview(urlPreview);
       profileSetValue('avatar', e.target.files[0]);
+    }
+  }
+
+  async function handleFillAddress(cep: string) {
+    if (cep && (cep.length === 8 || cep.length === 9)) {
+      const formatedCep = cep.replace(/-/g, '');
+      const { state, city, street } = await cepPromise(formatedCep);
+
+      addressSetValue(
+        'state',
+        String(states.find(item => item.abbreviation === state)?.value),
+      );
+      addressSetValue('district', city);
+      addressSetValue('street', street);
+      addressClearErrors();
     }
   }
 
@@ -308,6 +326,7 @@ export default function Profile() {
                       <Input
                         label="Cep"
                         {...addressRegister('postal_code')}
+                        onChange={e => handleFillAddress(e.target.value)}
                         error={!!addressFormState.errors.postal_code}
                         errorMessage={
                           addressFormState.errors.postal_code?.message
