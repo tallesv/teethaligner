@@ -876,7 +876,8 @@ export default function EditProgramacaoTeethAligner() {
 
           <div className="col-span-6">
             <span className="block text-sm font-medium text-gray-600">
-              Caso queira, nos envie sua logomarca e personalizamos sua embalagem:
+              Caso queira, nos envie sua logomarca e personalizamos sua
+              embalagem:
             </span>
 
             <div className="my-2">
