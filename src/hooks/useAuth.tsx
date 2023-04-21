@@ -43,11 +43,3 @@ const useAuth = create<useAuthProps>(set => ({
 }));
 
 export default useAuth;
-
-// {
-//   avatar: null,
-//   email: 'talles17.a@gmail.com',
-//   firebase_id: '4SWWYZcVMCYzXy7TuTRy1jFne0S2',
-//   name: 'Talles Vieira',
-//   user_type: 'Admin',
-// },
