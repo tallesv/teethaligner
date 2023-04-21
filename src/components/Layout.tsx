@@ -83,14 +83,14 @@ export default function Layout({ children }: LayoutProps) {
       header: 'Gerenciamento de usuários',
       href: '/users',
       current: pathname === '/users',
-      showInHeader: true,
+      showInHeader: userLogged?.user_type === 'Admin',
     },
     {
       name: 'Cadastro',
       header: 'Cadastro de usuários',
       href: '/add-user',
       current: pathname === '/add-user',
-      showInHeader: true,
+      showInHeader: userLogged?.user_type === 'Admin',
     },
   ];
 
@@ -228,24 +228,26 @@ export default function Layout({ children }: LayoutProps) {
 
             <Disclosure.Panel className="md:hidden">
               <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
-                {navigation.map(item => (
-                  <Link key={item.name} href={item.href} legacyBehavior>
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? 'bg-gray-900 text-white'
-                          : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                        'block px-3 py-2 rounded-md text-base font-medium',
-                      )}
-                      aria-current={item.current ? 'page' : undefined}
-                    >
-                      {item.name}
-                    </Disclosure.Button>
-                  </Link>
-                ))}
+                {navigation
+                  .filter(item => item.showInHeader)
+                  .map(item => (
+                    <Link key={item.name} href={item.href} legacyBehavior>
+                      <Disclosure.Button
+                        key={item.name}
+                        as="a"
+                        href={item.href}
+                        className={classNames(
+                          item.current
+                            ? 'bg-gray-900 text-white'
+                            : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          'block px-3 py-2 rounded-md text-base font-medium',
+                        )}
+                        aria-current={item.current ? 'page' : undefined}
+                      >
+                        {item.name}
+                      </Disclosure.Button>
+                    </Link>
+                  ))}
               </div>
               <div className="border-t border-gray-700 pt-4 pb-3">
                 <div className="flex items-center px-5">
