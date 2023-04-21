@@ -19,6 +19,7 @@ import uploadFile from '@/utils/uploadFile';
 import { toast } from 'react-toastify';
 import deleteFile from '@/utils/deleteFile';
 import states from '@/utils/states';
+import { auth } from '@/config/firebase';
 import cepPromise from 'cep-promise';
 
 type ProfileFormData = {
@@ -165,6 +166,15 @@ export default function Profile() {
     }
   }
 
+  async function handleSendResetPasswordEmail() {
+    if (userLogged) {
+      await auth.sendPasswordResetEmail(userLogged?.email);
+      toast.success(
+        'Um email com o link para resetar a sua senha foi enviado.',
+      );
+    }
+  }
+
   useEffect(() => {
     profileReset({ ...userLogged });
   }, [profileReset, userLogged]);
@@ -209,6 +219,7 @@ export default function Profile() {
                     <button
                       type="button"
                       className="ml-5 h-10 rounded-md border border-gray-300 bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50"
+                      onClick={() => handleSendResetPasswordEmail()}
                     >
                       Alterar senha
                     </button>
