@@ -8,7 +8,6 @@ import Checkbox from '@/components/Form/Checkbox';
 import Input from '@/components/Form/Input';
 import Layout from '@/components/Layout';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Spinner from '@/components/Spinner';
 import api from '@/client/api';
 import { firebaseAuth } from '@/config/firebase';
