@@ -112,6 +112,41 @@ export default function Home() {
     }
   }
 
+  function getBadgetByStatus(requestStatus: string) {
+    switch (requestStatus) {
+      case 'Nova':
+        return (
+          <span className="flex items-center space-x-1.5 rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800">
+            <span className="-ml-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-600" />
+            <span>{requestStatus}</span>
+          </span>
+        );
+      case 'Em planejamento':
+        return (
+          <span className="flex items-center space-x-1.5 rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800">
+            <span className="-ml-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600" />
+            <span>{requestStatus}</span>
+          </span>
+        );
+      case 'Em produção':
+        return (
+          <span className="flex items-center space-x-1.5 rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800">
+            <span className="-ml-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
+            <span>{requestStatus}</span>
+          </span>
+        );
+      case 'Enviado/Entregue':
+        return (
+          <span className="flex items-center space-x-1.5 rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-800">
+            <span className="-ml-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-red-600" />
+            <span>{requestStatus}</span>
+          </span>
+        );
+      default:
+        return requestStatus;
+    }
+  }
+
   if (isLoading) return <Layout>Loading...</Layout>;
 
   if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
@@ -226,7 +261,7 @@ export default function Home() {
                       {request.product_name}
                     </td>
                     <td className="px-6 py-4 text-gray-700">
-                      {request.status}
+                      {getBadgetByStatus(request.status)}
                     </td>
                     <td className="px-6 py-4 text-gray-700">
                       {new Date(request.created_at).toLocaleDateString('pt-BR')}
