@@ -7,6 +7,7 @@ import {
 } from 'react';
 
 interface UploadFileButtonProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
   multiple?: boolean;
   error?: boolean;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -14,7 +15,13 @@ interface UploadFileButtonProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const UploadFileButton = forwardRef(
   (
-    { multiple = false, error, onChange, ...rest }: UploadFileButtonProps,
+    {
+      label,
+      multiple = false,
+      error,
+      onChange,
+      ...rest
+    }: UploadFileButtonProps,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     const inputBorderStyle = error
@@ -29,7 +36,7 @@ const UploadFileButton = forwardRef(
           'ml-3 cursor-pointer rounded-md border bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50',
         )}
       >
-        <span className="">Escolher arquivo</span>
+        <span className="">{label ?? 'Escolher arquivo'}</span>
         <input
           type="file"
           multiple={multiple}
