@@ -15,7 +15,7 @@ type Address = {
 type User = {
   name: string;
   email: string;
-  user_type: 'Admin' | 'Client';
+  user_type: 'Admin' | 'Cliente';
   firebase_id: string;
   avatar: string | null;
   addresses: Address[];
