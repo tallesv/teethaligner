@@ -249,7 +249,7 @@ export default function Users() {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Opções
+                  {/* Opções */}
                 </th>
               </tr>
             </thead>
@@ -271,7 +271,15 @@ export default function Users() {
                     </th>
                     <td className="px-6 py-4 text-gray-700">{user.email}</td>
                     <td className="px-6 py-4 text-gray-700">
-                      {user.user_type}
+                      {user.user_type === 'Admin' ? (
+                        <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">
+                          {user.user_type}
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+                          {user.user_type}
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-gray-700">
                       {new Date(user.created_at).toLocaleDateString('pt-BR')}
