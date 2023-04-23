@@ -19,6 +19,19 @@ type RequestsFromApi = {
   status: string;
 };
 
+type Request = {
+  id: number;
+  patient_name: string;
+  user_id: number;
+  product_name: string;
+  created_at: string;
+  status: string;
+  escaneamento_do_arco_inferior: string[];
+  escaneamento_do_arco_superior: string[];
+  escaneamento_do_registro_de_mordida: string[];
+  logomarca?: string;
+};
+
 type orderProps = {
   field: string;
   order: 'ascending' | 'descending';
@@ -26,7 +39,7 @@ type orderProps = {
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [requests, setRequests] = useState<RequestsFromApi[]>([]);
+  const [requests, setRequests] = useState<Request[]>([]);
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
     field: `birthDate`,
@@ -35,7 +48,7 @@ export default function Home() {
 
   const [isDeleteRequestModalOpen, setIsDeleteRequestModalOpen] =
     useState(false);
-  const [requestToDelete, setRequestToDelete] = useState({} as RequestsFromApi);
+  const [requestToDelete, setRequestToDelete] = useState({} as Request);
 
   function handleRequestsFromApi(data: RequestsFromApi[]) {
     const treatedRequests = data.map(item => {
@@ -69,7 +82,7 @@ export default function Home() {
   }
 
   const filteredRequests = requests
-    .filter((request: RequestsFromApi) =>
+    .filter((request: Request) =>
       request.patient_name.toLowerCase().includes(termSearched.toLowerCase()),
     )
     .sort((a, b) =>
@@ -78,7 +91,7 @@ export default function Home() {
         : new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf(),
     );
 
-  function getRequestUrl(request: RequestsFromApi) {
+  function getRequestUrl(request: Request) {
     switch (request.product_name) {
       case 'Setup':
         return `/products/setup/${request.id}`;
@@ -95,7 +108,7 @@ export default function Home() {
     }
   }
 
-  function getEditRequestUrl(request: RequestsFromApi) {
+  function getEditRequestUrl(request: Request) {
     switch (request.product_name) {
       case 'Setup':
         return `/products/setup/edit/${request.id}`;
@@ -158,7 +171,7 @@ export default function Home() {
         request={requestToDelete}
         onCloseModal={() => {
           setIsDeleteRequestModalOpen(false);
-          setRequestToDelete({} as RequestsFromApi);
+          setRequestToDelete({} as Request);
         }}
         onDelete={() => refetch()}
       />
