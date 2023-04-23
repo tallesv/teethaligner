@@ -133,7 +133,7 @@ export default function GuiaCirurgico() {
           patient_name: data.pacient_name,
           product_name: 'Modelos/Guias Cirúrgicos',
           status: 'Nova',
-          accepted: false,
+          accepted: null,
           fields: JSON.stringify({
             escaneamento_link: data.escaneamento_link,
             encaminhei_email: data.encaminhei_email,

@@ -141,7 +141,7 @@ export default function AlinhadoresApenasImprimir() {
           patient_name: data.pacient_name,
           product_name: 'Alinhadores - Apenas Imprimir',
           status: 'Nova',
-          accepted: false,
+          accepted: null,
           fields: JSON.stringify({
             personalizando_o_planejamento: data.personalizando_o_planejamento,
             escaneamento_link: data.escaneamento_link,

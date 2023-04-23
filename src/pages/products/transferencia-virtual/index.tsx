@@ -117,7 +117,7 @@ export default function TransferenciaVirtual() {
           patient_name: data.pacient_name,
           product_name: 'Moldagem de Transferência Virtual',
           status: 'Nova',
-          accepted: false,
+          accepted: null,
           fields: JSON.stringify({
             dentes_a_serem_preparados: data.dentes_a_serem_preparados,
             escaneamento_link: data.escaneamento_link,

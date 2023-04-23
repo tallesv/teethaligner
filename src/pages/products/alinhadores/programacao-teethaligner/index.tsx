@@ -202,7 +202,7 @@ export default function ProgramacaoTeethAligner() {
           patient_name: data.pacient_name,
           product_name: 'Alinhadores - Programação TeethAligner',
           status: 'Nova',
-          accepted: false,
+          accepted: null,
           fields: JSON.stringify({
             personalizando_o_planejamento: data.personalizando_o_planejamento,
             dentes_a_serem_movimentados: data.dentes_a_serem_movimentados,
