@@ -2,6 +2,7 @@ import api from '@/client/api';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import deleteFile from '@/utils/deleteFile';
 import Spinner from '../Spinner';
 
 interface ModalProps {
@@ -10,6 +11,10 @@ interface ModalProps {
     id: number;
     patient_name: string;
     product_name: string;
+    escaneamento_do_arco_inferior: string[];
+    escaneamento_do_arco_superior: string[];
+    escaneamento_do_registro_de_mordida: string[];
+    logomarca?: string;
   };
   onCloseModal: () => void;
   onDelete: () => void;
@@ -32,6 +37,22 @@ export default function DeleteRequestModal({
   async function handleDeleteRequest() {
     try {
       setIsSubmiting(true);
+
+      await Promise.all(
+        request.escaneamento_do_arco_superior.map(item => deleteFile(item)),
+      );
+      await Promise.all(
+        request.escaneamento_do_arco_inferior.map(item => deleteFile(item)),
+      );
+      await Promise.all(
+        request.escaneamento_do_registro_de_mordida.map(item =>
+          deleteFile(item),
+        ),
+      );
+
+      if (request.logomarca) {
+        await deleteFile(request.logomarca);
+      }
 
       await api.delete(`requests/${request.id}`);
 
