@@ -6,6 +6,8 @@ type ProgramacaoTeethalignerFormData = {
   status: string;
   patient_name: string;
   addresses: Address[];
+  comments: CommentType[];
+  accepted: boolean | null;
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];
   movimento_dentario: string;
