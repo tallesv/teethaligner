@@ -94,7 +94,7 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
               <h3 className="text-base font-semibold leading-6 text-gray-900">
                 Informações do Setup
               </h3>
-              <Tab.List className="flex mt-2 space-x-4 rounded-xl py-1">
+              <Tab.List className="grid grid-cols-4 gap-4 mt-2 rounded-xl py-1">
                 {tabs.map(tab => (
                   <Tab
                     key={tab.title}

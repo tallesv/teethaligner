@@ -6,6 +6,8 @@ type GuiasCirurgicos = {
   status: string;
   patient_name: string;
   addresses: Address[];
+  comments: CommentType[];
+  accepted: boolean | null;
   escaneamento_do_arco_superior: string[];
   escaneamento_do_arco_inferior: string[];
   escaneamento_do_registro_de_mordida: string[];
