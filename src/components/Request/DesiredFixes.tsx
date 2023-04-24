@@ -177,11 +177,13 @@ export default function DesiredFixes({
             </article>
           ))}
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalQuantityOfData={comments.length}
-        onPageChange={setCurrentPage}
-      />
+      {comments.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalQuantityOfData={comments.length}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 }
