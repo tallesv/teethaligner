@@ -6,6 +6,8 @@ type TransferenciaVirtual = {
   status: string;
   patient_name: string;
   addresses: Address[];
+  comments: CommentType[];
+  accepted: boolean | null;
   dentes_a_serem_preparados: string[];
   escaneamento_do_arco_superior: string[];
   escaneamento_do_arco_inferior: string[];
