@@ -150,7 +150,10 @@ export default function ShowGuiasCirurgicos() {
                         <ul className="divide-y divide-gray-200 rounded-md border border-gray-200">
                           {request?.escaneamento_do_arco_superior.map(
                             arcoSuperior => (
-                              <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
+                              <li
+                                key={arcoSuperior}
+                                className="flex items-center justify-between py-3 pl-3 pr-4 text-sm"
+                              >
                                 <div className="flex w-0 flex-1 items-center">
                                   <svg
                                     className="h-5 w-5 flex-shrink-0 text-gray-400"
@@ -187,7 +190,10 @@ export default function ShowGuiasCirurgicos() {
                           )}
                           {request?.escaneamento_do_arco_inferior.map(
                             arcoInferior => (
-                              <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
+                              <li
+                                key={arcoInferior}
+                                className="flex items-center justify-between py-3 pl-3 pr-4 text-sm"
+                              >
                                 <div className="flex w-0 flex-1 items-center">
                                   <svg
                                     className="h-5 w-5 flex-shrink-0 text-gray-400"
@@ -224,7 +230,10 @@ export default function ShowGuiasCirurgicos() {
                           )}
                           {request?.escaneamento_do_registro_de_mordida.map(
                             registrDeMordida => (
-                              <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
+                              <li
+                                key={registrDeMordida}
+                                className="flex items-center justify-between py-3 pl-3 pr-4 text-sm"
+                              >
                                 <div className="flex w-0 flex-1 items-center">
                                   <svg
                                     className="h-5 w-5 flex-shrink-0 text-gray-400"
