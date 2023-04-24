@@ -6,6 +6,8 @@ type ProgramacaoTeethalignerApenasImprimir = {
   status: string;
   patient_name: string;
   addresses: Address[];
+  comments: CommentType[];
+  accepted: boolean | null;
   personalizando_o_planejamento: string;
   escaneamento_do_arco_superior: string[];
   escaneamento_do_arco_inferior: string[];
