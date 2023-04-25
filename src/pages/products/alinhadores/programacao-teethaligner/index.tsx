@@ -60,31 +60,92 @@ const programacaoTeethalignerFormSchema = yup.object().shape({
   informacoes_adicionais: yup.string(),
   escaneamento_do_arco_superior: yup
     .array()
-    .min(1, 'Por favor faça o upload do escaneamento do arco superior')
-    .of(yup.mixed<File>()),
+    .of(yup.mixed<File>())
+    .test(
+      'Required',
+      'Por favor faça o upload do escaneamento do arco superior',
+      (value, ctx) => {
+        return (
+          (ctx.parent.escaneamento_do_arco_superior.length > 0 &&
+            ctx.parent.escaneamento_do_arco_inferior.length > 0) ||
+          ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+          ctx.parent.escaneamento_link ||
+          ctx.parent.encaminhei_email
+        );
+      },
+    ),
   escaneamento_do_arco_inferior: yup
     .array()
-    .min(1, 'Por favor faça o upload do escaneamento do arco inferior')
-    .of(yup.mixed<File>()),
+    .of(yup.mixed<File>())
+    .test(
+      'Required',
+      'Por favor faça o upload do escaneamento do arco inferior',
+      (value, ctx) => {
+        return (
+          (ctx.parent.escaneamento_do_arco_superior.length > 0 &&
+            ctx.parent.escaneamento_do_arco_inferior.length > 0) ||
+          ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+          ctx.parent.escaneamento_link ||
+          ctx.parent.encaminhei_email
+        );
+      },
+    ),
   escaneamento_do_registro_de_mordida: yup
     .array()
-    .min(1, 'Por favor faça o upload do escaneamento registro de mordida')
-    .of(yup.mixed<File>()),
+    .of(yup.mixed<File>())
+    .test(
+      'Required',
+      'Por favor faça o upload do escaneamento registro de mordida',
+      (value, ctx) => {
+        return (
+          (ctx.parent.escaneamento_do_arco_superior.length > 0 &&
+            ctx.parent.escaneamento_do_arco_inferior.length > 0) ||
+          ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+          ctx.parent.escaneamento_link ||
+          ctx.parent.encaminhei_email
+        );
+      },
+    ),
   escaneamento_link: yup
     .string()
-    .required(
+    .test(
+      'Required',
       'Por favor insira o link do escaneamento enviado  pelo entro de documentação.',
+      (value, ctx) => {
+        return (
+          (ctx.parent.escaneamento_do_arco_superior.length > 0 &&
+            ctx.parent.escaneamento_do_arco_inferior.length > 0) ||
+          ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+          ctx.parent.escaneamento_link ||
+          ctx.parent.encaminhei_email
+        );
+      },
     ),
-  encaminhei_email: yup.boolean(),
+  encaminhei_email: yup
+    .boolean()
+    .test(
+      'Required',
+      'Por favor confirme se o email com os arquivos do escaneamento foi enviado.',
+      (value, ctx) => {
+        return (
+          (ctx.parent.escaneamento_do_arco_superior.length > 0 &&
+            ctx.parent.escaneamento_do_arco_inferior.length > 0) ||
+          ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+          ctx.parent.escaneamento_link ||
+          ctx.parent.encaminhei_email
+        );
+      },
+    ),
   logomarca: yup
     .mixed<File>()
     .test(
       'fileSize',
       'Por favor faça o upload da logomarca em JPG',
       value =>
-        value &&
-        !!value.type &&
-        (value?.type.includes('/jpeg') || value?.type.includes('/jpg')),
+        value?.length === 0 ||
+        (value &&
+          !!value.type &&
+          (value?.type.includes('/jpeg') || value?.type.includes('/jpg'))),
     ),
   mensagem_personalizada_embalagem: yup
     .string()
@@ -194,7 +255,10 @@ export default function ProgramacaoTeethAligner() {
         data.escaneamento_do_registro_de_mordida.map(item => uploadFile(item)),
       );
 
-      const logomarcarUrl = await uploadFile(data.logomarca);
+      const logomarcarUrl =
+        data.logomarca.length > 0
+          ? await uploadFile(data.logomarca)
+          : undefined;
 
       await api.post(
         `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
@@ -734,6 +798,11 @@ export default function ProgramacaoTeethAligner() {
                   label="Encaminhei o email com os arquivos do escaneamento para  alignerteeth@gmail.com"
                   {...register('encaminhei_email')}
                 />
+                {formState.errors.encaminhei_email && (
+                  <span className="ml-1 text-sm font-medium text-red-500">
+                    {formState.errors.encaminhei_email.message}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -805,13 +874,13 @@ export default function ProgramacaoTeethAligner() {
                 </span>
                 <div className="flex flex-row items-center space-x-3 ml-1">
                   <Radio
-                    id="manter"
+                    id="Padrão"
                     label="Padrão"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}
                   />
                   <Radio
-                    id="corrigir"
+                    id="Premium (R$ 25,00)"
                     label="Premium (R$ 25,00)"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}
