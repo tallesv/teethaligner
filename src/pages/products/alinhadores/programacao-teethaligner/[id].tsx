@@ -91,7 +91,7 @@ export default function ShowProgramacaoTeethaligner() {
           <Tab.Group>
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Informações do Setup
+                {`Informações do Setup - ${request.patient_name}`}
               </h3>
               <Tab.List className="grid grid-cols-4 gap-4 mt-2 rounded-xl py-1">
                 {tabs.map(tab => (
