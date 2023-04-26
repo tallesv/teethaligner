@@ -98,10 +98,20 @@ export default function Setup() {
       .test(
         'Required',
         'Por favor faça o upload do escaneamento do arco superior',
-        value => {
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            ((value && value?.length > 0) ||
+              escaneamentoDoArcoSuperior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_inferior.length > 0 ||
+              escaneamentoDoArcoInferior.length > 0);
+          const hasRegistroDeMordida =
+            ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+            escaneamentoDoRegistroDeMordida.length > 0;
           return (
-            (value && value?.length > 0) ||
-            escaneamentoDoArcoSuperior.length > 0
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            ctx.parent.escaneamento_link ||
+            ctx.parent.encaminhei_email
           );
         },
       ),
@@ -111,10 +121,20 @@ export default function Setup() {
       .test(
         'Required',
         'Por favor faça o upload do escaneamento do arco inferior',
-        value => {
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            ((value && value?.length > 0) ||
+              escaneamentoDoArcoInferior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_superior.length > 0 ||
+              escaneamentoDoArcoSuperior.length > 0);
+          const hasRegistroDeMordida =
+            ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+            escaneamentoDoRegistroDeMordida.length > 0;
           return (
-            (value && value?.length > 0) ||
-            escaneamentoDoArcoInferior.length > 0
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            ctx.parent.escaneamento_link ||
+            ctx.parent.encaminhei_email
           );
         },
       ),
@@ -124,19 +144,67 @@ export default function Setup() {
       .test(
         'Required',
         'Por favor faça o upload do escaneamento do registro de mordida',
-        value => {
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            (ctx.parent.escaneamento_do_arco_inferior.length > 0 ||
+              escaneamentoDoArcoInferior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_superior.length > 0 ||
+              escaneamentoDoArcoSuperior.length > 0);
+          const hasRegistroDeMordida =
+            (value && value.length > 0) ||
+            escaneamentoDoRegistroDeMordida.length > 0;
           return (
-            (value && value?.length > 0) ||
-            escaneamentoDoRegistroDeMordida.length > 0
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            ctx.parent.escaneamento_link ||
+            ctx.parent.encaminhei_email
           );
         },
       ),
     escaneamento_link: yup
       .string()
-      .required(
+      .test(
+        'Required',
         'Por favor insira o link do escaneamento enviado  pelo entro de documentação.',
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            (ctx.parent.escaneamento_do_arco_inferior.length > 0 ||
+              escaneamentoDoArcoInferior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_superior.length > 0 ||
+              escaneamentoDoArcoSuperior.length > 0);
+          const hasRegistroDeMordida =
+            ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+            escaneamentoDoRegistroDeMordida.length > 0;
+          return (
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            value ||
+            ctx.parent.encaminhei_email
+          );
+        },
       ),
-    encaminhei_email: yup.boolean(),
+    encaminhei_email: yup
+      .boolean()
+      .test(
+        'Required',
+        'Por favor confirme se o email com os arquivos do escaneamento foi enviado.',
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            (ctx.parent.escaneamento_do_arco_inferior.length > 0 ||
+              escaneamentoDoArcoInferior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_superior.length > 0 ||
+              escaneamentoDoArcoSuperior.length > 0);
+          const hasRegistroDeMordida =
+            ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+            escaneamentoDoRegistroDeMordida.length > 0;
+          return (
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            ctx.parent.escaneamento_link ||
+            value
+          );
+        },
+      ),
   });
 
   const {
@@ -845,6 +913,11 @@ export default function Setup() {
                   label="Encaminhei o email com os arquivos do escaneamento para  alignerteeth@gmail.com"
                   {...register('encaminhei_email')}
                 />
+                {formState.errors.encaminhei_email && (
+                  <span className="ml-1 text-sm font-medium text-red-500">
+                    {formState.errors.encaminhei_email.message}
+                  </span>
+                )}
               </div>
             </div>
           </div>

@@ -86,10 +86,20 @@ export default function EditAlinhadoresApenasImprimir() {
       .test(
         'Required',
         'Por favor faça o upload do escaneamento do arco superior',
-        value => {
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            ((value && value?.length > 0) ||
+              escaneamentoDoArcoSuperior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_inferior.length > 0 ||
+              escaneamentoDoArcoInferior.length > 0);
+          const hasRegistroDeMordida =
+            ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+            escaneamentoDoRegistroDeMordida.length > 0;
           return (
-            (value && value?.length > 0) ||
-            escaneamentoDoArcoSuperior.length > 0
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            ctx.parent.escaneamento_link ||
+            ctx.parent.encaminhei_email
           );
         },
       ),
@@ -99,10 +109,20 @@ export default function EditAlinhadoresApenasImprimir() {
       .test(
         'Required',
         'Por favor faça o upload do escaneamento do arco inferior',
-        value => {
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            ((value && value?.length > 0) ||
+              escaneamentoDoArcoInferior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_superior.length > 0 ||
+              escaneamentoDoArcoSuperior.length > 0);
+          const hasRegistroDeMordida =
+            ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+            escaneamentoDoRegistroDeMordida.length > 0;
           return (
-            (value && value?.length > 0) ||
-            escaneamentoDoArcoInferior.length > 0
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            ctx.parent.escaneamento_link ||
+            ctx.parent.encaminhei_email
           );
         },
       ),
@@ -112,19 +132,67 @@ export default function EditAlinhadoresApenasImprimir() {
       .test(
         'Required',
         'Por favor faça o upload do escaneamento do registro de mordida',
-        value => {
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            (ctx.parent.escaneamento_do_arco_inferior.length > 0 ||
+              escaneamentoDoArcoInferior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_superior.length > 0 ||
+              escaneamentoDoArcoSuperior.length > 0);
+          const hasRegistroDeMordida =
+            (value && value.length > 0) ||
+            escaneamentoDoRegistroDeMordida.length > 0;
           return (
-            (value && value?.length > 0) ||
-            escaneamentoDoRegistroDeMordida.length > 0
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            ctx.parent.escaneamento_link ||
+            ctx.parent.encaminhei_email
           );
         },
       ),
     escaneamento_link: yup
       .string()
-      .required(
+      .test(
+        'Required',
         'Por favor insira o link do escaneamento enviado  pelo entro de documentação.',
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            (ctx.parent.escaneamento_do_arco_inferior.length > 0 ||
+              escaneamentoDoArcoInferior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_superior.length > 0 ||
+              escaneamentoDoArcoSuperior.length > 0);
+          const hasRegistroDeMordida =
+            ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+            escaneamentoDoRegistroDeMordida.length > 0;
+          return (
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            value ||
+            ctx.parent.encaminhei_email
+          );
+        },
       ),
-    encaminhei_email: yup.boolean(),
+    encaminhei_email: yup
+      .boolean()
+      .test(
+        'Required',
+        'Por favor confirme se o email com os arquivos do escaneamento foi enviado.',
+        (value, ctx) => {
+          const hasArcoSuperiorAndInferior =
+            (ctx.parent.escaneamento_do_arco_inferior.length > 0 ||
+              escaneamentoDoArcoInferior.length > 0) &&
+            (ctx.parent.escaneamento_do_arco_superior.length > 0 ||
+              escaneamentoDoArcoSuperior.length > 0);
+          const hasRegistroDeMordida =
+            ctx.parent.escaneamento_do_registro_de_mordida.length > 0 ||
+            escaneamentoDoRegistroDeMordida.length > 0;
+          return (
+            hasArcoSuperiorAndInferior ||
+            hasRegistroDeMordida ||
+            ctx.parent.escaneamento_link ||
+            value
+          );
+        },
+      ),
     logomarca: yup
       .mixed<File>()
       .test(
@@ -137,7 +205,9 @@ export default function EditAlinhadoresApenasImprimir() {
             value &&
             !!value.type &&
             (value?.type.includes('/jpeg') || value?.type.includes('/jpg'));
-          return logomarcaNotChanged || fileUploadedIsJPG;
+          return (
+            logomarcaNotChanged || fileUploadedIsJPG || (value && !value.type)
+          );
         },
       ),
     mensagem_personalizada_embalagem: yup
@@ -211,6 +281,16 @@ export default function EditAlinhadoresApenasImprimir() {
     clearErrors('address');
   }
 
+  async function getLogomarcaUrl(logomarcaFromForm: File) {
+    if (logomarca && isFromFirebaseStorage(logomarca)) {
+      return logomarca;
+    }
+    if (logomarcaFromForm.type) {
+      return uploadFile(logomarcaFromForm as File);
+    }
+    return undefined;
+  }
+
   async function handleProgramacaoTeethalignerSubmit(
     data: ProgramacaoTeethalignerApenasImprimirFormData,
   ) {
@@ -261,10 +341,8 @@ export default function EditAlinhadoresApenasImprimir() {
       if (removedLogomarca) {
         await deleteFile(removedLogomarca);
       }
-      const logomarcarUrl =
-        logomarca && isFromFirebaseStorage(logomarca)
-          ? logomarca
-          : await uploadFile(data.logomarca);
+
+      const logomarcarUrl = await getLogomarcaUrl(data.logomarca);
 
       await api.put(`requests/${caseId}?user_id=${userLogged?.firebase_id}`, {
         patient_name: data.patient_name,
@@ -592,6 +670,11 @@ export default function EditAlinhadoresApenasImprimir() {
                   label="Encaminhei o email com os arquivos do escaneamento para  alignerteeth@gmail.com"
                   {...register('encaminhei_email')}
                 />
+                {formState.errors.encaminhei_email && (
+                  <span className="ml-1 text-sm font-medium text-red-500">
+                    {formState.errors.encaminhei_email.message}
+                  </span>
+                )}
               </div>
             </div>
           </div>
