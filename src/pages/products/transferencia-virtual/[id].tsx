@@ -15,7 +15,7 @@ import DesiredFixes from '@/components/Request/DesiredFixes';
 const tabs = [
   { title: 'Dados da requisição' },
   { title: 'Relatório da programação' },
-  { title: 'Correções desejadas' },
+  // { title: 'Correções desejadas' },
 ];
 
 export default function ShowTransferenciaVirtual() {
@@ -64,6 +64,7 @@ export default function ShowTransferenciaVirtual() {
           content,
         },
       );
+      handleEditRequest({ accepted: false });
 
       refetch();
     } catch (err) {
@@ -305,6 +306,12 @@ export default function ShowTransferenciaVirtual() {
                     request={request}
                     user={userLogged}
                     onAcceptReport={accepted => handleEditRequest({ accepted })}
+                    comments={request.comments}
+                    onSendDesiredFixes={content =>
+                      handleRequestCorrectionsSubmit(content)
+                    }
+                    onDeleteComment={() => refetch()}
+                    onSaveReport={() => handleEditRequest({ accepted: null })}
                   />
                 </Tab.Panel>
                 <Tab.Panel hidden={tabSelected !== 'Correções desejadas'}>
