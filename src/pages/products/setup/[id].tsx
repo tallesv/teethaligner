@@ -80,7 +80,7 @@ export default function ShowSetup() {
 
   return (
     <Layout>
-      {request && (
+      {request && userLogged && (
         <div
           className={classNames(
             isSubmitting ? 'pointer-events-none' : '',
@@ -111,12 +111,14 @@ export default function ShowSetup() {
                   </Tab>
                 ))}
 
-                <div className="col-span-3 sm:col-span-2 md:col-span-1">
-                  <SelectStatus
-                    status={request.status}
-                    onSelectStatus={status => handleEditRequest({ status })}
-                  />
-                </div>
+                {userLogged.user_type === 'Admin' && (
+                  <div className="col-span-3 sm:col-span-2 md:col-span-1">
+                    <SelectStatus
+                      status={request.status}
+                      onSelectStatus={status => handleEditRequest({ status })}
+                    />
+                  </div>
+                )}
               </Tab.List>
             </div>
             <Tab.Panels className="mt-2">
@@ -362,15 +364,11 @@ export default function ShowSetup() {
                   </dl>
                 </Tab.Panel>
                 <Tab.Panel hidden={tabSelected !== 'Relatório da programação'}>
-                  {userLogged && (
-                    <Report
-                      request={request}
-                      user={userLogged}
-                      onAcceptReport={accepted =>
-                        handleEditRequest({ accepted })
-                      }
-                    />
-                  )}
+                  <Report
+                    request={request}
+                    user={userLogged}
+                    onAcceptReport={accepted => handleEditRequest({ accepted })}
+                  />
                 </Tab.Panel>
                 <Tab.Panel hidden={tabSelected !== 'Correções desejadas'}>
                   <DesiredFixes
