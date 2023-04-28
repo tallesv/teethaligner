@@ -1,6 +1,6 @@
 import Layout from '@/components/Layout';
 import Pagination from '@/components/Pagination';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
@@ -8,6 +8,7 @@ import Link from 'next/link';
 import withSSRAuth from '@/utils/withSSRAuth';
 import api from '@/client/api';
 import DeleteRequestModal from '@/components/Modals/DeleteRequestModal';
+import useAuth from '@/hooks/useAuth';
 
 type RequestsFromApi = {
   id: number;
@@ -38,6 +39,8 @@ type orderProps = {
 };
 
 export default function Home() {
+  const { userLogged } = useAuth();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [requests, setRequests] = useState<Request[]>([]);
   const [termSearched, setTermSearched] = useState<string>('');
@@ -68,11 +71,29 @@ export default function Home() {
 
   const { isLoading, error, refetch } = useQuery(
     'users',
-    () => api.get('/requests').then(res => handleRequestsFromApi(res.data)),
+    () => {
+      if (userLogged) {
+        if (userLogged?.user_type === 'Admin') {
+          api.get('/requests').then(res => handleRequestsFromApi(res.data));
+        } else {
+          api
+            .get(`users/${userLogged?.firebase_id}`)
+            .then(res => handleRequestsFromApi(res.data.requests));
+        }
+      }
+    },
     {
       refetchOnWindowFocus: false,
     },
   );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, userLogged]);
+
+  if (isLoading) return <Layout>Loading...</Layout>;
+
+  if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
 
   function handleChangeDataOrder(
     field: string,
@@ -159,10 +180,6 @@ export default function Home() {
         return requestStatus;
     }
   }
-
-  if (isLoading) return <Layout>Loading...</Layout>;
-
-  if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
 
   return (
     <Layout>
