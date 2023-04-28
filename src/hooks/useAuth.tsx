@@ -13,6 +13,7 @@ type Address = {
 };
 
 type User = {
+  id: number;
   name: string;
   email: string;
   user_type: 'Admin' | 'Cliente';

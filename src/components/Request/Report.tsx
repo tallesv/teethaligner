@@ -17,6 +17,7 @@ import Pagination from '../Pagination';
 
 interface ReportProps {
   user: {
+    id: number;
     user_type: 'Admin' | 'Cliente';
   };
   request: {
@@ -61,6 +62,7 @@ export default function Report({
   onSaveReport,
 }: ReportProps) {
   const [showAddReportInput, setShowAddReportInput] = useState(false);
+  const [showDesiredFixesInput, setShowDesiredFixesInput] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -73,6 +75,7 @@ export default function Report({
     content,
   }: RequestCorrectionsFormData) {
     onSendDesiredFixes(content);
+    setShowDesiredFixesInput(false);
     reset();
   }
 
@@ -181,14 +184,24 @@ export default function Report({
                   Adicionar relatório
                 </button>
               )}
-              {user.user_type !== 'Admin' && (
-                <button
-                  type="button"
-                  className="rounded-md px-3 py-1 border border-transparent bg-blue-500 text-sm font-semibold text-white shadow-sm hover:bg-blue-600"
-                  onClick={() => onAcceptReport(true)}
-                >
-                  Aprovar
-                </button>
+              {user.user_type !== 'Admin' && request.reports.length > 0 && (
+                <>
+                  <button
+                    type="button"
+                    className="ml-3 rounded-md px-3 py-1 border border-transparent bg-blue-500 text-sm font-semibold text-white shadow-sm hover:bg-blue-600"
+                    onClick={() => onAcceptReport(true)}
+                  >
+                    Aprovar
+                  </button>
+
+                  <button
+                    type="button"
+                    className="cursor-pointer rounded-md border-gray-300 border bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50"
+                    onClick={() => setShowDesiredFixesInput(true)}
+                  >
+                    Solicitar alterações
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -221,7 +234,7 @@ export default function Report({
         )}
       </div>
       <div className="max-w-3xl mx-auto">
-        {user.user_type !== 'Admin' && (
+        {user.user_type !== 'Admin' && showDesiredFixesInput && (
           <form
             onSubmit={handleSubmit(handleRequestCorrectionsSubmit)}
             className="bg-white px-3 py-5"
@@ -276,48 +289,50 @@ export default function Report({
                       </time>
                     </p>
                   </div>
-                  <Menu as="div" className="relative ml-3">
-                    <div>
-                      <Menu.Button className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-600 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50">
-                        <svg
-                          className="w-5 h-5"
-                          aria-hidden="true"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                        </svg>
-                        <span className="sr-only">Comment settings</span>
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute -right-11 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              type="button"
-                              className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block w-full text-left px-4 py-2 text-sm text-gray-700',
-                              )}
-                              onClick={() => handleDeleteComment(comment.id)}
-                            >
-                              Remover
-                            </button>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
+                  {user.id === comment.user_id && (
+                    <Menu as="div" className="relative ml-3">
+                      <div>
+                        <Menu.Button className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-600 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50">
+                          <svg
+                            className="w-5 h-5"
+                            aria-hidden="true"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                          <span className="sr-only">Comment settings</span>
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="absolute -right-11 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                type="button"
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'block w-full text-left px-4 py-2 text-sm text-gray-700',
+                                )}
+                                onClick={() => handleDeleteComment(comment.id)}
+                              >
+                                Remover
+                              </button>
+                            )}
+                          </Menu.Item>
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  )}
                 </footer>
                 <p className="text-gray-500">{comment.content}</p>
               </article>
