@@ -22,6 +22,7 @@ type RequestsFromApi = {
 
 type Request = {
   id: number;
+  author: string;
   patient_name: string;
   user_id: number;
   product_name: string;
@@ -283,7 +284,9 @@ export default function Home() {
                       index % 2 === 1 ? 'bg-gray-100' : 'bg-white'
                     }`}
                   >
-                    <td className="px-6 py-4 text-gray-700" />
+                    <td className="px-6 py-4 text-gray-700">
+                      {request.author}
+                    </td>
                     <td className="px-6 py-4 text-gray-700">
                       {request.patient_name}
                     </td>

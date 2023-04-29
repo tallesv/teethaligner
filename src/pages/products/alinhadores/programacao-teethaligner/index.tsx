@@ -263,6 +263,7 @@ export default function ProgramacaoTeethAligner() {
       await api.post(
         `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
         {
+          author: userLogged?.name,
           patient_name: data.pacient_name,
           product_name: 'Alinhadores - Programação TeethAligner',
           status: 'Nova',

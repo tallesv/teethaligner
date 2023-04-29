@@ -232,6 +232,7 @@ export default function Setup() {
       await api.post(
         `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
         {
+          author: userLogged?.name,
           patient_name: data.pacient_name,
           product_name: 'Setup',
           status: 'Nova',
