@@ -46,7 +46,7 @@ export default function Home() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
-    field: `birthDate`,
+    field: `created_at`,
     order: `ascending`,
   });
 
