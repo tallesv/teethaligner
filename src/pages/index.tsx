@@ -316,16 +316,18 @@ export default function Home() {
                           Editar
                         </a>
                       </Link>
-                      <button
-                        type="button"
-                        className="contents font-medium text-blue-600 dark:text-blue-500 hover:underline hover:cursor-pointer"
-                        onClick={() => {
-                          setIsDeleteRequestModalOpen(true);
-                          setRequestToDelete(request);
-                        }}
-                      >
-                        Excluir
-                      </button>
+                      {userLogged?.user_type === 'Admin' && (
+                        <button
+                          type="button"
+                          className="contents font-medium text-blue-600 dark:text-blue-500 hover:underline hover:cursor-pointer"
+                          onClick={() => {
+                            setIsDeleteRequestModalOpen(true);
+                            setRequestToDelete(request);
+                          }}
+                        >
+                          Excluir
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
