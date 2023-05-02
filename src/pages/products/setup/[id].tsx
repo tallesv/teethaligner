@@ -5,7 +5,7 @@ import Report from '@/components/Request/Report';
 import SelectStatus from '@/components/Request/SelectStatus';
 import useAuth from '@/hooks/useAuth';
 import classNames from '@/utils/bindClassNames';
-import withSSRAuth from '@/utils/withSSRAuth';
+import withSSRRequestProtect from '@/utils/withSSRRequestProtect';
 import { Tab } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -46,6 +46,10 @@ export default function ShowSetup() {
     },
   );
 
+  if (isLoading) return <Layout>Loading...</Layout>;
+
+  if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
+
   async function handleEditRequest(values: object) {
     await api.put(`requests/${caseId}?user_id=${userLogged?.firebase_id}`, {
       ...values,
@@ -76,9 +80,6 @@ export default function ShowSetup() {
       setIsSubmitting(false);
     }
   }
-  if (isLoading) return <Layout>Loading...</Layout>;
-
-  if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
 
   return (
     <Layout>
@@ -396,7 +397,7 @@ export default function ShowSetup() {
   );
 }
 
-export const getServerSideProps = withSSRAuth(async () => {
+export const getServerSideProps = withSSRRequestProtect(async () => {
   return {
     props: {},
   };

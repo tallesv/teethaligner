@@ -1,7 +1,6 @@
 import api from '@/client/api';
 import Layout from '@/components/Layout';
 import classNames from '@/utils/bindClassNames';
-import withSSRAuth from '@/utils/withSSRAuth';
 import { Tab } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -11,6 +10,7 @@ import { toast } from 'react-toastify';
 import SelectStatus from '@/components/Request/SelectStatus';
 import Report from '@/components/Request/Report';
 import DesiredFixes from '@/components/Request/DesiredFixes';
+import withSSRRequestProtect from '@/utils/withSSRRequestProtect';
 
 const tabs = [
   { title: 'Dados da requisição' },
@@ -397,7 +397,7 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
   );
 }
 
-export const getServerSideProps = withSSRAuth(async () => {
+export const getServerSideProps = withSSRRequestProtect(async () => {
   return {
     props: {},
   };

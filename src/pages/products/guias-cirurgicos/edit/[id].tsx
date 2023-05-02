@@ -6,7 +6,6 @@ import Layout from '@/components/Layout';
 import Input from '@/components/Form/Input';
 import Checkbox from '@/components/Form/Checkbox';
 import classNames from '@/utils/bindClassNames';
-import withSSRAuth from '@/utils/withSSRAuth';
 import api from '@/client/api';
 import useAuth from '@/hooks/useAuth';
 import { toast } from 'react-toastify';
@@ -20,6 +19,7 @@ import DisplayFile from '@/components/Form/DisplayFile';
 import UploadFileButton from '@/components/Form/UploadFileButton';
 import { useQuery } from 'react-query';
 import deleteFile from '@/utils/deleteFile';
+import withSSRRequestProtect from '@/utils/withSSRRequestProtect';
 
 type GuiasCirurgicoFormData = {
   patient_name: string;
@@ -637,7 +637,7 @@ export default function EditGuiaCirurgico() {
   );
 }
 
-export const getServerSideProps = withSSRAuth(async () => {
+export const getServerSideProps = withSSRRequestProtect(async () => {
   return {
     props: {},
   };

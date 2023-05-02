@@ -8,7 +8,6 @@ import Checkbox from '@/components/Form/Checkbox';
 import Radio from '@/components/Form/Radio';
 import TextArea from '@/components/Form/Textarea';
 import classNames from '@/utils/bindClassNames';
-import withSSRAuth from '@/utils/withSSRAuth';
 import api from '@/client/api';
 import useAuth from '@/hooks/useAuth';
 import { toast } from 'react-toastify';
@@ -23,6 +22,7 @@ import DisplayFile from '@/components/Form/DisplayFile';
 import { useQuery } from 'react-query';
 import deleteFile from '@/utils/deleteFile';
 import isFromFirebaseStorage from '@/utils/isFromFirebaseStorage';
+import withSSRRequestProtect from '@/utils/withSSRRequestProtect';
 
 type ProgramacaoTeethalignerApenasImprimirFormData = {
   patient_name: string;
@@ -804,7 +804,7 @@ export default function EditAlinhadoresApenasImprimir() {
   );
 }
 
-export const getServerSideProps = withSSRAuth(async () => {
+export const getServerSideProps = withSSRRequestProtect(async () => {
   return {
     props: {},
   };
