@@ -207,32 +207,6 @@ export default function Report({
           </div>
         </dd>
       </div>
-      <div className="flex flex-col items-center justify-center px-4 py-5 sm:px-6">
-        {request.accepted === null && (
-          <>
-            <DocumentTextIcon className="w-16 sm:w-28 text-blue-500" />
-            <h3 className="md:text-2xl mt-2 text-base text-gray-900 font-semibold text-center">
-              Relatório pendente do aceite.
-            </h3>
-          </>
-        )}
-        {request.accepted && (
-          <>
-            <DocumentCheckIcon className="w-16 sm:w-28 text-green-500" />
-            <h3 className="md:text-2xl mt-2 text-base text-gray-900 font-semibold text-center">
-              Relatório aceito!
-            </h3>
-          </>
-        )}
-        {!request.accepted && request.accepted !== null && (
-          <>
-            <DocumentMinusIcon className="w-16 sm:w-28 text-red-500" />
-            <h3 className="md:text-2xl mt-2 text-base text-gray-900 font-semibold text-center">
-              Relatório negado.
-            </h3>
-          </>
-        )}
-      </div>
       <div className="max-w-3xl mx-auto">
         {user.user_type !== 'Admin' && showDesiredFixesInput && (
           <form
@@ -263,7 +237,35 @@ export default function Report({
             </div>
           </form>
         )}
+      </div>
+      <div className="flex flex-col items-center justify-center px-4 py-5 sm:px-6">
+        {request.accepted === null && (
+          <>
+            <DocumentTextIcon className="w-16 sm:w-28 text-blue-500" />
+            <h3 className="md:text-2xl mt-2 text-base text-gray-900 font-semibold text-center">
+              Relatório pendente do aceite.
+            </h3>
+          </>
+        )}
+        {request.accepted && (
+          <>
+            <DocumentCheckIcon className="w-16 sm:w-28 text-green-500" />
+            <h3 className="md:text-2xl mt-2 text-base text-gray-900 font-semibold text-center">
+              Relatório aceito!
+            </h3>
+          </>
+        )}
+        {!request.accepted && request.accepted !== null && (
+          <>
+            <DocumentMinusIcon className="w-16 sm:w-28 text-red-500" />
+            <h3 className="md:text-2xl mt-2 text-base text-gray-900 font-semibold text-center">
+              Relatório negado.
+            </h3>
+          </>
+        )}
+      </div>
 
+      <div className="max-w-3xl mx-auto">
         <div className="px-3">
           {comments
             .slice((currentPage - 1) * 10, 10 * currentPage)
