@@ -32,6 +32,10 @@ type Request = {
   escaneamento_do_arco_superior: string[];
   escaneamento_do_registro_de_mordida: string[];
   logomarca?: string;
+  reports: {
+    id: number;
+    url: string;
+  }[];
 };
 
 type orderProps = {
