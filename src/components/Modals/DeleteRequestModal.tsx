@@ -15,6 +15,10 @@ interface ModalProps {
     escaneamento_do_arco_superior: string[];
     escaneamento_do_registro_de_mordida: string[];
     logomarca?: string;
+    reports: {
+      id: number;
+      url: string;
+    }[];
   };
   onCloseModal: () => void;
   onDelete: () => void;
@@ -49,6 +53,8 @@ export default function DeleteRequestModal({
           deleteFile(item),
         ),
       );
+
+      await Promise.all(request.reports.map(report => deleteFile(report.url)));
 
       if (request.logomarca) {
         await deleteFile(request.logomarca);
