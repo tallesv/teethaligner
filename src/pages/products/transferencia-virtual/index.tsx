@@ -535,7 +535,7 @@ export default function TransferenciaVirtual() {
                 'mt-2 flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2',
               )}
             >
-              <Spinner hidden={isSubmitting} />
+              <Spinner hidden={!isSubmitting} />
               Realizar pedido
             </button>
 

@@ -5,7 +5,7 @@ interface SpinnerProps {
 export default function Spinner({ hidden = false }: SpinnerProps) {
   return (
     <div
-      className={`mx-2 ${hidden ? '' : 'hidden'}`}
+      className={`mx-2 ${hidden ? 'hidden' : ''}`}
       aria-label="Loading..."
       role="status"
     >

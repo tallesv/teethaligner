@@ -140,7 +140,7 @@ export default function Users() {
                 className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                 onClick={handleDeleteUser}
               >
-                <Spinner hidden={isSubmitting} />
+                <Spinner hidden={!isSubmitting} />
                 Deletar
               </button>
             </div>
@@ -180,7 +180,7 @@ export default function Users() {
                 className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                 onClick={handleEditTypeUser}
               >
-                <Spinner hidden={isSubmitting} />
+                <Spinner hidden={!isSubmitting} />
                 Editar
               </button>
             </div>

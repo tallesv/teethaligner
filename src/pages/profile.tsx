@@ -252,7 +252,7 @@ export default function Profile() {
                     type="submit"
                     className="flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
                   >
-                    <Spinner hidden={isSubmitting} />
+                    <Spinner hidden={!isSubmitting} />
                     {isSubmitting ? 'Salvando' : 'Salvar'}
                   </button>
                 </div>
@@ -401,7 +401,7 @@ export default function Profile() {
                     type="submit"
                     className="flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
                   >
-                    <Spinner hidden={isSubmitting} />
+                    <Spinner hidden={!isSubmitting} />
                     {isSubmitting
                       ? 'Adicionando endereço'
                       : 'Adicionar endereço'}

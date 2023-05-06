@@ -154,7 +154,7 @@ export default function Login() {
               type="submit"
               className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              <Spinner hidden={isSubmitting} />
+              <Spinner hidden={!isSubmitting} />
               {isSubmitting ? 'Entrando' : 'Entrar'}
             </button>
           </div>
