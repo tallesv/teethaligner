@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 import {
   DocumentCheckIcon,
   DocumentMinusIcon,
@@ -12,8 +13,13 @@ import { Fragment, useState } from 'react';
 import classNames from '@/utils/bindClassNames';
 import api from '@/client/api';
 import { toast } from 'react-toastify';
+import moment from 'moment';
+import 'moment/locale/pt-br';
+import uploadFile from '@/utils/uploadFile';
 import TextArea from '../Form/Textarea';
 import Pagination from '../Pagination';
+import UploadFileButton from '../Form/UploadFileButton';
+import Spinner from '../Spinner';
 
 interface ReportProps {
   user: {
@@ -44,14 +50,6 @@ const requestCorrectionFormSchema = yup.object().shape({
   content: yup.string().required('Por favor preencha as correções desejadas.'),
 });
 
-type ReportFormData = {
-  url: string;
-};
-
-const reportFormSchema = yup.object().shape({
-  url: yup.string().required('Por favor insira o link.'),
-});
-
 export default function Report({
   user,
   request,
@@ -63,8 +61,11 @@ export default function Report({
 }: ReportProps) {
   const [showAddReportInput, setShowAddReportInput] = useState(false);
   const [showDesiredFixesInput, setShowDesiredFixesInput] = useState(false);
+  const [isUploadingReport, setIsUploadingReport] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  moment.locale('pt-br');
 
   const { register, handleSubmit, formState, reset } =
     useForm<RequestCorrectionsFormData>({
@@ -90,15 +91,12 @@ export default function Report({
     }
   }
 
-  const { register: reportRegister, handleSubmit: reportHandleSubmit } =
-    useForm<ReportFormData>({
-      resolver: yupResolver(reportFormSchema),
-    });
-
-  async function handleReportSubmit({ url }: ReportFormData) {
+  async function handleReportSubmit(file: File) {
     try {
+      setIsUploadingReport(true);
+      const fileUrl = await uploadFile(file);
       await api.post(`reports?request_id=${request.id}`, {
-        url,
+        url: fileUrl,
       });
       setShowAddReportInput(false);
       onSaveReport();
@@ -106,6 +104,8 @@ export default function Report({
       toast.error(
         'Não foi possível salvar o relatório,  por favor tente novamente.',
       );
+    } finally {
+      setIsUploadingReport(false);
     }
   }
 
@@ -116,73 +116,61 @@ export default function Report({
           Relatórios da programação do seu tratamento
         </dt>
         <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-          <ul className="divide-y divide-gray-200 rounded-md border border-gray-200">
-            {request.reports.map((report, index) => (
-              <li
-                key={report.id}
-                className="flex flex-col sm:flex-row items-center justify-between py-3 pl-3 pr-4 text-sm"
-              >
-                <div className="flex w-full sm:w-0 flex-1 items-center">
-                  <svg
-                    className="h-5 w-5 flex-shrink-0 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <div className="ml-2 w-0 flex-1 truncate">
-                    <a
-                      href={report.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-600 underline"
+          {request.reports.length > 0 && (
+            <ul className="divide-y divide-gray-200 rounded-md border border-gray-200">
+              {request.reports.map((report, index) => (
+                <li
+                  key={report.id}
+                  className="flex flex-col sm:flex-row items-center justify-between py-3 pl-3 pr-4 text-sm"
+                >
+                  <div className="flex w-full sm:w-0 flex-1 items-center">
+                    <svg
+                      className="h-5 w-5 flex-shrink-0 text-gray-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
                     >
-                      {report.url}
-                    </a>
-                    <br />
-                    <span className="text-xs text-gray-500">{`Relatório ${
-                      index + 1
-                    }`}</span>
+                      <path
+                        fillRule="evenodd"
+                        d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div className="ml-2 w-0 flex-1 truncate">
+                      <a
+                        href={report.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        {report.url.slice(73)}
+                      </a>
+                      <br />
+                      <span className="text-xs text-gray-500">{`Relatório ${
+                        index + 1
+                      }`}</span>
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
 
           <div className="mt-4 space-y-4">
-            {showAddReportInput && (
-              <form
-                onSubmit={reportHandleSubmit(handleReportSubmit)}
-                className="relative z-0 flex w-full -space-x-px"
-              >
-                <input
-                  {...reportRegister('url')}
-                  placeholder="Digite aqui o link para o seu relatório"
-                  className="block w-full rounded-l border-2 px-3 py-2 border-gray-300 text-sm transition text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-600 focus:ring-blue-600 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75"
-                />
-                <button
-                  type="submit"
-                  className="inline-flex w-auto cursor-pointer select-none appearance-none items-center justify-center space-x-1 rounded-r border-2 border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-800 transition hover:border-gray-300 hover:bg-gray-100 focus:z-10 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                >
-                  Salvar
-                </button>
-              </form>
-            )}
-
             <div className="flex flex-row-reverse space-x-4">
               {user.user_type === 'Admin' && !showAddReportInput && (
-                <button
-                  type="button"
-                  className="ml-3 cursor-pointer rounded-md border-gray-300 border bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50"
-                  onClick={() => setShowAddReportInput(true)}
-                >
-                  Adicionar relatório
-                </button>
+                <div>
+                  {isUploadingReport ? (
+                    <Spinner />
+                  ) : (
+                    <UploadFileButton
+                      label="Adicionar relatório"
+                      onChange={e =>
+                        e.target.files && handleReportSubmit(e.target.files[0])
+                      }
+                    />
+                  )}
+                </div>
               )}
               {user.user_type !== 'Admin' && request.reports.length > 0 && (
                 <>
@@ -267,7 +255,8 @@ export default function Report({
 
       <div className="max-w-3xl mx-auto">
         <div className="px-3">
-          {comments
+          {[...comments]
+            .reverse()
             .slice((currentPage - 1) * 10, 10 * currentPage)
             .map(comment => (
               <article
@@ -277,17 +266,33 @@ export default function Report({
                 <footer className="flex justify-between items-center mb-2">
                   <div className="flex items-center">
                     <p className="inline-flex items-center mr-3 text-sm text-gray-900">
-                      <img
-                        className="mr-2 w-6 h-6 rounded-full"
-                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                        alt="Michael Gough"
-                      />
+                      {false ? (
+                        <img
+                          className="mr-2 w-6 h-6 rounded-full"
+                          src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                          alt="Michael Gough"
+                        />
+                      ) : (
+                        <div className="relative w-6 h-6 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                          <svg
+                            className="absolute w-8 h-8 text-gray-400 -left-1"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                      )}
+                      {/* {comment.user.name} */}
                     </p>
                     <p className="text-sm text-gray-600">
                       <time dateTime="2022-02-08" title="February 8th, 2022">
-                        {new Date(comment.updated_at).toLocaleDateString(
-                          'pt-BR',
-                        )}
+                        {moment(comment.updated_at).fromNow()}
                       </time>
                     </p>
                   </div>
