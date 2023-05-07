@@ -143,7 +143,13 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
                         Endereço
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        {`${request?.addresses[0].street} ${request?.addresses[0].number}, ${request?.addresses[0].district}, ${request?.addresses[0].state}, ${request?.addresses[0].postal_code}`}
+                        {`${request?.addresses[0].street}${
+                          request?.addresses[0].number
+                            ? ` ${request?.addresses[0].number},`
+                            : ','
+                        } ${request?.addresses[0].district}, ${
+                          request?.addresses[0].state
+                        }, ${request?.addresses[0].postal_code}`}
                       </dd>
                     </div>
                     <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

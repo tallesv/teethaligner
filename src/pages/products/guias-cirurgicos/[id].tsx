@@ -141,7 +141,13 @@ export default function ShowGuiasCirurgicos() {
                         Endereço
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        {`${request?.addresses[0].street} ${request?.addresses[0].number}, ${request?.addresses[0].district}, ${request?.addresses[0].state}, ${request?.addresses[0].postal_code}`}
+                        {`${request?.addresses[0].street}${
+                          request?.addresses[0].number
+                            ? ` ${request?.addresses[0].number},`
+                            : ','
+                        } ${request?.addresses[0].district}, ${
+                          request?.addresses[0].state
+                        }, ${request?.addresses[0].postal_code}`}
                       </dd>
                     </div>
 
