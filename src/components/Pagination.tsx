@@ -41,15 +41,23 @@ export default function Pagination({
         )
       : [];
 
+  let initialDataCount;
+  if (currentPage === 1) {
+    if (totalQuantityOfData > 0) {
+      initialDataCount = 1;
+    } else {
+      initialDataCount = 0;
+    }
+  } else {
+    initialDataCount = 10 * (currentPage - 1);
+  }
+
   return (
     <div className="flex flex-row-reverse items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div className="hidden sm:block">
           <p className="text-sm text-gray-700">
-            Mostrando{' '}
-            <span className="font-medium">
-              {currentPage === 1 ? 1 : 10 * (currentPage - 1)}
-            </span>{' '}
+            Mostrando <span className="font-medium">{initialDataCount}</span>{' '}
             para{' '}
             <span className="font-medium">
               {totalQuantityOfData > dataPerPage &&
