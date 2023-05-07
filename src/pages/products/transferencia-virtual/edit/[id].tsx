@@ -359,7 +359,9 @@ export default function EditTransferenciaVirtual() {
                       as="span"
                       className="text-sm font-medium text-gray-800"
                     >
-                      {`${address.street}, ${address.number}`}
+                      {`${address.street}${
+                        address.number ? `, ${address.number}` : ''
+                      }`}
                       <span className="block my-1 text-xs font-medium text-gray-500">
                         {`${address.district}, ${address.state}`}
                         <br />

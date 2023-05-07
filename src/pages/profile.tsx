@@ -276,7 +276,9 @@ export default function Profile() {
                       >
                         <div className="flex justify-between w-full">
                           <span className="text-sm font-medium text-gray-800">
-                            {`${address.street}, ${address.number}`}
+                            {`${address.street}${
+                              address.number ? `, ${address.number}` : ''
+                            }`}
                             <span className="block my-1 text-xs font-medium text-gray-500">
                               {`${address.district}, ${address.state}`}
                               <br />
