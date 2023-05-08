@@ -22,7 +22,7 @@ import UploadFileButton from '@/components/Form/UploadFileButton';
 import DisplayFile from '@/components/Form/DisplayFile';
 
 type ProgramacaoTeethalignerApenasImprimirFormData = {
-  pacient_name: string;
+  patient_name: string;
   address: Address;
   personalizando_o_planejamento: string;
   escaneamento_do_arco_superior: File[];
@@ -36,7 +36,7 @@ type ProgramacaoTeethalignerApenasImprimirFormData = {
 };
 
 const programacaoTeethalignerApenasImprimirFormSchema = yup.object().shape({
-  pacient_name: yup.string().required('Por favor insira o nome do paciente'),
+  patient_name: yup.string().required('Por favor insira o nome do paciente'),
   address: yup.object().required('Por favor escolha um endereço'),
   personalizando_o_planejamento: yup.string(),
   escaneamento_do_arco_superior: yup
@@ -203,7 +203,7 @@ export default function AlinhadoresApenasImprimir() {
         `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
         {
           author: userLogged?.name,
-          patient_name: data.pacient_name,
+          patient_name: data.patient_name,
           product_name: 'Alinhadores - Apenas Imprimir',
           status: 'Nova',
           accepted: null,
@@ -243,9 +243,9 @@ export default function AlinhadoresApenasImprimir() {
           <div className="col-span-6 sm:col-span-6">
             <Input
               label="Nome do paciente"
-              {...register('pacient_name')}
-              error={!!formState.errors.pacient_name}
-              errorMessage={formState.errors.pacient_name?.message}
+              {...register('patient_name')}
+              error={!!formState.errors.patient_name}
+              errorMessage={formState.errors.patient_name?.message}
             />
           </div>
 
@@ -581,12 +581,14 @@ export default function AlinhadoresApenasImprimir() {
                 <div className="flex flex-row items-center space-x-3 ml-1">
                   <Radio
                     id="Padrão"
+                    value="Padrão"
                     label="Padrão"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}
                   />
                   <Radio
                     id="Premium (R$ 25,00)"
+                    value="Premium (R$ 25,00)"
                     label="Premium (R$ 25,00)"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}

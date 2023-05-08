@@ -20,9 +20,10 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import UploadFileButton from '@/components/Form/UploadFileButton';
 import DisplayFile from '@/components/Form/DisplayFile';
+import RadioInputs from '@/components/Request/NewRequest/RadioInputs';
 
-type ProgramacaoTeethalignerFormData = {
-  pacient_name: string;
+export type ProgramacaoTeethalignerFormData = {
+  patient_name: string;
   address: Address;
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];
@@ -44,7 +45,7 @@ type ProgramacaoTeethalignerFormData = {
 };
 
 const programacaoTeethalignerFormSchema = yup.object().shape({
-  pacient_name: yup.string().required('Por favor insira o nome do paciente'),
+  patient_name: yup.string().required('Por favor insira o nome do paciente'),
   address: yup.object().required('Por favor escolha um endereço'),
   personalizando_o_planejamento: yup.string(),
   dentes_a_serem_movimentados: yup
@@ -264,7 +265,7 @@ export default function ProgramacaoTeethAligner() {
         `requests?user_id=${userLogged?.firebase_id}&address_id=${addressSelected.id}`,
         {
           author: userLogged?.name,
-          patient_name: data.pacient_name,
+          patient_name: data.patient_name,
           product_name: 'Alinhadores - Programação TeethAligner',
           status: 'Nova',
           accepted: null,
@@ -311,9 +312,9 @@ export default function ProgramacaoTeethAligner() {
           <div className="col-span-6 sm:col-span-6">
             <Input
               label="Nome do paciente"
-              {...register('pacient_name')}
-              error={!!formState.errors.pacient_name}
-              errorMessage={formState.errors.pacient_name?.message}
+              {...register('patient_name')}
+              error={!!formState.errors.patient_name}
+              errorMessage={formState.errors.patient_name?.message}
             />
           </div>
 
@@ -453,159 +454,7 @@ export default function ProgramacaoTeethAligner() {
             )}
           </div>
 
-          <div className="col-span-6">
-            <span className="block mb-2 text-sm font-medium text-gray-600">
-              Assinale o que deseja como prioridade para realização dos
-              movimentos dentários:
-            </span>
-            <div className="flex flex-row items-center space-x-3 ml-1">
-              <Radio
-                id="projeção"
-                label="Projeção"
-                {...register('movimento_dentario')}
-                error={!!formState.errors.movimento_dentario}
-              />
-              <Radio
-                id="desgaste"
-                label="Desgaste"
-                {...register('movimento_dentario')}
-                error={!!formState.errors.movimento_dentario}
-              />
-              <Radio
-                id="retração"
-                label="Retração"
-                {...register('movimento_dentario')}
-                error={!!formState.errors.movimento_dentario}
-              />
-              <Radio
-                id="expanção"
-                label="Expanção"
-                {...register('movimento_dentario')}
-                error={!!formState.errors.movimento_dentario}
-              />
-            </div>
-            {formState.errors.movimento_dentario && (
-              <span className="ml-1 text-sm font-medium text-red-500">
-                {formState.errors.movimento_dentario.message}
-              </span>
-            )}
-          </div>
-
-          <div className="col-span-6">
-            <div className="grid grid-row-2 sm:grid-cols-2">
-              <div className="my-2">
-                <span className="block mb-2 text-sm font-medium text-gray-600">
-                  Relação de caninos:
-                </span>
-                <div className="flex flex-row items-center space-x-3 ml-1">
-                  <Radio
-                    id="manter"
-                    label="Manter"
-                    {...register('relacao_de_caninos')}
-                    error={!!formState.errors.relacao_de_caninos}
-                  />
-                  <Radio
-                    id="classe 1"
-                    label="Classe I"
-                    {...register('relacao_de_caninos')}
-                    error={!!formState.errors.relacao_de_caninos}
-                  />
-                </div>
-                {formState.errors.relacao_de_caninos && (
-                  <span className="ml-1 text-sm font-medium text-red-500">
-                    {formState.errors.relacao_de_caninos.message}
-                  </span>
-                )}
-              </div>
-
-              <div className="my-2">
-                <span className="block mb-2 text-sm font-medium text-gray-600">
-                  Relação de Molares:
-                </span>
-                <div className="flex flex-row items-center space-x-3 ml-1">
-                  <Radio
-                    id="manter"
-                    label="Manter"
-                    {...register('relacao_de_molares')}
-                    error={!!formState.errors.relacao_de_molares}
-                  />
-                  <Radio
-                    id="classe 1"
-                    label="Classe I"
-                    {...register('relacao_de_molares')}
-                    error={!!formState.errors.relacao_de_molares}
-                  />
-                </div>
-                {formState.errors.relacao_de_molares && (
-                  <span className="ml-1 text-sm font-medium text-red-500">
-                    {formState.errors.relacao_de_molares.message}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-6">
-            <div className="grid grid-row-2  sm:grid-cols-2">
-              <div className="mb-2">
-                <span className="block mb-2 text-sm font-medium text-gray-600">
-                  Sobremordida:
-                </span>
-                <div className="flex flex-row items-center space-x-3 ml-1">
-                  <Radio
-                    id="manter"
-                    label="Manter"
-                    {...register('sobremordida')}
-                    error={!!formState.errors.sobremordida}
-                  />
-                  <Radio
-                    id="corrigir"
-                    label="Corrigir"
-                    {...register('sobremordida')}
-                    error={!!formState.errors.sobremordida}
-                  />
-                  <Radio
-                    id="sobreCorrigir"
-                    label="SobreCorrigir"
-                    {...register('sobremordida')}
-                    error={!!formState.errors.sobremordida}
-                  />
-                </div>
-
-                {formState.errors.sobremordida && (
-                  <span className="ml-1 text-sm font-medium text-red-500">
-                    {formState.errors.sobremordida.message}
-                  </span>
-                )}
-              </div>
-
-              <div className="mb-2">
-                <span className="block mb-2 text-sm font-medium text-gray-600">
-                  Linha média:
-                </span>
-                <div className="flex flex-row items-center space-x-3 ml-1">
-                  <Radio
-                    id="manter"
-                    label="Manter"
-                    {...register('linha_media')}
-                    error={!!formState.errors.linha_media}
-                  />
-                  <Radio
-                    id="corrigir"
-                    label="Corrigir"
-                    {...register('linha_media')}
-                    error={!!formState.errors.linha_media}
-                  />
-                </div>
-
-                {formState.errors.linha_media && (
-                  <span className="ml-1 text-sm font-medium text-red-500">
-                    {formState.errors.linha_media.message}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
+          <RadioInputs register={register} formState={formState} />
 
           <div className="col-span-6">
             <span className="block text-sm font-medium text-gray-600">
@@ -878,12 +727,14 @@ export default function ProgramacaoTeethAligner() {
                 <div className="flex flex-row items-center space-x-3 ml-1">
                   <Radio
                     id="Padrão"
+                    value="Padrão"
                     label="Padrão"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}
                   />
                   <Radio
                     id="Premium (R$ 25,00)"
+                    value="Premium (R$ 25,00)"
                     label="Premium (R$ 25,00)"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}

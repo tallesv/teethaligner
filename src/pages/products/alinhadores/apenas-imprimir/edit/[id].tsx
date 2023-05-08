@@ -760,13 +760,15 @@ export default function EditAlinhadoresApenasImprimir() {
                 </span>
                 <div className="flex flex-row items-center space-x-3 ml-1">
                   <Radio
-                    id="manter"
+                    id="Padrão"
+                    value="Padrão"
                     label="Padrão"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}
                   />
                   <Radio
-                    id="corrigir"
+                    id="Premium"
+                    value="Premium (R$ 25,00)"
                     label="Premium (R$ 25,00)"
                     {...register('caixa')}
                     error={!!formState.errors.caixa}
