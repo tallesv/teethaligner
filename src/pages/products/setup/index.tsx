@@ -5,7 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Layout from '@/components/Layout';
 import Input from '@/components/Form/Input';
 import Checkbox from '@/components/Form/Checkbox';
-import Radio from '@/components/Form/Radio';
 import TextArea from '@/components/Form/Textarea';
 import classNames from '@/utils/bindClassNames';
 import withSSRAuth from '@/utils/withSSRAuth';
