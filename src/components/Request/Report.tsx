@@ -116,7 +116,7 @@ export default function Report({
           Relatórios da programação do seu tratamento
         </dt>
         <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-          {request.reports.length > 0 && (
+          {request.reports.length > 0 ? (
             <ul className="divide-y divide-gray-200 rounded-md border border-gray-200">
               {request.reports.map((report, index) => (
                 <li
@@ -154,6 +154,10 @@ export default function Report({
                 </li>
               ))}
             </ul>
+          ) : (
+            <div className="text-right font-medium">
+              Relatório a ser adicionado.
+            </div>
           )}
 
           <div className="mt-4 space-y-4">
