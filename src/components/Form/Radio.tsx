@@ -3,13 +3,14 @@ import { ForwardedRef, forwardRef } from 'react';
 
 interface RadioProps {
   id: string;
+  value: string;
   label: string;
   error?: boolean;
 }
 
 const Radio = forwardRef(
   (
-    { id, label, error, ...rest }: RadioProps,
+    { id, value, label, error, ...rest }: RadioProps,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     const inputBorderStyle = error
@@ -23,7 +24,7 @@ const Radio = forwardRef(
           id={id}
           type="radio"
           name="deal"
-          value={id}
+          value={value}
           ref={ref}
           className={classNames(
             inputBorderStyle,
