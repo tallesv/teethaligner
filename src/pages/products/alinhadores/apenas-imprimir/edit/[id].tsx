@@ -792,7 +792,7 @@ export default function EditAlinhadoresApenasImprimir() {
               )}
             >
               <Spinner hidden={!isSubmitting} />
-              Realizar pedido
+              Editar pedido
             </button>
 
             <span className="text-sm mx-4 block font-medium text-gray-500">

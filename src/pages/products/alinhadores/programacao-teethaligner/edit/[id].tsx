@@ -934,7 +934,7 @@ export default function EditProgramacaoTeethAligner() {
               )}
             >
               <Spinner hidden={!isSubmitting} />
-              Realizar pedido
+              Editar pedido
             </button>
             <span className="text-sm mx-4 block font-medium text-gray-500">
               O pedido será enviado após o pagamento via pix ou boleto a ser
