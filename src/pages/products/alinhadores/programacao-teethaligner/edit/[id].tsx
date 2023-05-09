@@ -16,7 +16,6 @@ import Spinner from '@/components/Spinner';
 import uploadFile from '@/utils/uploadFile';
 import { RadioGroup } from '@headlessui/react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import UploadFileButton from '@/components/Form/UploadFileButton';
 import DisplayFile from '@/components/Form/DisplayFile';
 import isFromFirebaseStorage from '@/utils/isFromFirebaseStorage';
@@ -27,6 +26,7 @@ import RadioInputs from '@/components/Request/NewRequest/RadioInputs';
 
 type ProgramacaoTeethalignerFormData = {
   patient_name: string;
+  user_id: number;
   address: Address;
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];
@@ -87,6 +87,7 @@ export default function EditProgramacaoTeethAligner() {
 
   const programacaoTeethalignerFormSchema = yup.object().shape({
     patient_name: yup.string().required('Por favor insira o nome do paciente'),
+    user_id: yup.number(),
     address: yup.object().required('Por favor escolha um endereço'),
     personalizando_o_planejamento: yup.string(),
     dentes_a_serem_movimentados: yup
@@ -292,6 +293,8 @@ export default function EditProgramacaoTeethAligner() {
     },
   );
 
+  const isCreatedByUserLoggged = getValues().user_id === userLogged?.id;
+
   if (isLoading) return <Layout>Loading...</Layout>;
 
   if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
@@ -463,58 +466,53 @@ export default function EditProgramacaoTeethAligner() {
             <h3 className="font-medium">Endereço</h3>
           </div>
 
-          {userLogged && userLogged.addresses.length > 0 ? (
-            <RadioGroup
-              value={addressSelected}
-              onChange={address => handleSelectAddress(address)}
-              className="col-span-6"
-            >
-              <RadioGroup.Label className="sr-only">
-                Escolha um endereço
-              </RadioGroup.Label>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {userLogged?.addresses.map(address => (
-                  <RadioGroup.Option
-                    key={address.id}
-                    value={address}
-                    className={classNames(
-                      addressSelected === address
-                        ? 'ring-2 ring-blue-500'
-                        : 'hover:cursor-pointer',
-                      'col-span-1 group relative flex items-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibol hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
-                    )}
-                  >
-                    <RadioGroup.Label
-                      as="span"
-                      className="text-sm font-medium text-gray-800"
+          {userLogged &&
+            userLogged.addresses.length > 0 &&
+            isCreatedByUserLoggged && (
+              <RadioGroup
+                value={addressSelected}
+                onChange={address => handleSelectAddress(address)}
+                className="col-span-6"
+              >
+                <RadioGroup.Label className="sr-only">
+                  Escolha um endereço
+                </RadioGroup.Label>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                  {userLogged?.addresses.map(address => (
+                    <RadioGroup.Option
+                      key={address.id}
+                      value={address}
+                      className={classNames(
+                        addressSelected === address
+                          ? 'ring-2 ring-blue-500'
+                          : 'hover:cursor-pointer',
+                        'col-span-1 group relative flex items-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibol hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
+                      )}
                     >
-                      {`${address.street}${
-                        address.number ? `, ${address.number}` : ''
-                      }`}
-                      <span className="block my-1 text-xs font-medium text-gray-500">
-                        {`${address.district}, ${address.state}`}
-                        <br />
-                        {address.postal_code}
-                      </span>
-                    </RadioGroup.Label>
-                  </RadioGroup.Option>
-                ))}
-              </div>
+                      <RadioGroup.Label
+                        as="span"
+                        className="text-sm font-medium text-gray-800"
+                      >
+                        {`${address.street}${
+                          address.number ? `, ${address.number}` : ''
+                        }`}
+                        <span className="block my-1 text-xs font-medium text-gray-500">
+                          {`${address.district}, ${address.state}`}
+                          <br />
+                          {address.postal_code}
+                        </span>
+                      </RadioGroup.Label>
+                    </RadioGroup.Option>
+                  ))}
+                </div>
 
-              {formState.errors.address && (
-                <span className="ml-1 text-sm font-medium text-red-500">
-                  {formState.errors.address.message}
-                </span>
-              )}
-            </RadioGroup>
-          ) : (
-            <span className="col-span-6 ml-1 text-sm font-medium text-red-500">
-              Cadastre um endereço no seu{' '}
-              <Link href="/profile" className="underline text-blue-600">
-                perfil.
-              </Link>
-            </span>
-          )}
+                {formState.errors.address && (
+                  <span className="ml-1 text-sm font-medium text-red-500">
+                    {formState.errors.address.message}
+                  </span>
+                )}
+              </RadioGroup>
+            )}
 
           <div className="col-span-6">
             <div className="my-2 border-t border-gray-200" />
