@@ -208,7 +208,7 @@ export default function SelectProduct() {
                       className={classNames(
                         serviceSelected === service.title
                           ? 'ring-2 ring-blue-500'
-                          : '',
+                          : 'cursor-pointer',
                         'group relative flex items-center justify-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibold uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
                       )}
                     >
@@ -255,7 +255,7 @@ export default function SelectProduct() {
                       className={classNames(
                         serviceSelected === service.title
                           ? 'ring-2 ring-blue-500'
-                          : '',
+                          : 'cursor-pointer',
                         'group relative flex items-center justify-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibold uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
                       )}
                     >
@@ -304,7 +304,7 @@ export default function SelectProduct() {
                     className={classNames(
                       productSelected === product.title
                         ? 'ring-2 ring-blue-500'
-                        : '',
+                        : 'cursor-pointer',
                       'group relative flex items-center justify-center rounded-md border py-3 px-4 text-gray-800 sm:text-sm text-xs font-semibold uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6',
                     )}
                   >
