@@ -1,4 +1,5 @@
 import classNames from '@/utils/bindClassNames';
+import { ArrowUpTrayIcon } from '@heroicons/react/20/solid';
 import {
   ChangeEvent,
   ForwardedRef,
@@ -33,9 +34,10 @@ const UploadFileButton = forwardRef(
       <label
         className={classNames(
           inputBorderStyle,
-          'ml-3 cursor-pointer rounded-md border bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50',
+          'mx-2 cursor-pointer flex items-center space-x-2 rounded-md border bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50',
         )}
       >
+        <ArrowUpTrayIcon className="h-5 text-gray-700" />
         <span className="">{label ?? 'Escolher arquivo'}</span>
         <input
           type="file"
