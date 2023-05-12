@@ -9,7 +9,8 @@ import DefaultAvatar from '@/utils/defaultAvatar';
 import useAuth from '@/hooks/useAuth';
 
 const userNavigation = [
-  { name: 'Perfil', header: 'Perfil', href: '/profile' },
+  { name: 'Perfil', header: 'Configuração de conta', href: '/profile' },
+  { name: 'Endereços', header: 'Endereços', href: '/addresses' },
   { name: 'Sair', href: '/login' },
 ];
 
