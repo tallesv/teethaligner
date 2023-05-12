@@ -1,6 +1,16 @@
-export default function DefaultAvatar() {
+interface DefaultAvatarProps {
+  height?: number;
+  width?: number;
+}
+
+export default function DefaultAvatar({
+  height = 8,
+  width = 8,
+}: DefaultAvatarProps) {
   return (
-    <div className="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+    <div
+      className={`relative w-${height} h-${width} overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600`}
+    >
       <svg
         className="absolute w-9 h-9 text-gray-400 "
         fill="currentColor"
