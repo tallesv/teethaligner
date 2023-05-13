@@ -79,7 +79,9 @@ export default function Home() {
     () => {
       if (userLogged) {
         if (userLogged?.user_type === 'Admin') {
-          api.get('/requests').then(res => handleRequestsFromApi(res.data));
+          api
+            .get('/requests')
+            .then(res => handleRequestsFromApi(res.data.requests));
         } else {
           api
             .get(`users/${userLogged?.firebase_id}`)

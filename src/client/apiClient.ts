@@ -5,6 +5,8 @@ export default function getApiClient(token?: string): AxiosInstance {
     baseURL: `https://teeth-aligners-api.fly.dev/api/v1`,
   });
 
+  api.defaults.headers.common.Accept = 'application/json';
+
   if (token) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
