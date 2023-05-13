@@ -9,13 +9,11 @@ import useAuth from '@/hooks/useAuth';
 import { toast } from 'react-toastify';
 import SelectStatus from '@/components/Request/SelectStatus';
 import Report from '@/components/Request/Report';
-import DesiredFixes from '@/components/Request/DesiredFixes';
 import withSSRRequestProtect from '@/utils/withSSRRequestProtect';
 
 const tabs = [
-  { title: 'Dados da requisição' },
   { title: 'Relatório da programação' },
-  // { title: 'Correções desejadas' },
+  { title: 'Dados da requisição' },
 ];
 
 export default function ShowProgramacaoTeethaligneraApenasImprimir() {
@@ -23,8 +21,6 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
 
   const { query } = useRouter();
   const caseId = query.id as string;
-
-  const [tabSelected, setTabSelected] = useState('Dados da requisição');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [request, setRequest] =
@@ -100,7 +96,6 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
                 {tabs.map(tab => (
                   <Tab
                     key={tab.title}
-                    onClick={() => setTabSelected(tab.title)}
                     className={({ selected }) =>
                       classNames(
                         'col-span-3 sm:col-span-2 md:col-span-1 rounded-lg py-2.5 px-6 text-sm font-medium leading-5',
@@ -127,7 +122,20 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
             </div>
             <Tab.Panels className="mt-2">
               <div className="border-t border-gray-200">
-                <Tab.Panel hidden={tabSelected !== 'Dados da requisição'}>
+                <Tab.Panel>
+                  <Report
+                    request={request}
+                    user={userLogged}
+                    onAcceptReport={accepted => handleEditRequest({ accepted })}
+                    comments={request.comments}
+                    onSendDesiredFixes={content =>
+                      handleRequestCorrectionsSubmit(content)
+                    }
+                    onDeleteComment={() => refetch()}
+                    onSaveReport={() => handleEditRequest({ accepted: null })}
+                  />
+                </Tab.Panel>
+                <Tab.Panel>
                   <dl>
                     <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt className="mb-2 sm:mb-0 text-sm font-medium text-gray-600">
@@ -371,28 +379,6 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
                       </dd>
                     </div>
                   </dl>
-                </Tab.Panel>
-                <Tab.Panel hidden={tabSelected !== 'Relatório da programação'}>
-                  <Report
-                    request={request}
-                    user={userLogged}
-                    onAcceptReport={accepted => handleEditRequest({ accepted })}
-                    comments={request.comments}
-                    onSendDesiredFixes={content =>
-                      handleRequestCorrectionsSubmit(content)
-                    }
-                    onDeleteComment={() => refetch()}
-                    onSaveReport={() => handleEditRequest({ accepted: null })}
-                  />
-                </Tab.Panel>
-                <Tab.Panel hidden={tabSelected !== 'Correções desejadas'}>
-                  <DesiredFixes
-                    comments={request.comments}
-                    onSendDesiredFixes={content =>
-                      handleRequestCorrectionsSubmit(content)
-                    }
-                    onDeleteComment={() => refetch()}
-                  />
                 </Tab.Panel>
               </div>
             </Tab.Panels>
