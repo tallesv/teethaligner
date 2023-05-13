@@ -1,4 +1,3 @@
-/* eslint-disable no-constant-condition */
 import {
   DocumentCheckIcon,
   DocumentMinusIcon,
@@ -32,6 +31,7 @@ interface ReportProps {
     reports: {
       id: number;
       url: string;
+      created_at: string;
     }[];
   };
   onAcceptReport: (accepted: boolean) => void;
@@ -124,18 +124,7 @@ export default function Report({
                   className="flex flex-col sm:flex-row items-center justify-between py-3 pl-3 pr-4 text-sm"
                 >
                   <div className="flex w-full sm:w-0 flex-1 items-center">
-                    <svg
-                      className="h-5 w-5 flex-shrink-0 text-gray-400"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <DocumentTextIcon className="w-6 text-gray-800" />
                     <div className="ml-2 w-0 flex-1 truncate">
                       <a
                         href={report.url}
@@ -143,12 +132,13 @@ export default function Report({
                         rel="noreferrer"
                         className="text-blue-600 underline"
                       >
-                        {report.url.slice(73)}
+                        {`Relatório ${index + 1}`}
                       </a>
                       <br />
-                      <span className="text-xs text-gray-500">{`Relatório ${
-                        index + 1
-                      }`}</span>
+                      <span className="text-xs text-gray-500">
+                        {/* {`Relatório ${index + 1} · `} */}
+                        <span>{moment(report.created_at).format('LLL')}</span>
+                      </span>
                     </div>
                   </div>
                 </li>
@@ -269,7 +259,7 @@ export default function Report({
               >
                 <footer className="flex justify-between items-center mb-2">
                   <div className="flex items-center">
-                    <div className="inline-flex items-center mr-3 text-sm text-gray-900 space-x-2">
+                    <div className="inline-flex items-center mr-1 text-sm text-gray-900 space-x-2">
                       {comment.user.avatar ? (
                         <img
                           className="mr-2 w-6 h-6 rounded-full"
@@ -296,7 +286,7 @@ export default function Report({
                     </div>
                     <p className="text-sm text-gray-600">
                       <time dateTime="2022-02-08" title="February 8th, 2022">
-                        {moment(comment.updated_at).fromNow()}
+                        {` · ${moment(comment.updated_at).fromNow()}`}
                       </time>
                     </p>
                   </div>
