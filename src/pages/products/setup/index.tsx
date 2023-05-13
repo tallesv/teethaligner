@@ -54,7 +54,6 @@ const setupFormSchema = yup.object().shape({
   relacao_de_molares: yup.string().required('Por favor selecione uma opção.'),
   sobremordida: yup.string().required('Por favor selecione uma opção.'),
   linha_media: yup.string().required('Por favor selecione uma opção.'),
-  informacoes_adicionais: yup.string(),
   escaneamento_do_arco_superior: yup
     .array()
     .of(yup.mixed<File>())
@@ -245,7 +244,6 @@ export default function Setup() {
             relacao_de_molares: data.relacao_de_molares,
             sobremordida: data.sobremordida,
             linha_media: data.linha_media,
-            informacoes_adicionais: data.informacoes_adicionais,
             escaneamento_link: data.escaneamento_link,
             encaminhei_email: data.encaminhei_email,
             escaneamento_do_arco_superior: escaneamentoDoArcoSuperiorUrl,
@@ -416,17 +414,6 @@ export default function Setup() {
           </div>
 
           <RadioInputs register={register} formState={formState} />
-
-          <div className="col-span-6">
-            <span className="block text-sm font-medium text-gray-600">
-              Preencha aqui qualquer informação relevante sobre como deseja que
-              o tratamento ocorre:
-            </span>
-            <TextArea
-              label="(descreva se deseja que algum movimento ocorra primeiro, se existe alguma taxa de movimentação especifica para algum dos movimentos, todos os detalhes que achar relevante. Quanto maior a quantidade de informação, mais personalizado seu tratamento)"
-              {...register('informacoes_adicionais')}
-            />
-          </div>
 
           <div className="col-span-6">
             <span className="block text-sm font-medium text-gray-600">
