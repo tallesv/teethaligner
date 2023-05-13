@@ -782,7 +782,14 @@ export default function Setup() {
 }
 
 export const getServerSideProps = withSSRRequestProtect(async () => {
+  // return {
+  //   props: {},
+  // };
+
   return {
-    props: {},
+    redirect: {
+      destination: '/',
+      permanent: false,
+    },
   };
 });

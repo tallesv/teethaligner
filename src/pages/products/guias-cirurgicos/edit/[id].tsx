@@ -638,7 +638,15 @@ export default function EditGuiaCirurgico() {
 }
 
 export const getServerSideProps = withSSRRequestProtect(async () => {
+  // return {
+  //   props: {},
+  //   redirect: '/',
+  // };
+
   return {
-    props: {},
+    redirect: {
+      destination: '/',
+      permanent: false,
+    },
   };
 });

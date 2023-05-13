@@ -807,7 +807,14 @@ export default function EditAlinhadoresApenasImprimir() {
 }
 
 export const getServerSideProps = withSSRRequestProtect(async () => {
+  // return {
+  //   props: {},
+  // };
+
   return {
-    props: {},
+    redirect: {
+      destination: '/',
+      permanent: false,
+    },
   };
 });

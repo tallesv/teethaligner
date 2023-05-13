@@ -309,29 +309,29 @@ export default function Home() {
                       <Link href={getRequestUrl(request)} legacyBehavior>
                         <a
                           href={getRequestUrl(request)}
-                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          className="mx-2 font-medium text-blue-600 dark:text-blue-500 hover:underline"
                         >
                           Visualizar
                         </a>
                       </Link>
-                      <Link href={getEditRequestUrl(request)} legacyBehavior>
+                      {/* <Link href={getEditRequestUrl(request)} legacyBehavior>
                         <a
                           href={getEditRequestUrl(request)}
-                          className="font-medium mx-3 text-blue-600 dark:text-blue-500 hover:underline"
+                          className="font-medium mx-1 text-blue-600 dark:text-blue-500 hover:underline"
                         >
                           Editar
                         </a>
-                      </Link>
+                      </Link> */}
                       {userLogged?.user_type === 'Admin' && (
                         <button
                           type="button"
-                          className="contents font-medium text-blue-600 dark:text-blue-500 hover:underline hover:cursor-pointer"
+                          className="contents font-medium text-blue-600 dark:text-blue-500 hover:cursor-pointer"
                           onClick={() => {
                             setIsDeleteRequestModalOpen(true);
                             setRequestToDelete(request);
                           }}
                         >
-                          Excluir
+                          <span className="hover:underline">Excluir</span>
                         </button>
                       )}
                     </td>
