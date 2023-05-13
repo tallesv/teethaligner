@@ -269,8 +269,8 @@ export default function Report({
               >
                 <footer className="flex justify-between items-center mb-2">
                   <div className="flex items-center">
-                    <p className="inline-flex items-center mr-3 text-sm text-gray-900">
-                      {false ? (
+                    <div className="inline-flex items-center mr-3 text-sm text-gray-900 space-x-2">
+                      {comment.user.avatar ? (
                         <img
                           className="mr-2 w-6 h-6 rounded-full"
                           src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
@@ -292,8 +292,8 @@ export default function Report({
                           </svg>
                         </div>
                       )}
-                      {/* {comment.user.name} */}
-                    </p>
+                      <span>{comment.user.name}</span>
+                    </div>
                     <p className="text-sm text-gray-600">
                       <time dateTime="2022-02-08" title="February 8th, 2022">
                         {moment(comment.updated_at).fromNow()}
