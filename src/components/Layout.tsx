@@ -118,11 +118,13 @@ export default function Layout({ children }: LayoutProps) {
               <div className="flex h-20 items-center justify-between">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <img
-                      className="h-20"
-                      src="/images/logo-back-white.png"
-                      alt="TeethAligner Logo"
-                    />
+                    <Link href="/">
+                      <img
+                        className="h-20"
+                        src="/images/logo-back-white.png"
+                        alt="TeethAligner Logo"
+                      />
+                    </Link>
                   </div>
                   <div className="hidden md:block">
                     <div className="ml-10 flex items-baseline space-x-4">
