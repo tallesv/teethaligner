@@ -12,8 +12,8 @@ import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 
 const tabs = [
-  { title: 'Dados da requisição' },
   { title: 'Relatório da programação' },
+  { title: 'Dados da requisição' },
 ];
 
 export default function ShowSetup() {

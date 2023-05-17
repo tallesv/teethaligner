@@ -12,8 +12,8 @@ import Report from '@/components/Request/Report';
 import withSSRRequestProtect from '@/utils/withSSRRequestProtect';
 
 const tabs = [
-  { title: 'Dados da requisição' },
   { title: 'Relatório da programação' },
+  { title: 'Dados da requisição' },
 ];
 
 export default function ShowGuiasCirurgicos() {
