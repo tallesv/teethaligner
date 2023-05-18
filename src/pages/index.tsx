@@ -9,6 +9,7 @@ import withSSRAuth from '@/utils/withSSRAuth';
 import api from '@/client/api';
 import DeleteRequestModal from '@/components/Modals/DeleteRequestModal';
 import useAuth from '@/hooks/useAuth';
+import moment from 'moment';
 
 type RequestsFromApi = {
   id: number;
@@ -27,6 +28,7 @@ type Request = {
   user_id: number;
   product_name: string;
   created_at: string;
+  updated_at: string;
   status: string;
   escaneamento_do_arco_inferior: string[];
   escaneamento_do_arco_superior: string[];
@@ -35,11 +37,12 @@ type Request = {
   reports: {
     id: number;
     url: string;
+    updated_at: string;
   }[];
 };
 
 type orderProps = {
-  field: string;
+  field: 'created_at' | 'updated_at';
   order: 'ascending' | 'descending';
 };
 
@@ -50,7 +53,7 @@ export default function Home() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
-    field: `created_at`,
+    field: `updated_at`,
     order: `ascending`,
   });
 
@@ -103,7 +106,7 @@ export default function Home() {
   if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
 
   function handleChangeDataOrder(
-    field: string,
+    field: 'created_at' | 'updated_at',
     order: 'ascending' | 'descending',
   ) {
     setDataOrder({ field, order });
@@ -114,9 +117,11 @@ export default function Home() {
       request.patient_name.toLowerCase().includes(termSearched.toLowerCase()),
     )
     .sort((a, b) =>
-      dataOrder?.field === 'created_at' && dataOrder.order === `ascending`
-        ? new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()
-        : new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf(),
+      dataOrder.order === `ascending`
+        ? new Date(b[dataOrder.field]).valueOf() -
+          new Date(a[dataOrder.field]).valueOf()
+        : new Date(a[dataOrder.field]).valueOf() -
+          new Date(b[dataOrder.field]).valueOf(),
     );
 
   function getRequestUrl(request: Request) {
@@ -188,6 +193,13 @@ export default function Home() {
     }
   }
 
+  function showNotification(updatedAt: string) {
+    const nextDay = moment(updatedAt).add(1, 'day').utc().format(); // calculate 24 hours next to last access
+    const currentTime = moment().utc().format(); // current time
+    const requestIsBefore24H = moment(currentTime).isSameOrBefore(nextDay);
+
+    return requestIsBefore24H;
+  }
   return (
     <Layout>
       <DeleteRequestModal
@@ -290,8 +302,16 @@ export default function Home() {
                       index % 2 === 1 ? 'bg-gray-100' : 'bg-white'
                     }`}
                   >
-                    <td className="px-6 py-4 text-gray-700">
-                      {request.author}
+                    <td className="px-3 py-4 text-gray-700">
+                      <div className="flex items-center ">
+                        {showNotification(request.updated_at) && (
+                          <span className="relative flex mr-2 h-2 w-2">
+                            <span className="absolute h-full w-full shrink-0 animate-ping rounded-full bg-blue-500" />
+                            <span className="h-full w-full shrink-0 rounded-full bg-blue-500" />
+                          </span>
+                        )}
+                        <span>{request.author}</span>
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-gray-700">
                       {request.patient_name}
