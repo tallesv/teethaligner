@@ -10,12 +10,17 @@ import withSSRAuth from '@/utils/withSSRAuth';
 import { toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
 import Select from '@/components/Form/Select';
+import ShowUserInfoModal from '@/components/Modals/ShowUserInfoModal';
 
 type UserProps = {
   id: number;
   name: string;
   email: string;
-  user_type: string;
+  phone: string;
+  user_type: 'Admin' | 'Cliente';
+  firebase_id: string;
+  avatar: string | null;
+  addresses: Address[];
   created_at: string;
 };
 
@@ -29,6 +34,7 @@ export default function Users() {
   const [users, setUsers] = useState<UserProps[]>([]);
   const [openDeleteUserModal, setOpenDeleteUserModal] = useState(false);
   const [openEditUserTypeModal, setEditUserTypeModal] = useState(false);
+  const [openShowUserInfoModal, setopenShowUserInfoModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
@@ -114,6 +120,11 @@ export default function Users() {
     }
   }
 
+  function handleOpenModalToShowUserInfo(userId: number) {
+    setSelectedUserId(userId);
+    setopenShowUserInfoModal(true);
+  }
+
   return (
     <Layout>
       <Modal
@@ -188,6 +199,13 @@ export default function Users() {
         }
       />
 
+      {openShowUserInfoModal && selectedUser && (
+        <ShowUserInfoModal
+          isOpen={!!selectedUser}
+          user={selectedUser}
+          onCloseModal={() => setSelectedUserId(undefined)}
+        />
+      )}
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <div className="flex flex-row-reverse my-4 mx-2">
@@ -249,7 +267,7 @@ export default function Users() {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  {/* Opções */}
+                  Opções
                 </th>
               </tr>
             </thead>
@@ -285,13 +303,13 @@ export default function Users() {
                       {new Date(user.created_at).toLocaleDateString('pt-BR')}
                     </td>
                     <td className="px-6 py-4 space-x-2">
-                      {/* <button
+                      <button
                         type="button"
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                        onClick={() => handleOpenModalToDeleteUser(user.id)}
+                        onClick={() => handleOpenModalToShowUserInfo(user.id)}
                       >
-                        Excluir
-                      </button> */}
+                        Visualizar Dados
+                      </button>
                       {/* <button
                         type="button"
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
