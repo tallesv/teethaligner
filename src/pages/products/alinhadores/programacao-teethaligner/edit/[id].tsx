@@ -233,8 +233,8 @@ export default function EditProgramacaoTeethAligner() {
       .string()
       .test(
         'len',
-        'A mensagem tem que ter no máximo 15 caracteres',
-        value => value?.length === 0 || (!!value && value?.length < 16),
+        'A mensagem tem que ter no máximo 25 caracteres',
+        value => value?.length === 0 || (!!value && value?.length < 26),
       ),
     caixa: yup.string().required('Por favor escolha o tipo da caixa'),
   });
@@ -867,7 +867,7 @@ export default function EditProgramacaoTeethAligner() {
             <div className="my-2">
               <div className="flex flex-row items-center space-x-3 mt-2 ml-1">
                 <Input
-                  label="Deixe uma mensagem personalizada ao seu cliente com até 15 carácteres"
+                  label="Deixe uma mensagem personalizada ao seu cliente com até 25 carácteres"
                   {...register('mensagem_personalizada_embalagem')}
                   error={!!formState.errors.mensagem_personalizada_embalagem}
                   errorMessage={
