@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import deleteFile from '@/utils/deleteFile';
 import { auth } from '@/config/firebase';
 import UploadFileButton from '@/components/Form/UploadFileButton';
-import { CheckCircleIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon, PencilIcon } from '@heroicons/react/24/outline';
 import moment from 'moment';
 
 type ProfileFormData = {
@@ -165,7 +165,7 @@ export default function Profile() {
           </form>
 
           <div className="flex items-center text-sm text-gray-700">
-            <CheckCircleIcon className="h-5 font-bold text-blue-600" />
+            <CalendarDaysIcon className="h-5 font-bold text-blue-600" />
             <span className="ml-1 font-medium text-gray-800">
               Criado em&nbsp;
             </span>
