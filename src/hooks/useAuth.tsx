@@ -20,6 +20,7 @@ type User = {
   firebase_id: string;
   avatar: string | null;
   addresses: Address[];
+  created_at: string;
 };
 
 interface useAuthProps {

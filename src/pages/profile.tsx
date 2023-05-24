@@ -15,7 +15,8 @@ import { toast } from 'react-toastify';
 import deleteFile from '@/utils/deleteFile';
 import { auth } from '@/config/firebase';
 import UploadFileButton from '@/components/Form/UploadFileButton';
-import { PencilIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, PencilIcon } from '@heroicons/react/24/outline';
+import moment from 'moment';
 
 type ProfileFormData = {
   avatar: string | File | null;
@@ -97,10 +98,12 @@ export default function Profile() {
     profileReset({ ...userLogged });
   }, [profileReset, userLogged]);
 
+  if (!userLogged) return <Layout>Loading</Layout>;
+
   return (
     <Layout>
-      <div className="flex flex-col max-w-2xl mx-auto space-y-6">
-        <div className="pb-4">
+      <div className="flex flex-col max-w-2xl mx-auto space-y-2">
+        <div className="pb-4 space-y-6">
           <h3 className="text-xl font-semibold text-gray-800">Perfil</h3>
 
           <form
@@ -160,6 +163,14 @@ export default function Profile() {
               {isSubmitting ? 'Atualizando' : 'Atualizar'}
             </button>
           </form>
+
+          <div className="flex items-center text-sm text-gray-700">
+            <CheckCircleIcon className="h-5 font-bold text-blue-600" />
+            <span className="ml-1 font-medium text-gray-800">
+              Criado em&nbsp;
+            </span>
+            {moment(userLogged?.created_at).format('LL')}
+          </div>
         </div>
 
         <div className="py-8 border-t broder-gray-50 space-y-6">
