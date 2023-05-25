@@ -13,12 +13,10 @@ const products = [
         title: 'Programação TeethAligner',
         path: '/programacao-teethaligner',
         info: [
-          'Valor do setup: R$ 250,00',
-          'Valor unitário do alinhador: R$ 68,00',
-          'Personalização da embalagem: Gratuita',
-          'Caixa Regular: Gratuita',
-          'Caixa Premium: R$ 25,00',
-          'Acréscimo taxa de envio',
+          'Até 10 alinhadores R$ 85,00 (valor por unidade, pedido mínimo 7 unidades)',
+          '10 - 15 alinhadores R$ 75,00 (valor por unidade)',
+          '15 - 20 alinhadores R$ 70,00 (valor por unidade)',
+          'Acima de 20 alinhadores R$ 65,00 (valor por unidade)',
         ],
       },
       {
@@ -89,12 +87,10 @@ const services = [
     title: 'Programação TeethAligner',
     product: 'Alinhadores personalizados',
     info: [
-      'Valor do setup R$ 250,00',
-      'Valor unitário do alinhador R$ 68,00',
-      'Personalização embalagem gratuita',
-      'Caixa regular gratuita',
-      'Caixa Premium R$ 25,00',
-      'Acréscimo taxa de envio',
+      'Até 10 alinhadores R$ 85,00 (valor por unidade, pedido mínimo 7 unidades)',
+      '10 - 15 alinhadores R$ 75,00 (valor por unidade)',
+      '15 - 20 alinhadores R$ 70,00 (valor por unidade)',
+      'Acima de 20 alinhadores R$ 65,00 (valor por unidade)',
     ],
   },
   {
