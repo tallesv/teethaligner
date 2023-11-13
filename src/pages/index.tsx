@@ -53,7 +53,7 @@ export default function Home() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
-    field: `updated_at`,
+    field: `created_at`,
     order: `ascending`,
   });
 
@@ -193,12 +193,12 @@ export default function Home() {
     }
   }
 
-  function showNotification(updatedAt: string) {
-    const nextDay = moment(updatedAt).add(1, 'day').utc().format(); // calculate 24 hours next to last access
+  function showNotification(data: Request) {
+    const nextDay = moment(data.updated_at).add(1, 'day').utc().format(); // calculate 24 hours next to last access
     const currentTime = moment().utc().format(); // current time
     const requestIsBefore24H = moment(currentTime).isSameOrBefore(nextDay);
-
-    return requestIsBefore24H;
+    const requestIsClosed = data.status === 'Enviado/Entregue';
+    return requestIsBefore24H && !requestIsClosed;
   }
   return (
     <Layout>
@@ -246,6 +246,7 @@ export default function Home() {
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
+                <th scope="col" aria-label="updated request alert" />
                 <th scope="col" className="px-6 py-3">
                   Solicitante
                 </th>
@@ -288,6 +289,35 @@ export default function Home() {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
+                    Data de atualização
+                    <div className="mx-2">
+                      <ChevronUpIcon
+                        onClick={() =>
+                          handleChangeDataOrder('updated_at', `ascending`)
+                        }
+                        className={`w-4 cursor-pointer ${
+                          dataOrder?.field === `updated_at` &&
+                          dataOrder.order === `ascending`
+                            ? `text-blue-500`
+                            : `text-gray-600`
+                        }`}
+                      />
+                      <ChevronDownIcon
+                        onClick={() =>
+                          handleChangeDataOrder('updated_at', `descending`)
+                        }
+                        className={`w-4 cursor-pointer ${
+                          dataOrder?.field === `updated_at` &&
+                          dataOrder.order === `descending`
+                            ? `text-blue-500`
+                            : `text-gray-600`
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
                   Opções
                 </th>
               </tr>
@@ -302,14 +332,16 @@ export default function Home() {
                       index % 2 === 1 ? 'bg-gray-100' : 'bg-white'
                     }`}
                   >
+                    <td className="px-3 text-gray-700">
+                      {showNotification(request) && (
+                        <span className="relative flex h-2 w-2">
+                          <span className="absolute h-full w-full shrink-0 animate-ping rounded-full bg-blue-500" />
+                          <span className="h-full w-full shrink-0 rounded-full bg-blue-500" />
+                        </span>
+                      )}
+                    </td>
                     <td className="px-3 py-4 text-gray-700">
                       <div className="flex items-center ">
-                        {showNotification(request.updated_at) && (
-                          <span className="relative flex mr-2 h-2 w-2">
-                            <span className="absolute h-full w-full shrink-0 animate-ping rounded-full bg-blue-500" />
-                            <span className="h-full w-full shrink-0 rounded-full bg-blue-500" />
-                          </span>
-                        )}
                         <span>{request.author}</span>
                       </div>
                     </td>
@@ -324,6 +356,11 @@ export default function Home() {
                     </td>
                     <td className="px-6 py-4 text-gray-700">
                       {new Date(request.created_at).toLocaleDateString('pt-BR')}
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {moment(new Date(request.updated_at)).format(
+                        'DD/MM/YYYY HH:mm:ss',
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <Link href={getRequestUrl(request)} legacyBehavior>
