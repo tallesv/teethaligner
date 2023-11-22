@@ -62,8 +62,6 @@ export default function ShowProgramacaoTeethaligneraApenasImprimir() {
         },
       );
 
-      handleEditRequest({ accepted: false });
-
       refetch();
     } catch (err) {
       toast.error(

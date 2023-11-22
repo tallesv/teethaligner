@@ -60,7 +60,6 @@ export default function ShowTransferenciaVirtual() {
           content,
         },
       );
-      handleEditRequest({ accepted: false });
 
       refetch();
     } catch (err) {

@@ -65,8 +65,6 @@ export default function ShowSetup() {
         },
       );
 
-      handleEditRequest({ accepted: false });
-
       refetch();
     } catch (err) {
       toast.error(

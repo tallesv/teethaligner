@@ -60,7 +60,6 @@ export default function ShowGuiasCirurgicos() {
           content,
         },
       );
-      handleEditRequest({ accepted: false });
 
       refetch();
     } catch (err) {

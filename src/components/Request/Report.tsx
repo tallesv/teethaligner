@@ -60,7 +60,6 @@ export default function Report({
   onSaveReport,
 }: ReportProps) {
   const [showAddReportInput, setShowAddReportInput] = useState(false);
-  const [showDesiredFixesInput, setShowDesiredFixesInput] = useState(false);
   const [isUploadingReport, setIsUploadingReport] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,11 +71,8 @@ export default function Report({
       resolver: yupResolver(requestCorrectionFormSchema),
     });
 
-  async function handleRequestCorrectionsSubmit({
-    content,
-  }: RequestCorrectionsFormData) {
+  async function handleCommentSubmit({ content }: RequestCorrectionsFormData) {
     onSendDesiredFixes(content);
-    setShowDesiredFixesInput(false);
     reset();
   }
 
@@ -179,7 +175,7 @@ export default function Report({
                   <button
                     type="button"
                     className="cursor-pointer rounded-md border-gray-300 border bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50"
-                    onClick={() => setShowDesiredFixesInput(true)}
+                    onClick={() => onAcceptReport(false)}
                   >
                     Solicitar alterações
                   </button>
@@ -188,37 +184,6 @@ export default function Report({
             </div>
           </div>
         </dd>
-      </div>
-      <div className="max-w-3xl mx-auto">
-        {user.user_type !== 'Admin' && showDesiredFixesInput && (
-          <form
-            onSubmit={handleSubmit(handleRequestCorrectionsSubmit)}
-            className="bg-white px-3 py-5"
-          >
-            <span className="block text-sm font-medium text-gray-600">
-              Preencha aqui qualquer informação relevante sobre as correções
-              desejadas:
-            </span>
-            <TextArea
-              label="Descreva se deseja que algum movimento ocorra primeiro, se existe alguma taxa de movimentação especifica para algum dos movimentos, todos os detalhes que achar relevante. Quanto maior a quantidade de informação, mais personalizado seu tratamento."
-              {...register('content')}
-              error={!!formState.errors.content}
-            />
-            {formState.errors.content && (
-              <span className="ml-1 text-sm font-medium text-red-500">
-                {formState.errors.content?.message}
-              </span>
-            )}
-            <div className="mt-2 flex flex-row-reverse">
-              <button
-                type="submit"
-                className="flex items-center justify-center rounded-md border border-transparent py-2 px-7 text-base font-medium text-white bg-blue-500 hover:bg-blue-600 focus:ring-blue-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
-              >
-                Enviar
-              </button>
-            </div>
-          </form>
-        )}
       </div>
       <div className="flex flex-col items-center justify-center px-4 py-5 sm:px-6">
         {request.accepted === null && (
@@ -248,6 +213,36 @@ export default function Report({
       </div>
 
       <div className="max-w-3xl mx-auto">
+        <form
+          onSubmit={handleSubmit(handleCommentSubmit)}
+          className="bg-white px-3 py-5"
+        >
+          <span className="block text-sm font-medium text-gray-600">
+            Preencha aqui qualquer informação relevante sobre as correções
+            desejadas:
+          </span>
+          <TextArea
+            label="Descreva se deseja que algum movimento ocorra primeiro, se existe alguma taxa de movimentação especifica para algum dos movimentos, todos os detalhes que achar relevante. Quanto maior a quantidade de informação, mais personalizado seu tratamento."
+            {...register('content')}
+            error={!!formState.errors.content}
+          />
+          {formState.errors.content && (
+            <span className="ml-1 text-sm font-medium text-red-500">
+              {formState.errors.content?.message}
+            </span>
+          )}
+          <div className="mt-2 flex flex-row-reverse">
+            <button
+              type="submit"
+              className="flex items-center justify-center rounded-md border border-transparent py-2 px-7 text-base font-medium text-white bg-blue-500 hover:bg-blue-600 focus:ring-blue-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+            >
+              Enviar
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="max-w-3xl mx-auto">
         <div className="px-3">
           {[...comments]
             .reverse()
@@ -263,8 +258,8 @@ export default function Report({
                       {comment.user.avatar ? (
                         <img
                           className="mr-2 w-6 h-6 rounded-full"
-                          src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                          alt="Michael Gough"
+                          src={comment.user.avatar}
+                          alt={comment.user.name}
                         />
                       ) : (
                         <div className="relative w-6 h-6 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">

@@ -61,8 +61,6 @@ export default function ShowProgramacaoTeethaligner() {
         },
       );
 
-      handleEditRequest({ accepted: false });
-
       refetch();
     } catch (err) {
       toast.error(
