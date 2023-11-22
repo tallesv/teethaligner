@@ -7,7 +7,7 @@ type TransferenciaVirtual = {
   patient_name: string;
   addresses: Address[];
   comments: CommentType[];
-  reports: Report[];
+  reports: ReportProps[];
   accepted: boolean | null;
   dentes_a_serem_preparados: string[];
   escaneamento_do_arco_superior: string[];

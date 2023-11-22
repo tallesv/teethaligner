@@ -7,7 +7,7 @@ type ProgramacaoTeethalignerApenasImprimir = {
   patient_name: string;
   addresses: Address[];
   comments: CommentType[];
-  reports: Report[];
+  reports: ReportProps[];
   accepted: boolean | null;
   personalizando_o_planejamento: string;
   escaneamento_do_arco_superior: string[];

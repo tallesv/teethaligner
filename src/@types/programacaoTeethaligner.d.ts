@@ -7,7 +7,7 @@ type ProgramacaoTeethalignerFormData = {
   patient_name: string;
   addresses: Address[];
   comments: CommentType[];
-  reports: Report[];
+  reports: ReportProps[];
   accepted: boolean | null;
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];

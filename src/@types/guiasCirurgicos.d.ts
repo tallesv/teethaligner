@@ -7,7 +7,7 @@ type GuiasCirurgicos = {
   patient_name: string;
   addresses: Address[];
   comments: CommentType[];
-  reports: Report[];
+  reports: ReportProps[];
   accepted: boolean | null;
   escaneamento_do_arco_superior: string[];
   escaneamento_do_arco_inferior: string[];

@@ -1,4 +1,4 @@
-type Report = {
+type ReportProps = {
   id: number;
   request_id: number;
   url: string;

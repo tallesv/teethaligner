@@ -8,7 +8,7 @@ type Setup = {
   addresses: Address[];
   comments: CommentType[];
   accepted: boolean | null;
-  reports: Report[];
+  reports: ReportProps[];
   personalizando_o_planejamento: string;
   dentes_a_serem_movimentados: string[];
   movimento_dentario: string;
