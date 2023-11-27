@@ -39,9 +39,9 @@ export default function RadioInputs({ register, formState }: RadioInputsProps) {
             error={!!formState.errors.movimento_dentario}
           />
           <Radio
-            id="expanção_movimento_dentario"
-            value="Expanção"
-            label="Expanção"
+            id="expansão_movimento_dentario"
+            value="Expansão"
+            label="Expansão"
             {...register('movimento_dentario')}
             error={!!formState.errors.movimento_dentario}
           />
