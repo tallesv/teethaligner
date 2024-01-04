@@ -10,6 +10,7 @@ import api from '@/client/api';
 import DeleteRequestModal from '@/components/Modals/DeleteRequestModal';
 import useAuth from '@/hooks/useAuth';
 import moment from 'moment';
+import getRequestURLByType from '@/utils/getRequestURLByType';
 
 type RequestsFromApi = {
   id: number;
@@ -41,12 +42,6 @@ type Request = {
   }[];
 };
 
-type RecentRequest = {
-  id: string;
-  patient_name: string;
-  request_date: string;
-};
-
 type orderProps = {
   field: 'created_at' | 'updated_at';
   order: 'ascending' | 'descending';
@@ -57,7 +52,6 @@ export default function Home() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [requests, setRequests] = useState<Request[]>([]);
-  const [recentRequests, setRecentRequests] = useState<RecentRequest[]>();
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
     field: `created_at`,
@@ -84,23 +78,21 @@ export default function Home() {
     setRequests(treatedRequests);
   }
 
+  const { refetch: refetchRequestsFromUser } = useQuery('user', () => {
+    if (userLogged && userLogged.user_type !== 'Admin') {
+      api
+        .get(`users/${userLogged?.firebase_id}`)
+        .then(res => handleRequestsFromApi(res.data.requests));
+    }
+  });
+
   const { isLoading, error, refetch } = useQuery(
-    'users',
+    'requests',
     () => {
-      if (userLogged) {
-        if (userLogged?.user_type === 'Admin') {
-          api
-            .get('/requests')
-            .then(res => handleRequestsFromApi(res.data.requests));
-          api
-            .get(`users/${userLogged?.firebase_id}`)
-            .then(res => setRecentRequests(res.data.recent_requests));
-        } else {
-          api.get(`users/${userLogged?.firebase_id}`).then(res => {
-            handleRequestsFromApi(res.data.requests);
-            setRecentRequests(res.data.recent_requests);
-          });
-        }
+      if (userLogged && userLogged.user_type === 'Admin') {
+        api
+          .get('/requests')
+          .then(res => handleRequestsFromApi(res.data.requests));
       }
     },
     {
@@ -110,7 +102,8 @@ export default function Home() {
 
   useEffect(() => {
     refetch();
-  }, [refetch, userLogged]);
+    refetchRequestsFromUser();
+  }, [refetch, refetchRequestsFromUser, userLogged]);
 
   if (isLoading) return <Layout>Loading...</Layout>;
 
@@ -134,40 +127,6 @@ export default function Home() {
         : new Date(a[dataOrder.field]).valueOf() -
           new Date(b[dataOrder.field]).valueOf(),
     );
-
-  function getRequestUrl(request: Request) {
-    switch (request.product_name) {
-      case 'Setup':
-        return `/products/setup/${request.id}`;
-      case 'Alinhadores - Programação TeethAligner':
-        return `/products/alinhadores/programacao-teethaligner/${request.id}`;
-      case 'Alinhadores - Apenas Imprimir':
-        return `/products/alinhadores/apenas-imprimir/${request.id}`;
-      case 'Moldagem de Transferência Virtual':
-        return `/products/transferencia-virtual/${request.id}`;
-      case 'Modelos/Guias Cirúrgicos':
-        return `/products/guias-cirurgicos/${request.id}`;
-      default:
-        return '';
-    }
-  }
-
-  function getEditRequestUrl(request: Request) {
-    switch (request.product_name) {
-      case 'Setup':
-        return `/products/setup/edit/${request.id}`;
-      case 'Alinhadores - Programação TeethAligner':
-        return `/products/alinhadores/programacao-teethaligner/edit/${request.id}`;
-      case 'Alinhadores - Apenas Imprimir':
-        return `/products/alinhadores/apenas-imprimir/edit/${request.id}`;
-      case 'Moldagem de Transferência Virtual':
-        return `/products/transferencia-virtual/edit/${request.id}`;
-      case 'Modelos/Guias Cirúrgicos':
-        return `/products/guias-cirurgicos/edit/${request.id}`;
-      default:
-        return '';
-    }
-  }
 
   function getBadgetByStatus(requestStatus: string) {
     switch (requestStatus) {
@@ -202,10 +161,6 @@ export default function Home() {
       default:
         return requestStatus;
     }
-  }
-
-  function showNotification(data: Request) {
-    return recentRequests?.map(item => Number(item.id)).includes(data.id);
   }
 
   return (
@@ -254,7 +209,6 @@ export default function Home() {
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
-                <th scope="col" aria-label="updated request alert" />
                 <th scope="col" className="px-6 py-3">
                   Solicitante
                 </th>
@@ -340,27 +294,6 @@ export default function Home() {
                       index % 2 === 1 ? 'bg-gray-100' : 'bg-white'
                     }`}
                   >
-                    <td className="px-3 text-gray-700">
-                      {showNotification(request) && (
-                        <div className="flex flex-col items-center">
-                          <span className="relative flex h-2 w-2 my-2">
-                            <span className="absolute h-full w-full shrink-0 animate-ping rounded-full bg-blue-500" />
-                            <span className="h-full w-full shrink-0 rounded-full bg-blue-500" />
-                          </span>
-                          <time className="whitespace-nowrap">
-                            {moment
-                              .utc(
-                                Number(
-                                  recentRequests?.find(
-                                    item => Number(item.id) === request.id,
-                                  )?.request_date,
-                                ) * 1000,
-                              )
-                              .fromNow()}
-                          </time>
-                        </div>
-                      )}
-                    </td>
                     <td className="px-3 py-4 text-gray-700">
                       <div className="flex items-center ">
                         <span>{request.author}</span>
@@ -384,9 +317,16 @@ export default function Home() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <Link href={getRequestUrl(request)} legacyBehavior>
+                      <Link
+                        href={`${getRequestURLByType(request.product_name)}/${
+                          request.id
+                        }`}
+                        legacyBehavior
+                      >
                         <a
-                          href={getRequestUrl(request)}
+                          href={`${getRequestURLByType(request.product_name)}/${
+                            request.id
+                          }`}
                           className="mx-2 font-medium text-blue-600 dark:text-blue-500 hover:underline"
                         >
                           Visualizar
