@@ -41,6 +41,12 @@ type Request = {
   }[];
 };
 
+type RecentRequest = {
+  id: string;
+  patient_name: string;
+  request_date: string;
+};
+
 type orderProps = {
   field: 'created_at' | 'updated_at';
   order: 'ascending' | 'descending';
@@ -51,6 +57,7 @@ export default function Home() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [requests, setRequests] = useState<Request[]>([]);
+  const [recentRequests, setRecentRequests] = useState<RecentRequest[]>();
   const [termSearched, setTermSearched] = useState<string>('');
   const [dataOrder, setDataOrder] = useState<orderProps>({
     field: `created_at`,
@@ -85,10 +92,14 @@ export default function Home() {
           api
             .get('/requests')
             .then(res => handleRequestsFromApi(res.data.requests));
-        } else {
           api
             .get(`users/${userLogged?.firebase_id}`)
-            .then(res => handleRequestsFromApi(res.data.requests));
+            .then(res => setRecentRequests(res.data.recent_requests));
+        } else {
+          api.get(`users/${userLogged?.firebase_id}`).then(res => {
+            handleRequestsFromApi(res.data.requests);
+            setRecentRequests(res.data.recent_requests);
+          });
         }
       }
     },
@@ -194,12 +205,9 @@ export default function Home() {
   }
 
   function showNotification(data: Request) {
-    const nextDay = moment(data.updated_at).add(1, 'day').utc().format(); // calculate 24 hours next to last access
-    const currentTime = moment().utc().format(); // current time
-    const requestIsBefore24H = moment(currentTime).isSameOrBefore(nextDay);
-    const requestIsClosed = data.status === 'Enviado/Entregue';
-    return requestIsBefore24H && !requestIsClosed;
+    return recentRequests?.map(item => Number(item.id)).includes(data.id);
   }
+
   return (
     <Layout>
       <DeleteRequestModal
@@ -334,10 +342,23 @@ export default function Home() {
                   >
                     <td className="px-3 text-gray-700">
                       {showNotification(request) && (
-                        <span className="relative flex h-2 w-2">
-                          <span className="absolute h-full w-full shrink-0 animate-ping rounded-full bg-blue-500" />
-                          <span className="h-full w-full shrink-0 rounded-full bg-blue-500" />
-                        </span>
+                        <div className="flex flex-col items-center">
+                          <span className="relative flex h-2 w-2 my-2">
+                            <span className="absolute h-full w-full shrink-0 animate-ping rounded-full bg-blue-500" />
+                            <span className="h-full w-full shrink-0 rounded-full bg-blue-500" />
+                          </span>
+                          <time className="whitespace-nowrap">
+                            {moment
+                              .utc(
+                                Number(
+                                  recentRequests?.find(
+                                    item => Number(item.id) === request.id,
+                                  )?.request_date,
+                                ) * 1000,
+                              )
+                              .fromNow()}
+                          </time>
+                        </div>
                       )}
                     </td>
                     <td className="px-3 py-4 text-gray-700">
