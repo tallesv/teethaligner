@@ -1,12 +1,15 @@
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, ReactNode, useEffect } from 'react';
+import { Fragment, ReactNode, useEffect, useState } from 'react';
 import { firebaseAuth, signOut } from '@/config/firebase';
 import { destroyCookie } from 'nookies';
 import DefaultAvatar from '@/utils/defaultAvatar';
 import useAuth from '@/hooks/useAuth';
+import api from '@/client/api';
+import moment from 'moment';
+import getRequestURLByType from '@/utils/getRequestURLByType';
 
 const userNavigation = [
   { name: 'Perfil', header: 'Configuração de conta', href: '/profile' },
@@ -22,10 +25,18 @@ interface LayoutProps {
   children: ReactNode;
 }
 
+type RecentRequest = {
+  id: string;
+  patient_name: string;
+  request_date: string;
+};
+
 export default function Layout({ children }: LayoutProps) {
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
 
   const { userLogged, fetchUser, setUserLogged } = useAuth();
+
+  const [recentRequests, setRecentRequests] = useState<RecentRequest[]>([]);
 
   const navigation = [
     {
@@ -103,9 +114,19 @@ export default function Layout({ children }: LayoutProps) {
     });
   }
 
+  async function handleSelectRecentRequest(requestSelected: RecentRequest) {
+    const { data: request } = await api.get(`requests/${requestSelected.id}`);
+    const url = getRequestURLByType(request.product_name);
+    push(`${url}/${request.id}`);
+  }
+
   useEffect(() => {
     if (!userLogged) {
       fetchUser();
+    } else {
+      api
+        .get(`users/${userLogged?.firebase_id}`)
+        .then(res => setRecentRequests(res.data.recent_requests));
     }
   }, [fetchUser, userLogged]);
 
@@ -152,13 +173,63 @@ export default function Layout({ children }: LayoutProps) {
                 </div>
                 <div className="hidden md:block">
                   <div className="ml-4 flex items-center md:ml-6">
-                    {/* <button
-                      type="button"
-                      className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    >
-                      <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button> */}
+                    <Menu as="div" className="relative ml-3">
+                      <div>
+                        <Menu.Button className="flex rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                          <span className="sr-only">Open notifications</span>
+                          <BellIcon className="h-6 w-6" aria-hidden="true" />
+                          {recentRequests.length > 0 && (
+                            <span className="relative flex h-2 w-2 right-1">
+                              <span className="absolute h-full w-full shrink-0 animate-ping rounded-full bg-blue-500" />
+                              <span className="h-full w-full shrink-0 rounded-full bg-blue-500" />
+                            </span>
+                          )}
+                        </Menu.Button>
+                      </div>
+                      {recentRequests.length > 0 && (
+                        <Transition
+                          as={Fragment}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <Menu.Items className="absolute max-h-48 overflow-auto right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            {recentRequests?.map(item => (
+                              <Menu.Item key={item.id}>
+                                {({ active }) => (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleSelectRecentRequest(item)
+                                    }
+                                    className={classNames(
+                                      active ? 'bg-gray-100' : '',
+                                      'flex flex-col items-center w-full px-4 py-2 text-sm text-gray-700 cursor-pointer',
+                                    )}
+                                  >
+                                    <span className="bold">{`Solicitação de ${item.patient_name}`}</span>
+                                    <time className="text-xs text-gray-500">
+                                      {moment
+                                        .utc(
+                                          Number(
+                                            recentRequests?.find(
+                                              request => request.id === item.id,
+                                            )?.request_date,
+                                          ) * 1000,
+                                        )
+                                        .fromNow()}
+                                    </time>
+                                  </button>
+                                )}
+                              </Menu.Item>
+                            ))}
+                          </Menu.Items>
+                        </Transition>
+                      )}
+                    </Menu>
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative ml-3">
