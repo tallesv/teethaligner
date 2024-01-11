@@ -43,7 +43,7 @@ type Request = {
 };
 
 type orderProps = {
-  field: 'created_at' | 'updated_at';
+  field: 'created_at' | 'updated_at' | 'patient_name';
   order: 'ascending' | 'descending';
 };
 
@@ -110,23 +110,40 @@ export default function Home() {
   if (error) return <Layout>{`An error has occurred: ${error}`}</Layout>;
 
   function handleChangeDataOrder(
-    field: 'created_at' | 'updated_at',
+    field: 'created_at' | 'updated_at' | 'patient_name',
     order: 'ascending' | 'descending',
   ) {
     setDataOrder({ field, order });
+  }
+
+  function sortRequests(a: Request, b: Request) {
+    if (dataOrder.field === 'patient_name') {
+      if (dataOrder.order === 'ascending') {
+        return a.patient_name.toLowerCase() > b.patient_name.toLowerCase()
+          ? 1
+          : -1;
+      }
+      return b.patient_name.toLowerCase() > a.patient_name.toLowerCase()
+        ? 1
+        : -1;
+    }
+    if (dataOrder.order === 'ascending') {
+      return (
+        new Date(b[dataOrder.field]).valueOf() -
+        new Date(a[dataOrder.field]).valueOf()
+      );
+    }
+    return (
+      new Date(a[dataOrder.field]).valueOf() -
+      new Date(b[dataOrder.field]).valueOf()
+    );
   }
 
   const filteredRequests = requests
     .filter((request: Request) =>
       request.patient_name.toLowerCase().includes(termSearched.toLowerCase()),
     )
-    .sort((a, b) =>
-      dataOrder.order === `ascending`
-        ? new Date(b[dataOrder.field]).valueOf() -
-          new Date(a[dataOrder.field]).valueOf()
-        : new Date(a[dataOrder.field]).valueOf() -
-          new Date(b[dataOrder.field]).valueOf(),
-    );
+    .sort((a, b) => sortRequests(a, b));
 
   function getBadgetByStatus(requestStatus: string) {
     switch (requestStatus) {
@@ -213,7 +230,33 @@ export default function Home() {
                   Solicitante
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Paciente
+                  <div className="flex items-center">
+                    Paciente
+                    <div className="mx-2">
+                      <ChevronUpIcon
+                        onClick={() =>
+                          handleChangeDataOrder('patient_name', `ascending`)
+                        }
+                        className={`w-4 cursor-pointer ${
+                          dataOrder?.field === `patient_name` &&
+                          dataOrder.order === `ascending`
+                            ? `text-blue-500`
+                            : `text-gray-600`
+                        }`}
+                      />
+                      <ChevronDownIcon
+                        onClick={() =>
+                          handleChangeDataOrder('patient_name', `descending`)
+                        }
+                        className={`w-4 cursor-pointer ${
+                          dataOrder?.field === `patient_name` &&
+                          dataOrder.order === `descending`
+                            ? `text-blue-500`
+                            : `text-gray-600`
+                        }`}
+                      />
+                    </div>
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Produto
