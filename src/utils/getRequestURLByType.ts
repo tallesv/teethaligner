@@ -10,6 +10,8 @@ export default function getRequestURLByType(productName: string) {
       return `/products/transferencia-virtual`;
     case 'Modelos/Guias Cirúrgicos':
       return `/products/guias-cirurgicos`;
+    case 'Contenção':
+      return 'products/contencao';
     default:
       return '';
   }

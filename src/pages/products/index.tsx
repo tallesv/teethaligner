@@ -80,6 +80,12 @@ const products = [
     info: ['Impressão modelo/guia: R$ 40,00', 'Acréscimo taxa de envio'],
     path: '/guias-cirurgicos',
   },
+  {
+    title: 'Contenção',
+    services: [],
+    info: ['Valor: R$ 85,00', 'Acréscimo taxa de envio'],
+    path: '/contencao',
+  },
 ];
 
 const services = [
