@@ -18,10 +18,12 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import DisplayFile from '@/components/Form/DisplayFile';
 import UploadFileButton from '@/components/Form/UploadFileButton';
+import TextArea from '@/components/Form/Textarea';
 
 type ContencaoFormData = {
   pacient_name: string;
   address: Address;
+  informacoes_adicionais: string;
   escaneamento_do_arco_superior: File[];
   escaneamento_do_arco_inferior: File[];
   escaneamento_do_registro_de_mordida: File[];
@@ -32,6 +34,7 @@ type ContencaoFormData = {
 const contencaoFormSchema = yup.object().shape({
   pacient_name: yup.string().required('Por favor insira o nome do paciente'),
   address: yup.object().required('Por favor escolha um endereço'),
+  informacoes_adicionais: yup.string(),
   escaneamento_do_arco_superior: yup
     .array()
     .of(yup.mixed<File>())
@@ -173,6 +176,7 @@ export default function Contencao() {
           status: 'Nova',
           accepted: null,
           fields: JSON.stringify({
+            informacoes_adicionais: data.informacoes_adicionais,
             escaneamento_link: data.escaneamento_link,
             encaminhei_email: data.encaminhei_email,
             escaneamento_do_arco_superior: escaneamentoDoArcoSuperiorUrl,
@@ -270,6 +274,16 @@ export default function Contencao() {
 
           <div className="col-span-6">
             <div className="my-2 border-t border-gray-200" />
+          </div>
+
+          <div className="col-span-6">
+            <span className="block text-sm font-medium text-gray-600">
+              Informações adicionais:
+            </span>
+            <TextArea
+              label="Preencha aqui tudo que deseja no seu tratamento"
+              {...register('informacoes_adicionais')}
+            />
           </div>
 
           <div className="col-span-6">

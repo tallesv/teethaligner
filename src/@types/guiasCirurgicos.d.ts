@@ -6,6 +6,7 @@ type GuiasCirurgicos = {
   status: string;
   patient_name: string;
   addresses: Address[];
+  informacoes_adicionais: string;
   comments: CommentType[];
   reports: ReportProps[];
   accepted: boolean | null;
