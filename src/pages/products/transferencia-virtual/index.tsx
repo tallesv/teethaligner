@@ -18,11 +18,13 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import DisplayFile from '@/components/Form/DisplayFile';
 import UploadFileButton from '@/components/Form/UploadFileButton';
+import TextArea from '@/components/Form/Textarea';
 
 type TransferenciaVirtualFormData = {
   patient_name: string;
   address: Address;
   dentes_a_serem_preparados: string[];
+  informacoes_adicionais: string;
   escaneamento_do_arco_superior: File[];
   escaneamento_do_arco_inferior: File[];
   escaneamento_do_registro_de_mordida: File[];
@@ -37,6 +39,7 @@ const transferenciaVirtualFormSchema = yup.object().shape({
     .array()
     .of(yup.string())
     .min(1, 'Por favor selecione os dentes a serem movimentados.'),
+  informacoes_adicionais: yup.string(),
   escaneamento_do_arco_superior: yup
     .array()
     .of(yup.mixed<File>())
@@ -181,6 +184,7 @@ export default function TransferenciaVirtual() {
           accepted: null,
           fields: JSON.stringify({
             dentes_a_serem_preparados: data.dentes_a_serem_preparados,
+            informacoes_adicionais: data.informacoes_adicionais,
             escaneamento_link: data.escaneamento_link,
             encaminhei_email: data.encaminhei_email,
             escaneamento_do_arco_superior: escaneamentoDoArcoSuperiorUrl,
@@ -336,6 +340,16 @@ export default function TransferenciaVirtual() {
                 {formState.errors.dentes_a_serem_preparados.message}
               </span>
             )}
+          </div>
+
+          <div className="col-span-6">
+            <span className="block text-sm font-medium text-gray-600">
+              Informações adicionais:
+            </span>
+            <TextArea
+              label="Preencha aqui tudo que deseja no seu tratamento"
+              {...register('informacoes_adicionais')}
+            />
           </div>
 
           <div className="col-span-6">

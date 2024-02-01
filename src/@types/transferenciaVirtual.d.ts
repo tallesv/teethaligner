@@ -10,6 +10,7 @@ type TransferenciaVirtual = {
   reports: ReportProps[];
   accepted: boolean | null;
   dentes_a_serem_preparados: string[];
+  informacoes_adicionais: string;
   escaneamento_do_arco_superior: string[];
   escaneamento_do_arco_inferior: string[];
   escaneamento_do_registro_de_mordida: string[];
