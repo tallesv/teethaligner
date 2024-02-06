@@ -120,13 +120,31 @@ export default function Layout({ children }: LayoutProps) {
     push(`${url}/${request.id}`);
   }
 
+  function calculateDayDifference(dateInSeconds: number) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const differenceInDays = moment.duration(
+      moment(new Date()).diff(moment(dateInSeconds)),
+    );
+
+    return differenceInDays.asDays();
+  }
+
   useEffect(() => {
     if (!userLogged) {
       fetchUser();
     } else {
       api
         .get(`users/${userLogged?.firebase_id}`)
-        .then(res => setRecentRequests(res.data.recent_requests));
+        .then(res =>
+          setRecentRequests(
+            res.data.recent_requests.filter(
+              (item: RecentRequest) =>
+                calculateDayDifference(Number(item.request_date) * 1000) < 5,
+            ),
+          ),
+        );
     }
   }, [fetchUser, userLogged]);
 
