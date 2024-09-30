@@ -253,7 +253,9 @@ export default function Setup() {
           }),
         },
       );
-      toast.success('Solicitação recebida com sucesso, em até 4 dias enviaremos relatório com link do setup.');
+      toast.success(
+        'Solicitação recebida com sucesso, em até 4 dias enviaremos relatório com link do setup.',
+      );
       push('/');
     } catch (err) {
       toast.error(
